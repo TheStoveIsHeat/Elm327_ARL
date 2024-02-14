@@ -30,7 +30,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="Enable Specific Pids, Dedect Pids should be disabled."
+        android:title="Enable Specific PIDs, Dedect Pids should be disabled."
         android:key="enable_pids">
         <CheckBoxPreference android:title="ENGINE_RPM"
             android:defaultValue="true" android:summary="Pid : 010C"

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -32,15 +33,22 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.android.material.appbar.AppBarLayout;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 
 import java.util.ArrayList;
 import java.util.List;
+//for converting to CSV (new code)
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -99,12 +107,12 @@ public class MainActivity extends AppCompatActivity {
     private static final float APPBAR_ELEVATION = 14f;
     private static boolean actionbar = true;
     final List<String> commandslist = new ArrayList<String>();
-    ;
+
     final List<Double> avgconsumption = new ArrayList<Double>();
     final List<String> troubleCodesArray = new ArrayList<String>();
     MenuItem itemtemp;
-    GaugeSpeed speed;
-    GaugeRpm rpm;
+//    GaugeSpeed speed;
+//    GaugeRpm rpm;
     BluetoothDevice currentdevice;
     boolean commandmode = false, initialized = false, m_getPids = false, tryconnect = false, defaultStart = false;
     String devicename = null, deviceprotocol = null;
@@ -140,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText mOutEditText;
     private Button mSendButton, mPidsButton, mTroublecodes, mClearTroublecodes, mClearlist;
     private ListView mConversationView;
-    private TextView engineLoad, Fuel, voltage, coolantTemperature, Status, Loadtext, Volttext, Temptext, Centertext, Info, Airtemp_text, airTemperature, Maf_text, Maf;
+    private TextView engineLoad, Fuel, voltage, coolantTemperature, Status, Loadtext, Volttext, Temptext, Centertext, Info, Airtemp_text, airTemperature, Maf_text, Maf, speed;
     private String mConnectedDeviceName = "Ecu";
     private int rpmval = 0, intakeairtemp = 0, ambientairtemp = 0, coolantTemp = 0, mMaf = 0,
             engineoiltemp = 0, b1s1temp = 0, Enginetype = 0, FaceColor = 0,
@@ -174,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
                             } catch (Exception e) {
                             }
                             tryconnect = false;
-                            resetvalues();
+                            //resetvalues();
                             sendEcuMessage(RESET);
                             break;
                         case ObdWifiManager.STATE_CONNECTING:
@@ -185,9 +193,9 @@ public class MainActivity extends AppCompatActivity {
                             Status.setText(R.string.title_not_connected);
                             itemtemp = menu.findItem(R.id.menu_connect_wifi);
                             itemtemp.setTitle(R.string.connectwifi);
-                            if (mWifiService != null)mWifiService.disconnect();
+                            if (mWifiService != null) mWifiService.disconnect();
                             mWifiService = null;
-                            resetvalues();
+                            //resetvalues();
                             break;
                     }
                     break;
@@ -210,16 +218,14 @@ public class MainActivity extends AppCompatActivity {
 
                     if (tmpmsg.contains(RSP_ID.NODATA.response) || tmpmsg.contains(RSP_ID.ERROR.response)) {
 
-                        try{
-                            String command = tmpmsg.substring(0,4);
+                        try {
+                            String command = tmpmsg.substring(0, 4);
 
-                            if(isHexadecimal(command))
-                            {
+                            if (isHexadecimal(command)) {
                                 removePID(command);
                             }
 
-                        }catch(Exception e)
-                        {
+                        } catch (Exception e) {
                             Toast.makeText(getApplicationContext(), e.getMessage(),
                                     Toast.LENGTH_LONG).show();
                         }
@@ -264,8 +270,11 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             tryconnect = false;
-                            resetvalues();
+                            //resetvalues();
                             sendEcuMessage(RESET);
+                            // Send the ECU message "0902" to retrieve the VIN (new code)
+                            String vinCommand = "0902";
+                            sendEcuMessage(vinCommand);
 
                             break;
                         case BluetoothService.STATE_CONNECTING:
@@ -286,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
                                     tryconnect = false;
                                 }
                             }
-                            resetvalues();
+                            //resetvalues();
 
                             break;
                     }
@@ -304,6 +313,9 @@ public class MainActivity extends AppCompatActivity {
                 case MESSAGE_READ:
 
                     String tmpmsg = clearMsg(msg);
+
+                    //logging the read message to logcat to see the result (for demo)
+                    Log.i("BluetoothDebug", "Received message: " + tmpmsg);
 
                     Info.setText(tmpmsg);
 
@@ -343,12 +355,10 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void removePID(String pid)
-    {
+    private void removePID(String pid) {
         int index = commandslist.indexOf(pid);
 
-        if (index != -1)
-        {
+        if (index != -1) {
             commandslist.remove(index);
             Info.setText("Removed pid: " + pid);
         }
@@ -391,6 +401,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_gauges);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -405,7 +416,7 @@ public class MainActivity extends AppCompatActivity {
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wl = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "My Tag");
-        wl.acquire(10*60*1000L /*10 minutes*/);
+        wl.acquire(10 * 60 * 1000L /*10 minutes*/);
 
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
@@ -428,8 +439,9 @@ public class MainActivity extends AppCompatActivity {
         airTemperature = (TextView) findViewById(R.id.Airtemp);
         Maf_text = (TextView) findViewById(R.id.Maf_text);
         Maf = (TextView) findViewById(R.id.Maf);
-        speed = (GaugeSpeed) findViewById(R.id.GaugeSpeed);
-        rpm = (GaugeRpm) findViewById(R.id.GaugeRpm);
+        speed = (TextView) findViewById(R.id.Speeds);
+//        speed = (GaugeSpeed) findViewById(R.id.GaugeSpeed);
+//        rpm = (GaugeRpm) findViewById(R.id.GaugeRpm);
 
         mOutEditText = (EditText) findViewById(R.id.edit_text_out);
         mPidsButton = (Button) findViewById(R.id.button_pids);
@@ -442,7 +454,7 @@ public class MainActivity extends AppCompatActivity {
 
         troubleCodes = new TroubleCodes();
 
-        invisiblecmd();
+        visiblecmd();
 
         //ATZ reset all
         //ATDP Describe the current Protocol
@@ -463,9 +475,7 @@ public class MainActivity extends AppCompatActivity {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
             Toast.makeText(getApplicationContext(), "Bluetooth is not available", Toast.LENGTH_LONG).show();
-        }
-        else
-        {
+        } else {
             if (mBtService != null) {
                 if (mBtService.getState() == BluetoothService.STATE_NONE) {
                     mBtService.start();
@@ -587,10 +597,8 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.menu_connect_bt:
 
-                if( mWifiService != null)
-                {
-                    if (mWifiService.isConnected())
-                    {
+                if (mWifiService != null) {
+                    if (mWifiService.isConnected()) {
                         Toast.makeText(getApplicationContext(), "First Disconnect WIFI Device.", Toast.LENGTH_SHORT).show();
                         return false;
                     }
@@ -598,8 +606,18 @@ public class MainActivity extends AppCompatActivity {
 
                 if (!mBluetoothAdapter.isEnabled()) {
                     Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                    startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
-                    return false;
+                    //new code
+                    if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                    }
+                    startActivityForResult(enableIntent, REQUEST_ENABLE_BT, null);
+
                 }
 
                 if (mBtService == null) setupChat();
@@ -640,15 +658,16 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 return true;
+                //case to enter the pids screen
             case R.id.menu_terminal:
 
-                if (item.getTitle().equals("Terminal")) {
+                if (item.getTitle().equals("PIDs")) {
                     commandmode = true;
-                    visiblecmd();
-                    item.setTitle(R.string.gauges);
-                } else {
                     invisiblecmd();
                     item.setTitle(R.string.terminal);
+                } else {
+                    visiblecmd();
+                    item.setTitle(R.string.pids);
                     commandmode = false;
                     sendEcuMessage(VOLTAGE);
                 }
@@ -675,6 +694,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case REQUEST_CONNECT_DEVICE:
                 // When DeviceListActivity returns with a device to connect
@@ -770,7 +790,7 @@ public class MainActivity extends AppCompatActivity {
                 alertDialog.show();
             } else {
                 commandmode = false;
-                invisiblecmd();
+                visiblecmd();
                 MenuItem item = menu.findItem(R.id.menu_terminal);
                 item.setTitle(R.string.terminal);
                 sendEcuMessage(VOLTAGE);
@@ -795,8 +815,8 @@ public class MainActivity extends AppCompatActivity {
 
             FaceColor = Integer.parseInt(preferences.getString("FaceColor", "0"));
 
-            rpm.setFace(FaceColor);
-            speed.setFace(FaceColor);
+//            rpm.setFace(FaceColor);
+//            speed.setFace(FaceColor);
 
             mEnginedisplacement = Integer.parseInt(preferences.getString("Enginedisplacement", "1500"));
 
@@ -874,6 +894,7 @@ public class MainActivity extends AppCompatActivity {
         Maf_text.setTextSize(txtsize);
         Maf.setTextSize(txtsize);
         Info.setTextSize(sttxtsize);
+        speed.setTextSize(sttxtsize);
     }
 
     public void invisiblecmd() {
@@ -884,8 +905,8 @@ public class MainActivity extends AppCompatActivity {
         mTroublecodes.setVisibility(View.INVISIBLE);
         mClearTroublecodes.setVisibility(View.INVISIBLE);
         mClearlist.setVisibility(View.INVISIBLE);
-        rpm.setVisibility(View.VISIBLE);
-        speed.setVisibility(View.VISIBLE);
+//        rpm.setVisibility(View.VISIBLE);
+//        speed.setVisibility(View.VISIBLE);
         engineLoad.setVisibility(View.VISIBLE);
         Fuel.setVisibility(View.VISIBLE);
         voltage.setVisibility(View.VISIBLE);
@@ -895,15 +916,17 @@ public class MainActivity extends AppCompatActivity {
         Temptext.setVisibility(View.VISIBLE);
         Centertext.setVisibility(View.VISIBLE);
         Info.setVisibility(View.VISIBLE);
+        //pids
         Airtemp_text.setVisibility(View.VISIBLE);
         airTemperature.setVisibility(View.VISIBLE);
         Maf_text.setVisibility(View.VISIBLE);
         Maf.setVisibility(View.VISIBLE);
+        speed.setVisibility(View.VISIBLE);
     }
 
     public void visiblecmd() {
-        rpm.setVisibility(View.INVISIBLE);
-        speed.setVisibility(View.INVISIBLE);
+//        rpm.setVisibility(View.INVISIBLE);
+//        speed.setVisibility(View.INVISIBLE);
         engineLoad.setVisibility(View.INVISIBLE);
         Fuel.setVisibility(View.INVISIBLE);
         voltage.setVisibility(View.INVISIBLE);
@@ -913,10 +936,13 @@ public class MainActivity extends AppCompatActivity {
         Temptext.setVisibility(View.INVISIBLE);
         Centertext.setVisibility(View.INVISIBLE);
         Info.setVisibility(View.INVISIBLE);
+        //pids
         Airtemp_text.setVisibility(View.INVISIBLE);
         airTemperature.setVisibility(View.INVISIBLE);
         Maf_text.setVisibility(View.INVISIBLE);
         Maf.setVisibility(View.INVISIBLE);
+        speed.setVisibility(View.INVISIBLE);
+
         mConversationView.setVisibility(View.VISIBLE);
         mOutEditText.setVisibility(View.VISIBLE);
         mSendButton.setVisibility(View.VISIBLE);
@@ -940,17 +966,17 @@ public class MainActivity extends AppCompatActivity {
             lp.addRule(RelativeLayout.BELOW, findViewById(R.id.Load).getId());
             lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
             lp.setMargins(0, 0, 50, 0);
-            rpm.setLayoutParams(lp);
-            rpm.getLayoutParams().height = height;
-            rpm.getLayoutParams().width = (int) (width - 100) / 2;
+//            rpm.setLayoutParams(lp);
+//            rpm.getLayoutParams().height = height;
+//            rpm.getLayoutParams().width = (int) (width - 100) / 2;
 
             lp = new RelativeLayout.LayoutParams(height, height);
             lp.addRule(RelativeLayout.BELOW, findViewById(R.id.Load).getId());
             lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             lp.setMargins(50, 0, 0, 0);
-            speed.setLayoutParams(lp);
-            speed.getLayoutParams().height = height;
-            speed.getLayoutParams().width = (int) (width - 100) / 2;
+//            speed.setLayoutParams(lp);
+//            speed.getLayoutParams().height = height;
+//            speed.getLayoutParams().width = (int) (width - 100) / 2;
 
         } else if (width < height) {
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width, width);
@@ -958,25 +984,25 @@ public class MainActivity extends AppCompatActivity {
             lp.addRule(RelativeLayout.BELOW, findViewById(R.id.Fuel).getId());
             lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
             lp.setMargins(25, 5, 25, 5);
-            rpm.setLayoutParams(lp);
-            rpm.getLayoutParams().height = height/2;
-            rpm.getLayoutParams().width = (int) (width);
+//            rpm.setLayoutParams(lp);
+//            rpm.getLayoutParams().height = height/2;
+//            rpm.getLayoutParams().width = (int) (width);
 
             lp = new RelativeLayout.LayoutParams(width, width);
-            lp.addRule(RelativeLayout.BELOW, findViewById(R.id.GaugeRpm).getId());
+//            lp.addRule(RelativeLayout.BELOW, findViewById(R.id.GaugeRpm).getId());
             //lp.addRule(RelativeLayout.ABOVE,findViewById(R.id.info).getId());
             lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
             lp.setMargins(25, 5, 25, 5);
-            speed.setLayoutParams(lp);
-            speed.getLayoutParams().height = height/2;
-            speed.getLayoutParams().width = (int) (width);
+//            speed.setLayoutParams(lp);
+//            speed.getLayoutParams().height = height/2;
+//            speed.getLayoutParams().width = (int) (width);
         }
     }
 
     public void resetgauges() {
 
-        speed.setTargetValue(220);
-        rpm.setTargetValue(80);
+//        speed.setTargetValue(220);
+//        rpm.setTargetValue(80);
 
         new Thread(new Runnable() {
             @Override
@@ -989,8 +1015,8 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        speed.setTargetValue(0);
-                        rpm.setTargetValue(0);
+//                        speed.setTargetValue(0);
+//                        rpm.setTargetValue(0);
                     }
                 });
             }
@@ -1370,6 +1396,32 @@ public class MainActivity extends AppCompatActivity {
         return sum.doubleValue() / listavg.size();
     }
 
+    // Function to save data to CSV file (new code)
+    private void saveDataToCSV(String fileName, String data) {
+        try {
+            // Get the app's internal storage directory
+            File directory = getFilesDir();
+            // Create a new File object with the desired file name
+            File file = new File(directory, fileName);
+            // Create a FileOutputStream to write to the file
+            FileOutputStream fos = new FileOutputStream(file);
+            // Create an OutputStreamWriter to write characters to the FileOutputStream
+            OutputStreamWriter osw = new OutputStreamWriter(fos);
+            // Write the data to the file
+            osw.write(data);
+            // Close the streams
+            osw.close();
+            fos.close();
+            // Optional: Display a message or log success
+            // Toast.makeText(this, "Data saved to " + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            // Handle IO exception
+            e.printStackTrace();
+            // Optional: Display an error message or log the error
+            Toast.makeText(this, "Error saving data: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
     private void analysPIDS(String dataRecieved) {
 
         int A = 0;
@@ -1381,9 +1433,10 @@ public class MainActivity extends AppCompatActivity {
             dataRecieved = dataRecieved.trim();
 
             int index = dataRecieved.indexOf("41");
+           // int index09 = dataRecieved.indexOf("49");
 
             String tmpmsg = null;
-
+            //calculating values for mode 01
             if (index != -1) {
 
                 tmpmsg = dataRecieved.substring(index, dataRecieved.length());
@@ -1395,8 +1448,33 @@ public class MainActivity extends AppCompatActivity {
                     B = Integer.parseInt(tmpmsg.substring(6, 8), 16);
 
                     calculateEcuValues(PID, A, B);
+
+                    // Save the data to CSV file (new code to save to CSV file)
+                    //may need to change location of code, since values may only be copied from func call
+                    String csvData = PID + "," + A + "," + B + "\n";
+                    //calling func to save data to csv file
+                    //saveDataToCSV("pid_data.csv", csvData);
                 }
             }
+//            else if (index09 != -1) {
+//
+//                tmpmsg = dataRecieved.substring(index09, dataRecieved.length());
+//
+//                if (tmpmsg.substring(0, 2).equals("49")) {
+//
+//                    PID = Integer.parseInt(tmpmsg.substring(2, 4), 16);
+//                    A = Integer.parseInt(tmpmsg.substring(4, 6), 16);
+//                    B = Integer.parseInt(tmpmsg.substring(6, 8), 16);
+//
+//                    calculateEcuValues(PID, A, B);
+//
+//                    // Save the data to CSV file (new code to save to CSV file)
+//                    //may need to change location of code, since values may only be copied from func call
+//                    String csvData = PID + "," + A + "," + B + "\n";
+//                    //calling func to save data to csv file
+//                    //saveDataToCSV("pid_data.csv", csvData);
+//                }
+//            }
         }
     }
 
@@ -1435,8 +1513,9 @@ public class MainActivity extends AppCompatActivity {
                 // A*100/255
                 val = A * 100 / 255;
                 int calcLoad = (int) val;
-
+                //for setting text to int value
                 engineLoad.setText(Integer.toString(calcLoad) + " %");
+                //adding string to terminal
                 mConversationArrayAdapter.add("Engine Load: " + Integer.toString(calcLoad) + " %");
 
                 double FuelFlowLH = (mMaf * calcLoad * mEnginedisplacement / 1000.0 / 714.0) + 0.8;
@@ -1473,7 +1552,9 @@ public class MainActivity extends AppCompatActivity {
                 val = ((A * 256) + B) / 4;
                 intval = (int) val;
                 rpmval = intval;
-                rpm.setTargetValue(intval / 100);
+//                rpm.setTargetValue(intval / 100);
+                //new code to add to array
+                mConversationArrayAdapter.add("Engine Speed: " + Integer.toString(rpmval) + " rpm");
 
                 break;
 
@@ -1481,7 +1562,9 @@ public class MainActivity extends AppCompatActivity {
             case 13://PID(0D): KM
 
                 // A
-                speed.setTargetValue(A);
+//                speed.setTargetValue(A);
+                //new code to add to array
+                mConversationArrayAdapter.add("Vehicle Speed: " + Integer.toString(A) + " km/h");
 
                 break;
 
@@ -1590,5 +1673,6 @@ public class MainActivity extends AppCompatActivity {
         public String toString() {
             return response;
         }
+
     }
 }
