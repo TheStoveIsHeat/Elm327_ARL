@@ -263,7 +263,8 @@ public class DeviceListActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+    //new code to check if receiver is being unregistered
+        Log.d(TAG, "onDestroy: Unregistering broadcast receiver");
         // Make sure we're not doing discovery anymore
         if (mBtAdapter != null) {
             if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
@@ -279,8 +280,13 @@ public class DeviceListActivity extends Activity {
             mBtAdapter.cancelDiscovery();
         }
 
-        // Unregister broadcast listeners
-        this.unregisterReceiver(mReceiver);
+        // Unregister broadcast listeners (new code) 
+        try {
+            unregisterReceiver(mReceiver);
+        } catch (IllegalArgumentException e) {
+            // This exception may be thrown if the receiver was not registered.
+            // It's safe to ignore in this case.
+        }
     }
 
     /**
