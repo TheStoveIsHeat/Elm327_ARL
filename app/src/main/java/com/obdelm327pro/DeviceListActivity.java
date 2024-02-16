@@ -280,7 +280,7 @@ public class DeviceListActivity extends Activity {
             mBtAdapter.cancelDiscovery();
         }
 
-        // Unregister broadcast listeners (new code) 
+        // Unregister broadcast listeners (new code)
         try {
             unregisterReceiver(mReceiver);
         } catch (IllegalArgumentException e) {
