@@ -49,6 +49,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.IOException;
+//for sending the data via wifi (new code)
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -177,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
                         case ObdWifiManager.STATE_CONNECTED:
                             Status.setText(getString(R.string.title_connected_to, "ELM327 WIFI"));
                             try {
+                                //changing menu text items
                                 itemtemp = menu.findItem(R.id.menu_connect_wifi);
                                 itemtemp.setTitle(R.string.disconnectwifi);
                             } catch (Exception e) {
@@ -234,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
                     if (commandmode || !initialized) {
                         mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + tmpmsg);
                     }
-
+//after intializations stop being read, we analyze the messages in OBD
                     analysMsg(msg);
                     break;
 
@@ -272,9 +279,6 @@ public class MainActivity extends AppCompatActivity {
                             tryconnect = false;
                             //resetvalues();
                             sendEcuMessage(RESET);
-                            // Send the ECU message "0902" to retrieve the VIN (new code)
-                            String vinCommand = "0902";
-                            sendEcuMessage(vinCommand);
 
                             break;
                         case BluetoothService.STATE_CONNECTING:
@@ -1142,6 +1146,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //removing certain substrings to clean up the message
     private String clearMsg(Message msg) {
         String tmpmsg = msg.obj.toString();
 
@@ -1162,13 +1167,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkPids(String tmpmsg) {
+        //check if 41 is present in the message, then set index to start from that number in the message and read to the length to check for the message
         if (tmpmsg.indexOf("41") != -1) {
             int index = tmpmsg.indexOf("41");
 
             String pidmsg = tmpmsg.substring(index, tmpmsg.length());
 
             if (pidmsg.contains("4100")) {
-
+                //printing the supported pids to the terminal
                 setPidsSupported(pidmsg);
                 return;
             }
@@ -1176,19 +1182,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void analysMsg(Message msg) {
-
+        //cleaning the message
         String tmpmsg = clearMsg(msg);
-
+        //printing the voltage to terminal
         generateVolt(tmpmsg);
-
+        //getting the device name and the protocol
         getElmInfo(tmpmsg);
 
         if (!initialized) {
-
             sendInitCommands();
-
         } else {
-
+//check if 41 is present in the message, then set index to start from that number in the message and read to the length to check for the message
             checkPids(tmpmsg);
 
             if (!m_getPids && m_dedectPids == 1) {
@@ -1257,7 +1261,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
     }
-
+//for performing the fault code
     protected void performCalculations(String fault) {
 
         final String result = fault;
@@ -1300,6 +1304,7 @@ public class MainActivity extends AppCompatActivity {
         return (byte) ((Character.digit(s, 16) << 4));
     }
 
+    //getting the device name and the protocol
     private void getElmInfo(String tmpmsg) {
 
         if (tmpmsg.contains("ELM") || tmpmsg.contains("elm")) {
@@ -1318,7 +1323,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+//printing the supported pids to the terminal
     private void setPidsSupported(String buffer) {
 
         Info.setText("Trying to get available pids : " + String.valueOf(trycount));
@@ -1422,6 +1427,47 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //sending the data via wifi to a mySQL server using HTTP POST method
+    public static void sendDataToServer(String data) {
+        try {
+            // need correct server URL
+            String serverUrl = "http://your-server-url.com/api/insertData";
+
+            URL url = new URL(serverUrl);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setDoOutput(true);
+
+            // send data as JSON, XML, or any suitable format
+            OutputStream outputStream = urlConnection.getOutputStream();
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
+            outputStreamWriter.write("data=" + data);
+            outputStreamWriter.flush();
+            outputStreamWriter.close();
+
+            // get the response from the server
+            int responseCode = urlConnection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                String line;
+                StringBuilder response = new StringBuilder();
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                reader.close();
+
+                // handle the server response if needed
+                String serverResponse = response.toString();
+                // Process serverResponse...
+            } else {
+                // Handle the error case
+            }
+
+            urlConnection.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     private void analysPIDS(String dataRecieved) {
 
         int A = 0;
@@ -1429,7 +1475,7 @@ public class MainActivity extends AppCompatActivity {
         int PID = 0;
 
         if ((dataRecieved != null) && (dataRecieved.matches("^[0-9A-F]+$"))) {
-
+            //removes spaces
             dataRecieved = dataRecieved.trim();
 
             int index = dataRecieved.indexOf("41");
@@ -1477,7 +1523,7 @@ public class MainActivity extends AppCompatActivity {
 //            }
         }
     }
-
+//printing the voltage to terminal
     private void generateVolt(String msg) {
 
         String VoltText = null;
@@ -1494,12 +1540,12 @@ public class MainActivity extends AppCompatActivity {
 
             mConversationArrayAdapter.add(mConnectedDeviceName + ": " + msg);
         }
-
+        //updating text
         if (VoltText != null) {
             voltage.setText(VoltText);
         }
     }
-
+//calculating the pids
     private void calculateEcuValues(int PID, int A, int B) {
 
         double val = 0;
