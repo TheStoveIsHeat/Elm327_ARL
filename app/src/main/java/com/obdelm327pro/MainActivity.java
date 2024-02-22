@@ -626,7 +626,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (mBtService == null) setupChat();
 
-                if (item.getTitle().equals("ConnectBT")) {
+                if (item.getTitle().equals("Use Bluetooth OBDII")) {
                     // Launch the DeviceListActivity to see devices and do scan
                     serverIntent = new Intent(this, DeviceListActivity.class);
                     startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
@@ -641,7 +641,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.menu_connect_wifi:
 
-                if (item.getTitle().equals("ConnectWIFI")) {
+                if (item.getTitle().equals("Use WiFi OBDII")) {
 
                     if (mWifiService == null)
                     {
@@ -665,7 +665,7 @@ public class MainActivity extends AppCompatActivity {
                 //case to enter the pids screen
             case R.id.menu_terminal:
 
-                if (item.getTitle().equals("PIDs")) {
+                if (item.getTitle().equals("View Stats")) {
                     commandmode = true;
                     invisiblecmd();
                     item.setTitle(R.string.terminal);
@@ -688,9 +688,9 @@ public class MainActivity extends AppCompatActivity {
                 exit();
 
                 return true;
-            case R.id.menu_reset:
-                resetvalues();
-                return true;
+            //case R.id.menu_reset:
+            //    resetvalues();
+            //    return true;
         }
 
         return super.onOptionsItemSelected(item);

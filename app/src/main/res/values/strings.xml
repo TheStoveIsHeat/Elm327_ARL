@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Elm327</string>
+    <string name="app_name">1442 ARL - OBDII Reader</string>
 
     <!--  BluetoothChat -->
     <string name="send">Send</string>
@@ -20,14 +20,14 @@
     <string name="button_scan">Scan for devices</string>
 
     <!-- Options Menu -->
-    <string name="connectbt">ConnectBT</string>
-    <string name="connectwifi">ConnectWIFI</string>
-    <string name="disconnectbt">DisconnectBT</string>
-    <string name="disconnectwifi">DisconnectWIFI</string>
+    <string name="connectbt">Use Bluetooth OBDII</string>
+    <string name="connectwifi">Use WiFi OBDII</string>
+    <string name="disconnectbt">Stop Bluetooth OBDII</string>
+    <string name="disconnectwifi">Stop WiFi OBDII</string>
     <string name="tryconnectbt">Trying to connect bt</string>
     <string name="tryconnectwifi">Trying to connect wifi</string>
-    <string name="terminal">Terminal</string>
-    <string name="pids">PIDs</string>
+    <string name="terminal">View Terminal</string>
+    <string name="pids">View Stats</string>
     <string name="action_settings">Settings</string>
      <string name="menu">Menu</string>
       <string name="reset">Reset</string>
