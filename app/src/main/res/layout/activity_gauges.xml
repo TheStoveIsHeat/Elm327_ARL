@@ -196,7 +196,7 @@
             android:layout_below="@+id/Status"
             android:layout_centerHorizontal="true"
             android:gravity="left"
-            android:text=" "
+            android:text=""
             android:textColor="#aaa"
             android:textSize="12sp"
             android:textStyle="bold" />

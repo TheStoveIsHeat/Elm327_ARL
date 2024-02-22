@@ -556,20 +556,20 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     ActionBar actionBar = getSupportActionBar();
                     RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) Status.getLayoutParams();
-                    if (actionbar) {
+                    //if (actionbar) {
                         //toolbar.setVisibility(View.GONE);
-                        assert actionBar != null;
-                        actionBar.hide();
-                        actionbar = false;
+                        //assert actionBar != null;
+                        //actionBar.hide();
+                        //actionbar = false;
 
-                        lp.setMargins(0, 5, 0, 0);
-                    } else {
+                        //lp.setMargins(0, 5, 0, 0);
+                    //} else {
                         //toolbar.setVisibility(View.VISIBLE);
-                        assert actionBar != null;
-                        actionBar.show();
-                        actionbar = true;
-                        lp.setMargins(0, 0, 0, 0);
-                    }
+                        //assert actionBar != null;
+                        //actionBar.show();
+                        //actionbar = true;
+                        //lp.setMargins(0, 0, 0, 0);
+                    //}
 
                     setgaugesize();
                     Status.setLayoutParams(lp);
