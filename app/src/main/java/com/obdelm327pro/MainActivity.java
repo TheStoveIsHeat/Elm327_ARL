@@ -55,6 +55,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+//more for the server
+import android.os.AsyncTask;
+import java.io.BufferedWriter;
+
+import java.net.URLEncoder;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -152,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
     private PowerManager.WakeLock wl;
     private Menu menu;
     private EditText mOutEditText;
-    private Button mSendButton, mPidsButton, mTroublecodes, mClearTroublecodes, mClearlist;
+    private Button mSendButton, mPidsButton, mTroublecodes, mSendtoDB, mClearlist;
     private ListView mConversationView;
     private TextView engineLoad, Fuel, voltage, coolantTemperature, Status, Loadtext, Volttext, Temptext, Centertext, Info, Airtemp_text, airTemperature, Maf_text, Maf, speed;
     private String mConnectedDeviceName = "Ecu";
@@ -238,10 +243,10 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
 
-                    if (commandmode || !initialized) {
+                    if (commandmode || !initialized){
                         mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + tmpmsg);
                     }
-//after intializations stop being read, we analyze the messages in OBD
+                    //after intializations stop being read, we analyze the messages in OBD
                     analysMsg(msg);
                     break;
 
@@ -450,7 +455,7 @@ public class MainActivity extends AppCompatActivity {
         mOutEditText = (EditText) findViewById(R.id.edit_text_out);
         mPidsButton = (Button) findViewById(R.id.button_pids);
         mSendButton = (Button) findViewById(R.id.button_send);
-        mClearTroublecodes = (Button) findViewById(R.id.button_clearcodes);
+        mSendtoDB = (Button) findViewById(R.id.button_sendDB);
         mClearlist = (Button) findViewById(R.id.button_clearlist);
         mTroublecodes = (Button) findViewById(R.id.button_troublecodes);
         mConversationView = (ListView) findViewById(R.id.in);
@@ -525,10 +530,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mClearTroublecodes.setOnClickListener(new View.OnClickListener() {
+        mSendtoDB.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String clearCodes = "04";
-                sendEcuMessage(clearCodes);
+                // Execute the AsyncTask to send data to the server
+                new SendDataToServerTask().execute("hello");
             }
         });
 
@@ -673,7 +678,7 @@ public class MainActivity extends AppCompatActivity {
                     visiblecmd();
                     item.setTitle(R.string.pids);
                     commandmode = false;
-                    sendEcuMessage(VOLTAGE);
+                    sendEcuMessage(VOLTAGE); //may not need this
                 }
                 return true;
 
@@ -764,6 +769,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
     }
 
+//when the back button is pressed
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         super.onKeyDown(keyCode, event);
@@ -797,7 +803,7 @@ public class MainActivity extends AppCompatActivity {
                 visiblecmd();
                 MenuItem item = menu.findItem(R.id.menu_terminal);
                 item.setTitle(R.string.terminal);
-                sendEcuMessage(VOLTAGE);
+                sendEcuMessage(VOLTAGE); //may not need this
             }
 
             return false;
@@ -907,7 +913,7 @@ public class MainActivity extends AppCompatActivity {
         mSendButton.setVisibility(View.INVISIBLE);
         mPidsButton.setVisibility(View.INVISIBLE);
         mTroublecodes.setVisibility(View.INVISIBLE);
-        mClearTroublecodes.setVisibility(View.INVISIBLE);
+        mSendtoDB.setVisibility(View.INVISIBLE);
         mClearlist.setVisibility(View.INVISIBLE);
 //        rpm.setVisibility(View.VISIBLE);
 //        speed.setVisibility(View.VISIBLE);
@@ -952,7 +958,7 @@ public class MainActivity extends AppCompatActivity {
         mSendButton.setVisibility(View.VISIBLE);
         mPidsButton.setVisibility(View.VISIBLE);
         mTroublecodes.setVisibility(View.VISIBLE);
-        mClearTroublecodes.setVisibility(View.VISIBLE);
+        mSendtoDB.setVisibility(View.VISIBLE);
         mClearlist.setVisibility(View.VISIBLE);
     }
 
@@ -1002,7 +1008,43 @@ public class MainActivity extends AppCompatActivity {
 //            speed.getLayoutParams().width = (int) (width);
         }
     }
+//class to send data to server (performs network operation in the background)
+private static class SendDataToServerTask extends AsyncTask<String, Void, Void> {
 
+    @Override
+    protected Void doInBackground(String... params) {
+        // params[0] contains the data you want to send
+        String dataToSend = params[0];
+
+        try {
+            // replace "your_server_url" with your actual server URL
+            URL url = new URL("http://your_server_url/your_php_script.php");
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+
+            // set the connection properties
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setDoOutput(true);
+
+            // write the data to the output stream
+            OutputStream os = urlConnection.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+            writer.write(URLEncoder.encode("data", "UTF-8") + "=" + URLEncoder.encode(dataToSend, "UTF-8"));
+            writer.flush();
+            writer.close();
+            os.close();
+
+            // get the response from the server (optional)
+            int responseCode = urlConnection.getResponseCode();
+            // you can handle the response code or server response here (did nothing with it)
+
+            urlConnection.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+}
     public void resetgauges() {
 
 //        speed.setTargetValue(220);
@@ -1385,7 +1427,7 @@ public class MainActivity extends AppCompatActivity {
             m_getPids = true;
             mConversationArrayAdapter.add(mConnectedDeviceName + ": " + supportedPID.toString());
             whichCommand = 0;
-            sendEcuMessage("ATRV");
+            sendEcuMessage("ATRV"); //may not need this
 
         } else {
 
@@ -1427,47 +1469,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //sending the data via wifi to a mySQL server using HTTP POST method
-    public static void sendDataToServer(String data) {
-        try {
-            // need correct server URL
-            String serverUrl = "http://your-server-url.com/api/insertData";
-
-            URL url = new URL(serverUrl);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("POST");
-            urlConnection.setDoOutput(true);
-
-            // send data as JSON, XML, or any suitable format
-            OutputStream outputStream = urlConnection.getOutputStream();
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
-            outputStreamWriter.write("data=" + data);
-            outputStreamWriter.flush();
-            outputStreamWriter.close();
-
-            // get the response from the server
-            int responseCode = urlConnection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                String line;
-                StringBuilder response = new StringBuilder();
-                while ((line = reader.readLine()) != null) {
-                    response.append(line);
-                }
-                reader.close();
-
-                // handle the server response if needed
-                String serverResponse = response.toString();
-                // Process serverResponse...
-            } else {
-                // Handle the error case
-            }
-
-            urlConnection.disconnect();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
     private void analysPIDS(String dataRecieved) {
 
         int A = 0;
@@ -1719,6 +1720,7 @@ public class MainActivity extends AppCompatActivity {
         public String toString() {
             return response;
         }
-
     }
 }
+
+

@@ -41,7 +41,7 @@
             android:id="@+id/in"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/button_clearcodes"
+            android:layout_above="@+id/button_sendDB"
             android:layout_below="@+id/Status"
             android:stackFromBottom="true"
             android:transcriptMode="alwaysScroll" />
@@ -76,7 +76,7 @@
             android:layout_alignLeft="@+id/button_send"
             android:layout_alignStart="@+id/button_send" />
         <Button
-            android:id="@+id/button_clearcodes"
+            android:id="@+id/button_sendDB"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
@@ -88,7 +88,7 @@
             android:layout_marginTop="1dp"
             android:layout_marginBottom="1dp"
             android:background="@drawable/custom_button"
-            android:text="Clear Faults"
+            android:text="Send to Database"
             android:layout_alignLeft="@+id/button_pids"
             android:layout_alignStart="@+id/button_pids" />
         <Button
