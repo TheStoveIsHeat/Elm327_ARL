@@ -92,7 +92,7 @@
             android:layout_alignLeft="@+id/button_pids"
             android:layout_alignStart="@+id/button_pids" />
         <Button
-            android:id="@+id/button_clearlist"
+            android:id="@+id/button_saveCSV"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
@@ -105,7 +105,7 @@
             android:layout_marginTop="1dp"
             android:layout_marginBottom="1dp"
             android:background="@drawable/custom_button"
-            android:text="Clear Cmd List"
+            android:text="Save to CSV"
             android:layout_alignRight="@+id/button_troublecodes"
             android:layout_alignEnd="@+id/button_troublecodes" />
         <Button

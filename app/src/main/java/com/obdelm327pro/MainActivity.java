@@ -36,7 +36,6 @@ import android.widget.Toast;
 
 import com.google.android.material.appbar.AppBarLayout;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -53,8 +52,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 //more for the server
 import android.os.AsyncTask;
 import java.io.BufferedWriter;
@@ -157,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
     private PowerManager.WakeLock wl;
     private Menu menu;
     private EditText mOutEditText;
-    private Button mSendButton, mPidsButton, mTroublecodes, mSendtoDB, mClearlist;
+    private Button mSendButton, mPidsButton, mTroublecodes, mSendtoDB, mSavetoCSV;
     private ListView mConversationView;
     private TextView engineLoad, Fuel, voltage, coolantTemperature, Status, Loadtext, Volttext, Temptext, Centertext, Info, Airtemp_text, airTemperature, Maf_text, Maf, speed;
     private String mConnectedDeviceName = "Ecu";
@@ -247,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
                         mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + tmpmsg);
                     }
                     //after intializations stop being read, we analyze the messages in OBD
-                    analysMsg(msg);
+                    analyzeMsg(msg);
                     break;
 
                 case MESSAGE_DEVICE_NAME:
@@ -349,7 +346,7 @@ public class MainActivity extends AppCompatActivity {
                         mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + tmpmsg);
                     }
 
-                    analysMsg(msg);
+                    analyzeMsg(msg);
 
                     break;
                 case MESSAGE_DEVICE_NAME:
@@ -456,7 +453,7 @@ public class MainActivity extends AppCompatActivity {
         mPidsButton = (Button) findViewById(R.id.button_pids);
         mSendButton = (Button) findViewById(R.id.button_send);
         mSendtoDB = (Button) findViewById(R.id.button_sendDB);
-        mClearlist = (Button) findViewById(R.id.button_clearlist);
+        mSavetoCSV = (Button) findViewById(R.id.button_saveCSV);
         mTroublecodes = (Button) findViewById(R.id.button_troublecodes);
         mConversationView = (ListView) findViewById(R.id.in);
 
@@ -533,13 +530,31 @@ public class MainActivity extends AppCompatActivity {
         mSendtoDB.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Execute the AsyncTask to send data to the server
+                mConversationArrayAdapter.add("User: Sending csv file to database...");
                 new SendDataToServerTask().execute("hello");
+                //mConversationArrayAdapter.add("User: Success! Deleting local csv file");
             }
         });
 
-        mClearlist.setOnClickListener(new View.OnClickListener() {
+        mSavetoCSV.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                mConversationArrayAdapter.clear();
+                //IDK HOW TO DO FUNCTIONS/CLASSES IN JAVA BUT THE CSV CALL WOULD GO HERE
+                //mConversationArrayAdapter.clear();' //OLD LINE OF CODE FOR CLEARING CMD LIST
+                mConversationArrayAdapter.add("User: Saving following data to CSV file...");
+
+                //My estimated order of operations is below, something like
+                //The actual PIDS can be swapped out with things that fit better, these are just values that would make sense with how the database is currently organized, but i can reorder no problem
+                //string[0] = fakeVIN (or real if we can figure that out)
+                //string[1] = calculateEcuValues(PIDForIdleTime,A,B);
+                //string[2] = calculateEcuValues(PIDForFuelRate?,A,B);
+                //string[3] = calculateEcuValues(PIDForEngineOnTime?,A,B);
+                //string[4] = calculateEcuValues(PIDForMileage?,A,B);
+                //string[5] = date?
+                //string[6] = time?
+
+                //For loop for saving each of those in a specific order to a csv file
+                //saveDataToCSV("pid_data.csv", csvData);
+                //mConversationArrayAdapter.add("User: Success! File named "pid_data.csv"");
             }
         });
 
@@ -558,29 +573,29 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                try {
-                    ActionBar actionBar = getSupportActionBar();
-                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) Status.getLayoutParams();
-                    //if (actionbar) {
-                        //toolbar.setVisibility(View.GONE);
-                        //assert actionBar != null;
-                        //actionBar.hide();
-                        //actionbar = false;
-
-                        //lp.setMargins(0, 5, 0, 0);
-                    //} else {
-                        //toolbar.setVisibility(View.VISIBLE);
-                        //assert actionBar != null;
-                        //actionBar.show();
-                        //actionbar = true;
-                        //lp.setMargins(0, 0, 0, 0);
-                    //}
-
-                    setgaugesize();
-                    Status.setLayoutParams(lp);
-
-                } catch (Exception e) {
-                }
+               // try {
+               //     ActionBar actionBar = getSupportActionBar();
+               //     RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) Status.getLayoutParams();
+               //     //if (actionbar) {
+               //         //toolbar.setVisibility(View.GONE);
+               //         //assert actionBar != null;
+               //         //actionBar.hide();
+               //         //actionbar = false;
+//
+               //         //lp.setMargins(0, 5, 0, 0);
+               //     //} else {
+               //         //toolbar.setVisibility(View.VISIBLE);
+               //         //assert actionBar != null;
+               //         //actionBar.show();
+               //         //actionbar = true;
+               //         //lp.setMargins(0, 0, 0, 0);
+               //     //}
+//
+               //     setgaugesize();
+               //     Status.setLayoutParams(lp);
+//
+               // } catch (Exception e) {
+               // }
             }
         });
 
@@ -914,7 +929,7 @@ public class MainActivity extends AppCompatActivity {
         mPidsButton.setVisibility(View.INVISIBLE);
         mTroublecodes.setVisibility(View.INVISIBLE);
         mSendtoDB.setVisibility(View.INVISIBLE);
-        mClearlist.setVisibility(View.INVISIBLE);
+        mSavetoCSV.setVisibility(View.INVISIBLE);
 //        rpm.setVisibility(View.VISIBLE);
 //        speed.setVisibility(View.VISIBLE);
         engineLoad.setVisibility(View.VISIBLE);
@@ -959,7 +974,7 @@ public class MainActivity extends AppCompatActivity {
         mPidsButton.setVisibility(View.VISIBLE);
         mTroublecodes.setVisibility(View.VISIBLE);
         mSendtoDB.setVisibility(View.VISIBLE);
-        mClearlist.setVisibility(View.VISIBLE);
+        mSavetoCSV.setVisibility(View.VISIBLE);
     }
 
     private void setgaugesize() {
@@ -1018,7 +1033,7 @@ private static class SendDataToServerTask extends AsyncTask<String, Void, Void> 
 
         try {
             // replace "your_server_url" with your actual server URL
-            URL url = new URL("http://your_server_url/your_php_script.php");
+            URL url = new URL("66.211.207.130:3306");
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
             // set the connection properties
@@ -1223,7 +1238,7 @@ private static class SendDataToServerTask extends AsyncTask<String, Void, Void> 
         }
     }
 
-    private void analysMsg(Message msg) {
+    private void analyzeMsg(Message msg) {
         //cleaning the message
         String tmpmsg = clearMsg(msg);
         //printing the voltage to terminal
@@ -1249,7 +1264,7 @@ private static class SendDataToServerTask extends AsyncTask<String, Void, Void> 
             }
 
             try {
-                analysPIDS(tmpmsg);
+                analyzePIDS(tmpmsg);
             } catch (Exception e) {
                 Info.setText("Error : " + e.getMessage());
             }
@@ -1469,7 +1484,7 @@ private static class SendDataToServerTask extends AsyncTask<String, Void, Void> 
         }
     }
 
-    private void analysPIDS(String dataRecieved) {
+    private void analyzePIDS(String dataRecieved) {
 
         int A = 0;
         int B = 0;
