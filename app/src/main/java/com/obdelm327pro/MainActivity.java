@@ -91,6 +91,8 @@ public class MainActivity extends AppCompatActivity {
     01 5F - FUEL_CONSUMPTION_2
 
    */
+    //for collecting vehicle speed
+    ArrayList<Integer> km_speed = new ArrayList<Integer>();
 
     public static final int MESSAGE_READ = 2;
     public static final int MESSAGE_WRITE = 3;
@@ -542,6 +544,11 @@ public class MainActivity extends AppCompatActivity {
                 //mConversationArrayAdapter.clear();' //OLD LINE OF CODE FOR CLEARING CMD LIST
                 mConversationArrayAdapter.add("User: Saving following data to CSV file...");
 
+                // Save the data to CSV file (new code to save to CSV file)
+                //String csvData = PID + "," + A + "," + B + "\n";
+                String avg_value = calculateAvgList(km_speed);
+
+
                 //My estimated order of operations is below, something like
                 //The actual PIDS can be swapped out with things that fit better, these are just values that would make sense with how the database is currently organized, but i can reorder no problem
                 //string[0] = fakeVIN (or real if we can figure that out)
@@ -553,7 +560,10 @@ public class MainActivity extends AppCompatActivity {
                 //string[6] = time?
 
                 //For loop for saving each of those in a specific order to a csv file
-                //saveDataToCSV("pid_data.csv", csvData);
+                //calling func to save data to csv file
+                //saveDataToCSV("pid_data.csv", avg_value);
+                km_speed.clear(); //clearing the array list 
+
                 //mConversationArrayAdapter.add("User: Success! File named "pid_data.csv"");
             }
         });
@@ -1121,10 +1131,8 @@ private static class SendDataToServerTask extends AsyncTask<String, Void, Void> 
     }
 
     private void setupChat() {
-
         // Initialize the BluetoothChatService to perform bluetooth connections
         mBtService = new BluetoothService(this, mBtHandler);
-
     }
 
     private void sendEcuMessage(String message) {
@@ -1236,6 +1244,23 @@ private static class SendDataToServerTask extends AsyncTask<String, Void, Void> 
                 return;
             }
         }
+    }
+
+    //new code for calculating the averages of array lists and converting it to a string
+    public static String calculateAvgList(ArrayList<Integer> list) {
+        //if theres nothing in the list
+        if (list == null || list.isEmpty()) {
+            return "N/A";
+        }
+
+        int sum = 0;
+        for (int num : list) {
+            sum += num;
+        }
+
+        double answer = (double) sum / list.size();
+        String s = Double.toString(answer);
+        return s;
     }
 
     private void analyzeMsg(Message msg) {
@@ -1511,11 +1536,6 @@ private static class SendDataToServerTask extends AsyncTask<String, Void, Void> 
 
                     calculateEcuValues(PID, A, B);
 
-                    // Save the data to CSV file (new code to save to CSV file)
-                    //may need to change location of code, since values may only be copied from func call
-                    String csvData = PID + "," + A + "," + B + "\n";
-                    //calling func to save data to csv file
-                    //saveDataToCSV("pid_data.csv", csvData);
                 }
             }
 //            else if (index09 != -1) {
@@ -1627,7 +1647,8 @@ private static class SendDataToServerTask extends AsyncTask<String, Void, Void> 
 //                speed.setTargetValue(A);
                 //new code to add to array
                 mConversationArrayAdapter.add("Vehicle Speed: " + Integer.toString(A) + " km/h");
-
+                //new code to add to an array list for the averages to be sent to DB
+                km_speed.add(A);
                 break;
 
             case 15://PID(0F): Intake Temperature
