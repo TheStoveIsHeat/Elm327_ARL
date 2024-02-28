@@ -121,8 +121,7 @@ public class MainActivity extends AppCompatActivity {
     final List<Double> avgconsumption = new ArrayList<Double>();
     final List<String> troubleCodesArray = new ArrayList<String>();
     MenuItem itemtemp;
-//    GaugeSpeed speed;
-//    GaugeRpm rpm;
+
     BluetoothDevice currentdevice;
     boolean commandmode = false, initialized = false, m_getPids = false, tryconnect = false, defaultStart = false;
     String devicename = null, deviceprotocol = null;
@@ -448,8 +447,7 @@ public class MainActivity extends AppCompatActivity {
         Maf_text = (TextView) findViewById(R.id.Maf_text);
         Maf = (TextView) findViewById(R.id.Maf);
         speed = (TextView) findViewById(R.id.Speeds);
-//        speed = (GaugeSpeed) findViewById(R.id.GaugeSpeed);
-//        rpm = (GaugeRpm) findViewById(R.id.GaugeRpm);
+
 
         mOutEditText = (EditText) findViewById(R.id.edit_text_out);
         mPidsButton = (Button) findViewById(R.id.button_pids);
@@ -613,7 +611,7 @@ public class MainActivity extends AppCompatActivity {
 
         getPreferences();
 
-        resetgauges();
+
     }
 
     @Override
@@ -727,7 +725,7 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
+    //for bluetooth
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -852,8 +850,7 @@ public class MainActivity extends AppCompatActivity {
 
             FaceColor = Integer.parseInt(preferences.getString("FaceColor", "0"));
 
-//            rpm.setFace(FaceColor);
-//            speed.setFace(FaceColor);
+
 
             mEnginedisplacement = Integer.parseInt(preferences.getString("Enginedisplacement", "1500"));
 
@@ -905,7 +902,7 @@ public class MainActivity extends AppCompatActivity {
         try {
 
             settextsixe();
-            setgaugesize();
+           // setgaugesize();
 
         } catch (Exception e) {
         }
@@ -942,8 +939,7 @@ public class MainActivity extends AppCompatActivity {
         mTroublecodes.setVisibility(View.INVISIBLE);
         mSendtoDB.setVisibility(View.INVISIBLE);
         mSavetoCSV.setVisibility(View.INVISIBLE);
-//        rpm.setVisibility(View.VISIBLE);
-//        speed.setVisibility(View.VISIBLE);
+
         engineLoad.setVisibility(View.VISIBLE);
         Fuel.setVisibility(View.VISIBLE);
         voltage.setVisibility(View.VISIBLE);
@@ -962,8 +958,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void visiblecmd() {
-//        rpm.setVisibility(View.INVISIBLE);
-//        speed.setVisibility(View.INVISIBLE);
         engineLoad.setVisibility(View.INVISIBLE);
         Fuel.setVisibility(View.INVISIBLE);
         voltage.setVisibility(View.INVISIBLE);
@@ -989,55 +983,45 @@ public class MainActivity extends AppCompatActivity {
         mSavetoCSV.setVisibility(View.VISIBLE);
     }
 
-    private void setgaugesize() {
-        Display display = getWindow().getWindowManager().getDefaultDisplay();
-        int width = 0;
-        int height = 0;
+//    private void setgaugesize() {
+//        Display display = getWindow().getWindowManager().getDefaultDisplay();
+//        int width = 0;
+//        int height = 0;
+//
+//        width = display.getWidth();
+//        height = display.getHeight();
+//
+//        if (width > height) {
+//            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(height, height);
+//
+//            lp.addRule(RelativeLayout.BELOW, findViewById(R.id.Load).getId());
+//            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//            lp.setMargins(0, 0, 50, 0);
+//
+//
+//            lp = new RelativeLayout.LayoutParams(height, height);
+//            lp.addRule(RelativeLayout.BELOW, findViewById(R.id.Load).getId());
+//            lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+//            lp.setMargins(50, 0, 0, 0);
+//
+//
+//        } else if (width < height) {
+//            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width, width);
+//
+//            lp.addRule(RelativeLayout.BELOW, findViewById(R.id.Fuel).getId());
+//            lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+//            lp.setMargins(25, 5, 25, 5);
+//
+//
+//            lp = new RelativeLayout.LayoutParams(width, width);
+//
+//            lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+//            lp.setMargins(25, 5, 25, 5);
+//        }
+//    }
 
-        width = display.getWidth();
-        height = display.getHeight();
-
-        if (width > height) {
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(height, height);
-
-            lp.addRule(RelativeLayout.BELOW, findViewById(R.id.Load).getId());
-            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            lp.setMargins(0, 0, 50, 0);
-//            rpm.setLayoutParams(lp);
-//            rpm.getLayoutParams().height = height;
-//            rpm.getLayoutParams().width = (int) (width - 100) / 2;
-
-            lp = new RelativeLayout.LayoutParams(height, height);
-            lp.addRule(RelativeLayout.BELOW, findViewById(R.id.Load).getId());
-            lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            lp.setMargins(50, 0, 0, 0);
-//            speed.setLayoutParams(lp);
-//            speed.getLayoutParams().height = height;
-//            speed.getLayoutParams().width = (int) (width - 100) / 2;
-
-        } else if (width < height) {
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width, width);
-
-            lp.addRule(RelativeLayout.BELOW, findViewById(R.id.Fuel).getId());
-            lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
-            lp.setMargins(25, 5, 25, 5);
-//            rpm.setLayoutParams(lp);
-//            rpm.getLayoutParams().height = height/2;
-//            rpm.getLayoutParams().width = (int) (width);
-
-            lp = new RelativeLayout.LayoutParams(width, width);
-//            lp.addRule(RelativeLayout.BELOW, findViewById(R.id.GaugeRpm).getId());
-            //lp.addRule(RelativeLayout.ABOVE,findViewById(R.id.info).getId());
-            lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
-            lp.setMargins(25, 5, 25, 5);
-//            speed.setLayoutParams(lp);
-//            speed.getLayoutParams().height = height/2;
-//            speed.getLayoutParams().width = (int) (width);
-        }
-    }
 //class to send data to server (performs network operation in the background)
 private static class SendDataToServerTask extends AsyncTask<File, Void, Void> {
-
     @Override
     protected Void doInBackground(File... params) {
         // params[0] contains the data you want to send
@@ -1072,41 +1056,16 @@ private static class SendDataToServerTask extends AsyncTask<File, Void, Void> {
             // get the response from the server (optional)
             int responseCode = urlConnection.getResponseCode();
             // you can handle the response code or server response here (did nothing with it)
-
             urlConnection.disconnect();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return null;
     }
 }
-    public void resetgauges() {
 
-//        speed.setTargetValue(220);
-//        rpm.setTargetValue(80);
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(1500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-//                        speed.setTargetValue(0);
-//                        rpm.setTargetValue(0);
-                    }
-                });
-            }
-        }).start();
-    }
-
+//resetting the text values of the pids
     public void resetvalues() {
-
         engineLoad.setText("0 %");
         voltage.setText("0 V");
         coolantTemperature.setText("0 C°");
@@ -1114,7 +1073,7 @@ private static class SendDataToServerTask extends AsyncTask<File, Void, Void> {
         airTemperature.setText("0 C°");
         Maf.setText("0 g/s");
         Fuel.setText("0 - 0 l/h");
-
+        //cause the elm to reinitialize, and clear the array of text
         m_getPids = false;
         whichCommand = 0;
         trycount = 0;
@@ -1122,10 +1081,8 @@ private static class SendDataToServerTask extends AsyncTask<File, Void, Void> {
         defaultStart = false;
         avgconsumption.clear();
         mConversationArrayAdapter.clear();
-
-        resetgauges();
     }
-
+    //for connecting the bluetooth
     private void connectDevice(Intent data) {
         tryconnect = true;
         // Get the device MAC address
@@ -1147,7 +1104,6 @@ private static class SendDataToServerTask extends AsyncTask<File, Void, Void> {
     }
 
     private void sendEcuMessage(String message) {
-
         if( mWifiService != null)
         {
             if(mWifiService.isConnected())
@@ -1279,13 +1235,13 @@ private static class SendDataToServerTask extends AsyncTask<File, Void, Void> {
         String tmpmsg = clearMsg(msg);
         //printing the voltage to terminal
         generateVolt(tmpmsg);
-        //getting the device name and the protocol
+        //getting the device name and the protocol (SAE or ISO)
         getElmInfo(tmpmsg);
-
+        //if the elm is not initialized
         if (!initialized) {
             sendInitCommands();
         } else {
-//check if 41 is present in the message, then set index to start from that number in the message and read to the length to check for the message
+            //check if 41 is present in the message, then set index to start from that number in the message and read to the length to check for the message
             checkPids(tmpmsg);
 
             if (!m_getPids && m_dedectPids == 1) {
@@ -1312,7 +1268,7 @@ private static class SendDataToServerTask extends AsyncTask<File, Void, Void> {
     private void getFaultInfo(String tmpmsg) {
 
             String substr = "43";
-
+            //looking for starting position of 43 within tmpmsg string
             int index = tmpmsg.indexOf(substr);
 
             if (index == -1)
