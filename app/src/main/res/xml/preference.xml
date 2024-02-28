@@ -12,21 +12,13 @@
             android:key="Enginedisplacement" 
             android:name="Enginedisplacement"/>
         <ListPreference
-            android:key="FaceColor"
-            android:name="FaceColor"
-            android:title="Face Color (Restart App)"
-            android:summary="Define Face Color"
-            android:defaultValue="0"
-            android:entries="@array/FaceColor"
-            android:entryValues="@array/FaceColorValues" />
-        <ListPreference
-            android:key="DedectPids"
-            android:name="DedectPids"
-            android:title="Dedect Pids"
-            android:summary="Dedect available pids automaticaly and search sensors. Enable Pids will be disabled."
+            android:key="DetectPids"
+            android:name="DetectPids"
+            android:title="Detect Pids"
+            android:summary="Detect available pids automaticaly and search sensors. Enable Pids will be disabled."
             android:defaultValue="1"
-            android:entries="@array/DedectPids"
-            android:entryValues="@array/DedectPidsValues" />
+            android:entries="@array/DetectPids"
+            android:entryValues="@array/DetectPidsValues" />
     </PreferenceCategory>
 
     <PreferenceCategory
