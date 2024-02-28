@@ -55,7 +55,7 @@ import java.net.URL;
 //more for the server
 import android.os.AsyncTask;
 import java.io.BufferedWriter;
-
+import java.io.FileInputStream;
 import java.net.URLEncoder;
 
 public class MainActivity extends AppCompatActivity {
@@ -531,9 +531,11 @@ public class MainActivity extends AppCompatActivity {
 
         mSendtoDB.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                // Assume you have a File object named csvFile representing your CSV file
+                File csvFile = new File(getFilesDir(), "pid_data.csv");
                 // Execute the AsyncTask to send data to the server
                 mConversationArrayAdapter.add("User: Sending csv file to database...");
-                new SendDataToServerTask().execute("hello");
+                new SendDataToServerTask().execute(csvFile);
                 //mConversationArrayAdapter.add("User: Success! Deleting local csv file");
             }
         });
@@ -1034,12 +1036,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 //class to send data to server (performs network operation in the background)
-private static class SendDataToServerTask extends AsyncTask<String, Void, Void> {
+private static class SendDataToServerTask extends AsyncTask<File, Void, Void> {
 
     @Override
-    protected Void doInBackground(String... params) {
+    protected Void doInBackground(File... params) {
         // params[0] contains the data you want to send
-        String dataToSend = params[0];
+        File fileToSend = params[0];
 
         try {
             // replace "your_server_url" with your actual server URL
@@ -1050,12 +1052,21 @@ private static class SendDataToServerTask extends AsyncTask<String, Void, Void> 
             urlConnection.setRequestMethod("POST");
             urlConnection.setDoOutput(true);
 
+            // create a FileInputStream for the file
+            FileInputStream fileInputStream = new FileInputStream(fileToSend);
+
             // write the data to the output stream
             OutputStream os = urlConnection.getOutputStream();
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-            writer.write(URLEncoder.encode("data", "UTF-8") + "=" + URLEncoder.encode(dataToSend, "UTF-8"));
-            writer.flush();
-            writer.close();
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+
+            // read data from the file and write it to the output stream
+            while ((bytesRead = fileInputStream.read(buffer)) != -1) {
+                os.write(buffer, 0, bytesRead);
+            }
+
+            // close streams
+            fileInputStream.close();
             os.close();
 
             // get the response from the server (optional)
