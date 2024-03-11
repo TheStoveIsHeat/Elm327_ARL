@@ -63,7 +63,7 @@
             android:layout_marginTop="1dp"
             android:layout_marginBottom="1dp"
             android:background="@drawable/custom_button"
-            android:text="Retrieve From Database"
+            android:text="Update From Database"
             android:layout_alignStart="@+id/button_send" />
         <Button
             android:id="@+id/button_sendDB"
