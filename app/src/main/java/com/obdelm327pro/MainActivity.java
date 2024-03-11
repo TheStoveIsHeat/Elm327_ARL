@@ -547,7 +547,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //IDK HOW TO DO FUNCTIONS/CLASSES IN JAVA BUT THE CSV CALL WOULD GO HERE
                 //mConversationArrayAdapter.clear();' //OLD LINE OF CODE FOR CLEARING CMD LIST
-                mConversationArrayAdapter.add("User: Saving following data to CSV file...");
+                mConversationArrayAdapter.add("User: Saving data to CSV file at \"" + saveLocation + "\"...");
 
                 // Save the data to CSV file (new code to save to CSV file)
                 //String csvData = PID + "," + A + "," + B + "\n";
@@ -1520,7 +1520,7 @@ public class MainActivity extends AppCompatActivity {
             // Get the app's internal storage directory
             //File directory = getFilesDir();
             File directory = new File(saveLocation);
-            mConversationArrayAdapter.add(String.valueOf(directory));
+            //mConversationArrayAdapter.add(String.valueOf(directory));
             // Create a new File object with the desired file name
             File file = new File(directory, fileName);
             // Create a FileOutputStream to write to the file
