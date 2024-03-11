@@ -531,9 +531,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Assume you have a File object named csvFile representing your CSV file
                 File csvFile = new File(getFilesDir(), "pid_data.csv");
-                // Execute the AsyncTask to send data to the server
                 mConversationArrayAdapter.add("User: Sending csv file to database...");
-                new SendDataToServerTask().execute(csvFile);
+                // Execute the AsyncTask to send data to the server
+                insertData(csvFile);
                 //mConversationArrayAdapter.add("User: Success! Deleting local csv file");
             }
         });
@@ -561,10 +561,10 @@ public class MainActivity extends AppCompatActivity {
 
                 //For loop for saving each of those in a specific order to a csv file
                 //calling func to save data to csv file
-                //saveDataToCSV("pid_data.csv", avg_value);
+                saveDataToCSV("pid_data.csv", avg_value);
                 km_speed.clear(); //clearing the array list 
 
-                //mConversationArrayAdapter.add("User: Success! File named "pid_data.csv"");
+                mConversationArrayAdapter.add("User: Success! File named pid_data.csv");
             }
         });
 
@@ -1021,48 +1021,107 @@ public class MainActivity extends AppCompatActivity {
 //    }
 
 //class to send data to server (performs network operation in the background)
-private static class SendDataToServerTask extends AsyncTask<File, Void, Void> {
-    @Override
-    protected Void doInBackground(File... params) {
-        // params[0] contains the data you want to send
-        File fileToSend = params[0];
+//private static class SendDataToServerTask extends AsyncTask<File, Void, Void> {
+//    @Override
+//    protected Void doInBackground(File... params) {
+//        // params[0] contains the data you want to send
+//        File fileToSend = params[0];
+//
+//        try {
+//            // replace "your_server_url" with your actual server URL
+//            URL url = new URL("66.211.207.130:3306");
+//            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+//
+//            // set the connection properties
+//            urlConnection.setRequestMethod("POST");
+//            urlConnection.setDoOutput(true);
+//
+//            // create a FileInputStream for the file
+//            FileInputStream fileInputStream = new FileInputStream(fileToSend);
+//
+//            // write the data to the output stream
+//            OutputStream os = urlConnection.getOutputStream();
+//            byte[] buffer = new byte[4096];
+//            int bytesRead;
+//
+//            // read data from the file and write it to the output stream
+//            while ((bytesRead = fileInputStream.read(buffer)) != -1) {
+//                os.write(buffer, 0, bytesRead);
+//            }
+//
+//            // close streams
+//            fileInputStream.close();
+//            os.close();
+//
+//            // get the response from the server (optional)
+//            int responseCode = urlConnection.getResponseCode();
+//            // you can handle the response code or server response here (did nothing with it)
+//            urlConnection.disconnect();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
+//}
 
-        try {
-            // replace "your_server_url" with your actual server URL
-            URL url = new URL("66.211.207.130:3306");
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+    public void insertData(File csvFile) {
 
-            // set the connection properties
-            urlConnection.setRequestMethod("POST");
-            urlConnection.setDoOutput(true);
+        class SendDataToServerTask extends AsyncTask<File, Void, String> {
+            @Override
+            protected String doInBackground(File... params) {
 
-            // create a FileInputStream for the file
-            FileInputStream fileInputStream = new FileInputStream(fileToSend);
+                File csvFile = params[0];
 
-            // write the data to the output stream
-            OutputStream os = urlConnection.getOutputStream();
-            byte[] buffer = new byte[4096];
-            int bytesRead;
+                try {
+                    //PHP script to handle CSV file
+                    URL url = new URL("http://example.com/insert_data.php");
+                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                    // set the connection properties
+                    urlConnection.setDoOutput(true);
+                    urlConnection.setRequestMethod("POST");
 
-            // read data from the file and write it to the output stream
-            while ((bytesRead = fileInputStream.read(buffer)) != -1) {
-                os.write(buffer, 0, bytesRead);
+                    // Set Content-Type to multipart/form-data
+                    urlConnection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + "*****");
+
+                    // Get the output stream of the connection
+                    OutputStream outputStream = urlConnection.getOutputStream();
+                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+
+                    // Attach CSV file
+                    FileInputStream fileInputStream = new FileInputStream(csvFile);
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+
+                    while ((bytesRead = fileInputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+
+                    //close streams
+                    fileInputStream.close();
+                    outputStream.flush();
+                    outputStream.close();
+
+                    // get the response from the server (optional)
+                    int responseCode = urlConnection.getResponseCode();
+                    // Handle the response code or server response here (did nothing with it)
+                    urlConnection.disconnect();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return "Data Inserted Successfully";
             }
 
-            // close streams
-            fileInputStream.close();
-            os.close();
-
-            // get the response from the server (optional)
-            int responseCode = urlConnection.getResponseCode();
-            // you can handle the response code or server response here (did nothing with it)
-            urlConnection.disconnect();
-        } catch (Exception e) {
-            e.printStackTrace();
+            @Override
+            protected void onPostExecute(String result) {
+                super.onPostExecute(result);
+                Toast.makeText(MainActivity.this, "Data Submit Successfully", Toast.LENGTH_LONG).show();
+            }
         }
-        return null;
+
+        SendDataToServerTask sendPostReqAsyncTask = new SendDataToServerTask();
+        sendPostReqAsyncTask.execute(csvFile);
     }
-}
 
 //resetting the text values of the pids
     public void resetvalues() {
@@ -1550,6 +1609,7 @@ private static class SendDataToServerTask extends AsyncTask<File, Void, Void> {
     }
 //calculating the pids
     private void calculateEcuValues(int PID, int A, int B) {
+        Log.d("EcuValues", "Processing PID: " + PID + ", A: " + A + ", B: " + B);
 
         double val = 0;
         int intval = 0;
