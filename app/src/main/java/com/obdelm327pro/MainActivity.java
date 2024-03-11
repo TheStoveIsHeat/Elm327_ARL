@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
     private PowerManager.WakeLock wl;
     private Menu menu;
     private EditText mOutEditText;
-    private Button mSendButton, mPidsButton, mTroublecodes, mSendtoDB, mSavetoCSV;
+    private Button mSendButton, mRetrieveDB, mTroublecodes, mSendtoDB, mSavetoCSV;
     private ListView mConversationView;
     private TextView engineLoad, Fuel, voltage, coolantTemperature, Status, Loadtext, Volttext, Temptext, Centertext, Info, Airtemp_text, airTemperature, Maf_text, Maf, speed;
     private String mConnectedDeviceName = "Ecu";
@@ -450,7 +450,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         mOutEditText = (EditText) findViewById(R.id.edit_text_out);
-        mPidsButton = (Button) findViewById(R.id.button_pids);
+        mRetrieveDB = (Button) findViewById(R.id.button_retrievedb);
         mSendButton = (Button) findViewById(R.id.button_send);
         mSendtoDB = (Button) findViewById(R.id.button_sendDB);
         mSavetoCSV = (Button) findViewById(R.id.button_saveCSV);
@@ -510,11 +510,13 @@ public class MainActivity extends AppCompatActivity {
 
         mConversationView.setAdapter(mConversationArrayAdapter);
 
-        mPidsButton.setOnClickListener(new View.OnClickListener() {
+        mRetrieveDB.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String sPIDs = "0100";
-                m_getPids = false;
-                sendEcuMessage(sPIDs);
+                mConversationArrayAdapter.add("User: Requesting current data from database...");
+                //String sPIDs = "0100";
+                //m_getPids = false;
+                //sendEcuMessage(sPIDs);
+                mConversationArrayAdapter.add("User: !!Not Yet Implemented!!");
             }
         });
         // Initialize the send button with a listener that for click events
@@ -564,7 +566,7 @@ public class MainActivity extends AppCompatActivity {
                 saveDataToCSV("pid_data.csv", avg_value);
                 km_speed.clear(); //clearing the array list 
 
-                mConversationArrayAdapter.add("User: Success! File named pid_data.csv");
+                mConversationArrayAdapter.add("User: Success! File named \"pid_data.csv\"");
             }
         });
 
@@ -935,7 +937,7 @@ public class MainActivity extends AppCompatActivity {
         mConversationView.setVisibility(View.INVISIBLE);
         mOutEditText.setVisibility(View.INVISIBLE);
         mSendButton.setVisibility(View.INVISIBLE);
-        mPidsButton.setVisibility(View.INVISIBLE);
+        mRetrieveDB.setVisibility(View.INVISIBLE);
         mTroublecodes.setVisibility(View.INVISIBLE);
         mSendtoDB.setVisibility(View.INVISIBLE);
         mSavetoCSV.setVisibility(View.INVISIBLE);
@@ -977,7 +979,7 @@ public class MainActivity extends AppCompatActivity {
         mConversationView.setVisibility(View.VISIBLE);
         mOutEditText.setVisibility(View.VISIBLE);
         mSendButton.setVisibility(View.VISIBLE);
-        mPidsButton.setVisibility(View.VISIBLE);
+        mRetrieveDB.setVisibility(View.VISIBLE);
         mTroublecodes.setVisibility(View.VISIBLE);
         mSendtoDB.setVisibility(View.VISIBLE);
         mSavetoCSV.setVisibility(View.VISIBLE);

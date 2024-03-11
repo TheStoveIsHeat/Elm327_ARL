@@ -51,7 +51,7 @@
             android:background="@drawable/custom_button"
             android:text="Send Command" />
         <Button
-            android:id="@+id/button_pids"
+            android:id="@+id/button_retrievedb"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
@@ -63,7 +63,7 @@
             android:layout_marginTop="1dp"
             android:layout_marginBottom="1dp"
             android:background="@drawable/custom_button"
-            android:text="Available Pids"
+            android:text="Retrieve From Database"
             android:layout_alignStart="@+id/button_send" />
         <Button
             android:id="@+id/button_sendDB"
@@ -79,7 +79,7 @@
             android:layout_marginBottom="1dp"
             android:background="@drawable/custom_button"
             android:text="Send to Database"
-            android:layout_alignStart="@+id/button_pids" />
+            android:layout_alignStart="@+id/button_retrievedb" />
         <Button
             android:id="@+id/button_saveCSV"
             style="?android:attr/buttonStyleSmall"
