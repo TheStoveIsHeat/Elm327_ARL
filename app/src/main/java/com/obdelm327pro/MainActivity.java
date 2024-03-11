@@ -93,6 +93,8 @@ public class MainActivity extends AppCompatActivity {
    */
     //for collecting vehicle speed
     ArrayList<Integer> km_speed = new ArrayList<Integer>();
+    String saveLocation = "/storage/emulated/0/Download";
+    String fileName = "pid_data.csv";
 
     public static final int MESSAGE_READ = 2;
     public static final int MESSAGE_WRITE = 3;
@@ -532,7 +534,8 @@ public class MainActivity extends AppCompatActivity {
         mSendtoDB.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Assume you have a File object named csvFile representing your CSV file
-                File csvFile = new File(getFilesDir(), "pid_data.csv");
+                File csvFile = new File(saveLocation, fileName);
+                mConversationArrayAdapter.add("User: Grabbing csv file at \"" + csvFile + "\"...");
                 mConversationArrayAdapter.add("User: Sending csv file to database...");
                 // Execute the AsyncTask to send data to the server
                 insertData(csvFile);
@@ -563,10 +566,10 @@ public class MainActivity extends AppCompatActivity {
 
                 //For loop for saving each of those in a specific order to a csv file
                 //calling func to save data to csv file
-                saveDataToCSV("pid_data.csv", avg_value);
+                saveDataToCSV(fileName, avg_value);
                 km_speed.clear(); //clearing the array list 
 
-                mConversationArrayAdapter.add("User: Success! File named \"pid_data.csv\"");
+                mConversationArrayAdapter.add("User: Success! File named \""+ fileName +"\"");
             }
         });
 
@@ -1515,7 +1518,9 @@ public class MainActivity extends AppCompatActivity {
     private void saveDataToCSV(String fileName, String data) {
         try {
             // Get the app's internal storage directory
-            File directory = getFilesDir();
+            //File directory = getFilesDir();
+            File directory = new File(saveLocation);
+            mConversationArrayAdapter.add(String.valueOf(directory));
             // Create a new File object with the desired file name
             File file = new File(directory, fileName);
             // Create a FileOutputStream to write to the file
