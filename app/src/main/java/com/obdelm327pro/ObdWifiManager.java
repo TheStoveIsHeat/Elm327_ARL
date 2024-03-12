@@ -1,7 +1,7 @@
 package com.obdelm327pro;
 
 /**
- * Created by tbiliyor on 12.01.2017.
+ * WiFi manager created by tbiliyor on 12.01.2017.
  */
 
 import android.app.Activity;
@@ -292,6 +292,7 @@ public class ObdWifiManager {
                             res.append((char) b);
                         }
                         rawData = res.toString().trim();
+                        Log.d("WIFI Manager","Data:" + rawData);
                         mWIFIHandler.obtainMessage(MainActivity.MESSAGE_READ, rawData.length(), -1, rawData).sendToTarget();
                     }
 

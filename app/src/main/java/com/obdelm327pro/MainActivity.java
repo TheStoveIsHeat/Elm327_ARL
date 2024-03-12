@@ -18,7 +18,6 @@ import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,7 +44,6 @@ import java.util.ArrayList;
 import java.util.List;
 //for converting to CSV (new code)
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.IOException;
 //for sending the data via wifi (new code)
@@ -56,7 +54,6 @@ import java.net.URL;
 import android.os.AsyncTask;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
-import java.net.URLEncoder;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -95,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Integer> km_speed = new ArrayList<Integer>();
     String saveLocation = "/storage/emulated/0/Download";
     String fileName = "pid_data.csv";
+
+    //String random VIN
 
     public static final int MESSAGE_READ = 2;
     public static final int MESSAGE_WRITE = 3;
@@ -150,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
             STATUS_DTC = "0101", //Status since DTC Cleared
             THROTTLE_POSITION = "0111", //Throttle position 0 -100 % A*100/255
             OBD_STANDARDS = "011C", //OBD standards this vehicle
+            FUEL_LEVEL = "012F", //Fuel level???
             PIDS_SUPPORTED = "0120"; //PIDs supported
     Toolbar toolbar;
     AppBarLayout appbar;
@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
                             } catch (Exception e) {
                             }
                             tryconnect = false;
-                            //resetvalues();
+                            //resetValues();
                             sendEcuMessage(RESET);
                             break;
                         case ObdWifiManager.STATE_CONNECTING:
@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
                             itemtemp.setTitle(R.string.connectwifi);
                             if (mWifiService != null) mWifiService.disconnect();
                             mWifiService = null;
-                            //resetvalues();
+                            //resetValues();
                             break;
                     }
                     break;
@@ -282,7 +282,7 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             tryconnect = false;
-                            //resetvalues();
+                            //resetValues();
                             sendEcuMessage(RESET);
 
                             break;
@@ -304,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
                                     tryconnect = false;
                                 }
                             }
-                            //resetvalues();
+                            //resetValues();
 
                             break;
                     }
@@ -462,7 +462,7 @@ public class MainActivity extends AppCompatActivity {
 
         troubleCodes = new TroubleCodes();
 
-        visiblecmd();
+        visibleCMD();
 
         //ATZ reset all
         //ATDP Describe the current Protocol
@@ -538,7 +538,8 @@ public class MainActivity extends AppCompatActivity {
                 mConversationArrayAdapter.add("User: Grabbing csv file at \"" + csvFile + "\"...");
                 mConversationArrayAdapter.add("User: Sending csv file to database...");
                 // Execute the AsyncTask to send data to the server
-                insertData(csvFile);
+                //insertData(csvFile);
+                CSVConsume.send(saveLocation+fileName);
                 //mConversationArrayAdapter.add("User: Success! Deleting local csv file");
             }
         });
@@ -553,20 +554,26 @@ public class MainActivity extends AppCompatActivity {
                 //String csvData = PID + "," + A + "," + B + "\n";
                 String avg_value = calculateAvgList(km_speed);
 
+                //For vin?
+                sendEcuMessage("0902");
+                //For fuel level
+                sendEcuMessage("012F");
 
-                //My estimated order of operations is below, something like
-                //The actual PIDS can be swapped out with things that fit better, these are just values that would make sense with how the database is currently organized, but i can reorder no problem
-                //string[0] = fakeVIN (or real if we can figure that out)
-                //string[1] = calculateEcuValues(PIDForIdleTime,A,B);
-                //string[2] = calculateEcuValues(PIDForFuelRate?,A,B);
-                //string[3] = calculateEcuValues(PIDForEngineOnTime?,A,B);
-                //string[4] = calculateEcuValues(PIDForMileage?,A,B);
-                //string[5] = date?
-                //string[6] = time?
+                //Generate random Trip# each time button is pressed, to be stored into CSV
+
+                /* If wanted, we could take manual input for something
+                String driverID = mOutEditText.getText().toString();
+                mConversationArrayAdapter.add(driverID);
+                 */
+
+                /*CSV Format
+                1. Trip, pre-fuel, post-fuel, pre_mpg, post_mpg, pre_mileage, post_mileage, VIN, driver, date, time
+                2. VIN, IdleTime, FuelRate, EngineOnTime, MPG, date, time
+                */
 
                 //For loop for saving each of those in a specific order to a csv file
                 //calling func to save data to csv file
-                saveDataToCSV(fileName, avg_value);
+                CSVConsume.saveToCSV(fileName, avg_value);
                 km_speed.clear(); //clearing the array list 
 
                 mConversationArrayAdapter.add("User: Success! File named \""+ fileName +"\"");
@@ -588,35 +595,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-               // try {
-               //     ActionBar actionBar = getSupportActionBar();
-               //     RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) Status.getLayoutParams();
-               //     //if (actionbar) {
-               //         //toolbar.setVisibility(View.GONE);
-               //         //assert actionBar != null;
-               //         //actionBar.hide();
-               //         //actionbar = false;
-//
-               //         //lp.setMargins(0, 5, 0, 0);
-               //     //} else {
-               //         //toolbar.setVisibility(View.VISIBLE);
-               //         //assert actionBar != null;
-               //         //actionBar.show();
-               //         //actionbar = true;
-               //         //lp.setMargins(0, 0, 0, 0);
-               //     //}
-//
-               //     setgaugesize();
-               //     Status.setLayoutParams(lp);
-//
-               // } catch (Exception e) {
-               // }
+               //Actionbar click
             }
         });
-
+        
         getPreferences();
-
-
     }
 
     @Override
@@ -702,10 +685,10 @@ public class MainActivity extends AppCompatActivity {
 
                 if (item.getTitle().equals("View Stats")) {
                     commandmode = true;
-                    invisiblecmd();
+                    invisibleCMD();
                     item.setTitle(R.string.terminal);
                 } else {
-                    visiblecmd();
+                    visibleCMD();
                     item.setTitle(R.string.pids);
                     commandmode = false;
                     sendEcuMessage(VOLTAGE); //may not need this
@@ -724,7 +707,7 @@ public class MainActivity extends AppCompatActivity {
 
                 return true;
             //case R.id.menu_reset:
-            //    resetvalues();
+            //    resetValues();
             //    return true;
         }
 
@@ -791,7 +774,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         getPreferences();
         setDefaultOrientation();
-        resetvalues();
+        resetValues();
     }
 
     @Override
@@ -830,7 +813,7 @@ public class MainActivity extends AppCompatActivity {
                 alertDialog.show();
             } else {
                 commandmode = false;
-                visiblecmd();
+                visibleCMD();
                 MenuItem item = menu.findItem(R.id.menu_terminal);
                 item.setTitle(R.string.terminal);
                 sendEcuMessage(VOLTAGE); //may not need this
@@ -905,38 +888,36 @@ public class MainActivity extends AppCompatActivity {
     private void setDefaultOrientation() {
 
         try {
-
-            settextsixe();
-           // setgaugesize();
+            setTextSize();
 
         } catch (Exception e) {
         }
     }
 
-    private void settextsixe() {
-        int txtsize = 14;
-        int sttxtsize = 12;
+    private void setTextSize() {
+        int textSize = 14;
+        int newTextSize = 12;
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindow().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
-        Status.setTextSize(sttxtsize);
-        Fuel.setTextSize(txtsize + 2);
-        coolantTemperature.setTextSize(txtsize);
-        engineLoad.setTextSize(txtsize);
-        voltage.setTextSize(txtsize);
-        Temptext.setTextSize(txtsize);
-        Loadtext.setTextSize(txtsize);
-        Volttext.setTextSize(txtsize);
-        Airtemp_text.setTextSize(txtsize);
-        airTemperature.setTextSize(txtsize);
-        Maf_text.setTextSize(txtsize);
-        Maf.setTextSize(txtsize);
-        Info.setTextSize(sttxtsize);
-        speed.setTextSize(sttxtsize);
+        Status.setTextSize(newTextSize);
+        Fuel.setTextSize(textSize + 2);
+        coolantTemperature.setTextSize(textSize);
+        engineLoad.setTextSize(textSize);
+        voltage.setTextSize(textSize);
+        Temptext.setTextSize(textSize);
+        Loadtext.setTextSize(textSize);
+        Volttext.setTextSize(textSize);
+        Airtemp_text.setTextSize(textSize);
+        airTemperature.setTextSize(textSize);
+        Maf_text.setTextSize(textSize);
+        Maf.setTextSize(textSize);
+        Info.setTextSize(newTextSize);
+        speed.setTextSize(newTextSize);
     }
 
-    public void invisiblecmd() {
+    public void invisibleCMD() {
         mConversationView.setVisibility(View.INVISIBLE);
         mOutEditText.setVisibility(View.INVISIBLE);
         mSendButton.setVisibility(View.INVISIBLE);
@@ -962,7 +943,7 @@ public class MainActivity extends AppCompatActivity {
         speed.setVisibility(View.VISIBLE);
     }
 
-    public void visiblecmd() {
+    public void visibleCMD() {
         engineLoad.setVisibility(View.INVISIBLE);
         Fuel.setVisibility(View.INVISIBLE);
         voltage.setVisibility(View.INVISIBLE);
@@ -987,43 +968,6 @@ public class MainActivity extends AppCompatActivity {
         mSendtoDB.setVisibility(View.VISIBLE);
         mSavetoCSV.setVisibility(View.VISIBLE);
     }
-
-//    private void setgaugesize() {
-//        Display display = getWindow().getWindowManager().getDefaultDisplay();
-//        int width = 0;
-//        int height = 0;
-//
-//        width = display.getWidth();
-//        height = display.getHeight();
-//
-//        if (width > height) {
-//            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(height, height);
-//
-//            lp.addRule(RelativeLayout.BELOW, findViewById(R.id.Load).getId());
-//            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-//            lp.setMargins(0, 0, 50, 0);
-//
-//
-//            lp = new RelativeLayout.LayoutParams(height, height);
-//            lp.addRule(RelativeLayout.BELOW, findViewById(R.id.Load).getId());
-//            lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-//            lp.setMargins(50, 0, 0, 0);
-//
-//
-//        } else if (width < height) {
-//            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width, width);
-//
-//            lp.addRule(RelativeLayout.BELOW, findViewById(R.id.Fuel).getId());
-//            lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
-//            lp.setMargins(25, 5, 25, 5);
-//
-//
-//            lp = new RelativeLayout.LayoutParams(width, width);
-//
-//            lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
-//            lp.setMargins(25, 5, 25, 5);
-//        }
-//    }
 
 //class to send data to server (performs network operation in the background)
 //private static class SendDataToServerTask extends AsyncTask<File, Void, Void> {
@@ -1129,7 +1073,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 //resetting the text values of the pids
-    public void resetvalues() {
+    public void resetValues() {
         engineLoad.setText("0 %");
         voltage.setText("0 V");
         coolantTemperature.setText("0 C°");
@@ -1173,7 +1117,7 @@ public class MainActivity extends AppCompatActivity {
             if(mWifiService.isConnected())
             {
                 try {
-                    if (message.length() > 0) {
+                    if (!message.isEmpty()) {
                         message = message + "\r";
                         byte[] send = message.getBytes();
                         mWifiService.write(send);
@@ -1191,7 +1135,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             try {
-                if (message.length() > 0) {
+                if (!message.isEmpty()) {
 
                     message = message + "\r";
                     // Get the message bytes and tell the BluetoothChatService to write
@@ -1199,6 +1143,7 @@ public class MainActivity extends AppCompatActivity {
                     mBtService.write(send);
                 }
             } catch (Exception e) {
+                Log.w("ECU","Error getting message: " + e.getMessage());
             }
         }
     }
@@ -1225,7 +1170,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void sendDefaultCommands() {
 
-        if (commandslist.size() != 0) {
+        if (!commandslist.isEmpty()) {
+            //Old condition -> commandslist.size() != 0
 
             if (whichCommand < 0) {
                 whichCommand = 0;
@@ -1264,7 +1210,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkPids(String tmpmsg) {
         //check if 41 is present in the message, then set index to start from that number in the message and read to the length to check for the message
-        if (tmpmsg.indexOf("41") != -1) {
+        if (tmpmsg.contains("41")) {
+            //Old condition -> tmpmsg.indexOf("41") != -1
             int index = tmpmsg.indexOf("41");
 
             String pidmsg = tmpmsg.substring(index, tmpmsg.length());
@@ -1273,6 +1220,10 @@ public class MainActivity extends AppCompatActivity {
                 //printing the supported pids to the terminal
                 setPidsSupported(pidmsg);
                 return;
+            } else
+            {
+                //print the pid msg to terminal
+                mConversationArrayAdapter.add(pidmsg);
             }
         }
     }
@@ -1322,7 +1273,8 @@ public class MainActivity extends AppCompatActivity {
             try {
                 analyzePIDS(tmpmsg);
             } catch (Exception e) {
-                Info.setText("Error : " + e.getMessage());
+                String errorMessage = "Error : " + e.getMessage();
+                Info.setText(errorMessage);
             }
 
             sendDefaultCommands();
@@ -1352,7 +1304,8 @@ public class MainActivity extends AppCompatActivity {
                     String faultCode = null;
                     String faultDesc = null;
 
-                    if (troubleCodesArray.size() > 0) {
+                    if (!troubleCodesArray.isEmpty()) {
+                        //Old condition -> troubleCodesArray.size() > 0
 
                         for (int i = 0; i < troubleCodesArray.size(); i++) {
                             faultCode = troubleCodesArray.get(i);
@@ -1384,11 +1337,11 @@ public class MainActivity extends AppCompatActivity {
 
         try{
 
-            if(result.indexOf("43") != -1)
-            {
+            if(result.contains("43")) {
+                //result.indexOf("43") != -1
                 workingData = result.replaceAll("^43|[\r\n]43|[\r\n]", "");
-            }else if(result.indexOf("47") != -1)
-            {
+            }else if(result.contains("47")) {
+                //result.indexOf("47") != -1
                 workingData = result.replaceAll("^47|[\r\n]47|[\r\n]", "");
             }
 
@@ -1432,18 +1385,20 @@ public class MainActivity extends AppCompatActivity {
         if (deviceprotocol != null && devicename != null) {
             devicename = devicename.replaceAll("STOPPED", "");
             deviceprotocol = deviceprotocol.replaceAll("STOPPED", "");
-            Status.setText(devicename + " " + deviceprotocol);
+            String statusMessage = devicename + " " + deviceprotocol;
+            Status.setText(statusMessage);
         }
     }
 
 //printing the supported pids to the terminal
     private void setPidsSupported(String buffer) {
 
-        Info.setText("Trying to get available pids : " + String.valueOf(trycount));
+        String infoMessage = "Trying to get available pids : " + String.valueOf(trycount);
+        Info.setText(infoMessage);
         trycount++;
 
         StringBuilder flags = new StringBuilder();
-        String buf = buffer.toString();
+        String buf = buffer;//.toString();
         buf = buf.trim();
         buf = buf.replace("\t", "");
         buf = buf.replace(" ", "");
@@ -1506,41 +1461,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private double calculateAverage(List<Double> listavg) {
+    private double calculateAverage(List<Double> listAvg) {
         Double sum = 0.0;
-        for (Double val : listavg) {
+        for (Double val : listAvg) {
             sum += val;
         }
-        return sum.doubleValue() / listavg.size();
+        return sum.doubleValue() / listAvg.size();
     }
 
-    // Function to save data to CSV file (new code)
-    private void saveDataToCSV(String fileName, String data) {
-        try {
-            // Get the app's internal storage directory
-            //File directory = getFilesDir();
-            File directory = new File(saveLocation);
-            //mConversationArrayAdapter.add(String.valueOf(directory));
-            // Create a new File object with the desired file name
-            File file = new File(directory, fileName);
-            // Create a FileOutputStream to write to the file
-            FileOutputStream fos = new FileOutputStream(file);
-            // Create an OutputStreamWriter to write characters to the FileOutputStream
-            OutputStreamWriter osw = new OutputStreamWriter(fos);
-            // Write the data to the file
-            osw.write(data);
-            // Close the streams
-            osw.close();
-            fos.close();
-            // Optional: Display a message or log success
-            // Toast.makeText(this, "Data saved to " + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
-        } catch (IOException e) {
-            // Handle IO exception
-            e.printStackTrace();
-            // Optional: Display an error message or log the error
-            Toast.makeText(this, "Error saving data: " + e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-    }
 
     private void analyzePIDS(String dataRecieved) {
 
@@ -1553,7 +1481,7 @@ public class MainActivity extends AppCompatActivity {
             dataRecieved = dataRecieved.trim();
 
             int index = dataRecieved.indexOf("41");
-           // int index09 = dataRecieved.indexOf("49");
+            int index09 = dataRecieved.indexOf("49");
 
             String tmpmsg = null;
             //calculating values for mode 01
@@ -1571,27 +1499,28 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             }
-//            else if (index09 != -1) {
-//
-//                tmpmsg = dataRecieved.substring(index09, dataRecieved.length());
-//
-//                if (tmpmsg.substring(0, 2).equals("49")) {
-//
-//                    PID = Integer.parseInt(tmpmsg.substring(2, 4), 16);
-//                    A = Integer.parseInt(tmpmsg.substring(4, 6), 16);
-//                    B = Integer.parseInt(tmpmsg.substring(6, 8), 16);
-//
-//                    calculateEcuValues(PID, A, B);
-//
-//                    // Save the data to CSV file (new code to save to CSV file)
-//                    //may need to change location of code, since values may only be copied from func call
-//                    String csvData = PID + "," + A + "," + B + "\n";
-//                    //calling func to save data to csv file
-//                    //saveDataToCSV("pid_data.csv", csvData);
-//                }
-//            }
+            else if (index09 != -1) {
+
+                tmpmsg = dataRecieved.substring(index09, dataRecieved.length());
+
+                if (tmpmsg.substring(0, 2).equals("49")) {
+
+                    PID = Integer.parseInt(tmpmsg.substring(2, 4), 16);
+                    A = Integer.parseInt(tmpmsg.substring(4, 6), 16);
+                    B = Integer.parseInt(tmpmsg.substring(6, 8), 16);
+
+                    calculateEcuValues(PID, A, B);
+
+                    // Save the data to CSV file (new code to save to CSV file)
+                    //may need to change location of code, since values may only be copied from func call
+                    //String csvData = PID + "," + A + "," + B + "\n";
+                    //calling func to save data to csv file
+                    //saveDataToCSV("pid_data.csv", csvData);
+                }
+            }
         }
     }
+
 //printing the voltage to terminal
     private void generateVolt(String msg) {
 
@@ -1641,7 +1570,8 @@ public class MainActivity extends AppCompatActivity {
 
                 avgconsumption.add(FuelFlowLH);
 
-                Fuel.setText(String.format("%10.1f", calculateAverage(avgconsumption)).trim() + " l/h");
+                String fuelMessage = String.format("%10.1f", calculateAverage(avgconsumption)).trim() + " l/h";
+                Fuel.setText(fuelMessage);
                 mConversationArrayAdapter.add("Fuel Consumption: " + String.format("%10.1f", calculateAverage(avgconsumption)).trim() + " l/h");
                 break;
 
@@ -1650,7 +1580,8 @@ public class MainActivity extends AppCompatActivity {
                 // A-40
                 tempC = A - 40;
                 coolantTemp = tempC;
-                coolantTemperature.setText(Integer.toString(coolantTemp) + " C°");
+                String coolantMessage = Integer.toString(coolantTemp) + " C°";
+                coolantTemperature.setText(coolantMessage);
                 mConversationArrayAdapter.add("Enginetemp: " + Integer.toString(tempC) + " C°");
 
                 break;
@@ -1690,7 +1621,8 @@ public class MainActivity extends AppCompatActivity {
                 // A - 40
                 tempC = A - 40;
                 intakeairtemp = tempC;
-                airTemperature.setText(Integer.toString(intakeairtemp) + " C°");
+                String airMessage = Integer.toString(intakeairtemp) + " C°";
+                airTemperature.setText(airMessage);
                 mConversationArrayAdapter.add("Intakeairtemp: " + Integer.toString(intakeairtemp) + " C°");
 
                 break;
@@ -1700,7 +1632,8 @@ public class MainActivity extends AppCompatActivity {
                 // ((256*A)+B) / 100  [g/s]
                 val = ((256 * A) + B) / 100;
                 mMaf = (int) val;
-                Maf.setText(Integer.toString(intval) + " g/s");
+                String mafMessage = Integer.toString(intval) + " g/s";
+                Maf.setText(mafMessage);
                 mConversationArrayAdapter.add("Maf Air Flow: " + Integer.toString(mMaf) + " g/s");
 
                 break;
@@ -1792,5 +1725,3 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
-
-
