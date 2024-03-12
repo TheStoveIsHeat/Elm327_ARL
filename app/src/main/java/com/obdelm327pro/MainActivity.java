@@ -539,7 +539,7 @@ public class MainActivity extends AppCompatActivity {
                 mConversationArrayAdapter.add("User: Sending csv file to database...");
                 // Execute the AsyncTask to send data to the server
                 //insertData(csvFile);
-                CSVConsume.send(saveLocation+fileName);
+                CSVConsume.send(saveLocation + "/" + fileName);
                 //mConversationArrayAdapter.add("User: Success! Deleting local csv file");
             }
         });

@@ -26,12 +26,15 @@ public class CSVConsume {
 
         //String filePath="C:\\Users\\laser\\Desktop\\data.csv";
 
+        Log.i("ToSQL","Grabbing CSV from " + filePath);
+
         int batchSize=20;
 
         Connection connection=null;
 
 
         try{
+            Class.forName("com.mysql.jdbc.Driver");
             connection= DriverManager.getConnection(jdbcUrl,username,password);
             connection.setAutoCommit(false);
 
@@ -49,9 +52,13 @@ public class CSVConsume {
                 String[] data=lineText.split(",");
 
                 String VIN=data[0];
+                Log.d("ToSQL","Vin: " + VIN);
                 String IdleTime=data[1];
+                Log.d("ToSQL","IdleTime: " + IdleTime);
                 String FuelRate=data[2];
+                Log.d("ToSQL","FuelRate: " + FuelRate);
                 String EngineOn=data[3];
+                Log.d("ToSQL","EngineOn: " + EngineOn);
 
                 statement.setString(1,VIN);
                 statement.setInt(2,parseInt(IdleTime));
