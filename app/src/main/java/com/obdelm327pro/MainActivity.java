@@ -579,7 +579,8 @@ public class MainActivity extends AppCompatActivity {
                 */
 
                 //append all the values in one large string to be sent to saveToCSV function
-                String csvData = "VINhere" + ", " + avg_speed + ", " + "FuelRatehere" + ", " + "idleTimehere" + ", " + "EngineOnTimehere" + ", " + "MPGhere" + ", " + "currentDatehere" + ", " + currentTime;
+                //Order of the values below ("Vin, AvgSpeed, FuelRate, IdleTime, EngineOnTime, MPG, Date, Time")
+                String csvData = "VINhere" + ", " + avg_speed + ", " + "24" + ", " + "27" + ", " + "3" + ", " + "24" + ", " + "X/X/XXXX" + ", " + "1500";
 
                 //calling func to save data to csv file
                 CSVConsume.saveToCSV(fileName, csvData);
@@ -1242,7 +1243,8 @@ public class MainActivity extends AppCompatActivity {
     public static String calculateAvgList(ArrayList<Integer> list) {
         //if theres nothing in the list
         if (list == null || list.isEmpty()) {
-            return "N/A";
+            //return "N/A";
+            return "0";
         }
 
         int sum = 0;
