@@ -40,6 +40,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 //for converting to CSV (new code)
@@ -54,6 +55,9 @@ import java.net.URL;
 import android.os.AsyncTask;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
+//For date and time when saving csv
+import java.util.Calendar;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -547,17 +551,20 @@ public class MainActivity extends AppCompatActivity {
         mSavetoCSV.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //IDK HOW TO DO FUNCTIONS/CLASSES IN JAVA BUT THE CSV CALL WOULD GO HERE
-                //mConversationArrayAdapter.clear();' //OLD LINE OF CODE FOR CLEARING CMD LIST
+                mConversationArrayAdapter.clear(); //OLD LINE OF CODE FOR CLEARING CMD LIST
                 mConversationArrayAdapter.add("User: Saving data to CSV file at \"" + saveLocation + "\"...");
 
                 // Save the data to CSV file (new code to save to CSV file)
                 //String csvData = PID + "," + A + "," + B + "\n";
-                String avg_value = calculateAvgList(km_speed);
+                String avg_speed = calculateAvgList(km_speed);
 
                 //For vin?
                 sendEcuMessage("0902");
                 //For fuel level
                 sendEcuMessage("012F");
+
+                Date currentTime = Calendar.getInstance().getTime();
+                //Date date = DAY_OF_MONTH;
 
                 //Generate random Trip# each time button is pressed, to be stored into CSV
 
@@ -571,9 +578,12 @@ public class MainActivity extends AppCompatActivity {
                 2. VIN, IdleTime, FuelRate, EngineOnTime, MPG, date, time
                 */
 
-                //For loop for saving each of those in a specific order to a csv file
+                //append all the values in one large string to be sent to saveToCSV function
+                String csvData = "VINhere" + ", " + avg_speed + ", " + "FuelRatehere" + ", " + "idleTimehere" + ", " + "EngineOnTimehere" + ", " + "MPGhere" + ", " + "currentDatehere" + ", " + currentTime;
+
                 //calling func to save data to csv file
-                CSVConsume.saveToCSV(fileName, avg_value);
+                CSVConsume.saveToCSV(fileName, csvData);
+
                 km_speed.clear(); //clearing the array list 
 
                 mConversationArrayAdapter.add("User: Success! File named \""+ fileName +"\"");

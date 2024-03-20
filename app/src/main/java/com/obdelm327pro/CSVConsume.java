@@ -16,56 +16,58 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class CSVConsume {
+
+
     static String saveLocation = "/storage/emulated/0/Download";
     static String fileName = "pid_data.csv";
 
     public static void send(String filePath) {
-        String jdbcUrl="jdbc:mysql://108.17.113.150:7790/arl_1442";
-        String username="main";
-        String password="IW4nt2C0nnect";
+        String jdbcUrl = "jdbc:mysql://108.17.113.150:7790/arl_1442";
+        String username = "main";
+        String password = "IW4nt2C0nnect";
 
         //String filePath="C:\\Users\\laser\\Desktop\\data.csv";
 
-        Log.i("ToSQL","Grabbing CSV from " + filePath);
+        Log.i("ToSQL", "Grabbing CSV from " + filePath);
 
-        int batchSize=20;
+        int batchSize = 20;
 
-        Connection connection=null;
+        Connection connection = null;
 
 
-        try{
+        try {
             Class.forName("com.mysql.jdbc.Driver");
-            connection= DriverManager.getConnection(jdbcUrl,username,password);
+            connection = DriverManager.getConnection(jdbcUrl, username, password);
             connection.setAutoCommit(false);
 
-            String sql="insert into vehicle(VIN,IdleTime,FuelRate,EngineOn) values(?,?,?,?)";
+            String sql = "insert into vehicle(VIN,IdleTime,FuelRate,EngineOn) values(?,?,?,?)";
 
-            PreparedStatement statement=connection.prepareStatement(sql);
+            PreparedStatement statement = connection.prepareStatement(sql);
 
-            BufferedReader lineReader=new BufferedReader(new FileReader(filePath));
+            BufferedReader lineReader = new BufferedReader(new FileReader(filePath));
 
-            String lineText=null;
-            int count=0;
+            String lineText = null;
+            int count = 0;
 
             lineReader.readLine();
-            while ((lineText=lineReader.readLine())!=null){
-                String[] data=lineText.split(",");
+            while ((lineText = lineReader.readLine()) != null) {
+                String[] data = lineText.split(",");
 
-                String VIN=data[0];
-                Log.d("ToSQL","Vin: " + VIN);
-                String IdleTime=data[1];
-                Log.d("ToSQL","IdleTime: " + IdleTime);
-                String FuelRate=data[2];
-                Log.d("ToSQL","FuelRate: " + FuelRate);
-                String EngineOn=data[3];
-                Log.d("ToSQL","EngineOn: " + EngineOn);
+                String VIN = data[0];
+                Log.d("ToSQL", "Vin: " + VIN);
+                String IdleTime = data[1];
+                Log.d("ToSQL", "IdleTime: " + IdleTime);
+                String FuelRate = data[2];
+                Log.d("ToSQL", "FuelRate: " + FuelRate);
+                String EngineOn = data[3];
+                Log.d("ToSQL", "EngineOn: " + EngineOn);
 
-                statement.setString(1,VIN);
-                statement.setInt(2,parseInt(IdleTime));
-                statement.setInt(3,parseInt(FuelRate));
-                statement.setInt(4,parseInt(EngineOn));
+                statement.setString(1, VIN);
+                statement.setInt(2, parseInt(IdleTime));
+                statement.setInt(3, parseInt(FuelRate));
+                statement.setInt(4, parseInt(EngineOn));
                 statement.addBatch();
-                if(count%batchSize==0){
+                if (count % batchSize == 0) {
                     statement.executeBatch();
                 }
             }
@@ -73,10 +75,9 @@ public class CSVConsume {
             statement.executeBatch();
             connection.commit();
             connection.close();
-            Log.i("ToSQL","Data has been inserted successfully.");
+            Log.i("ToSQL", "Data has been inserted successfully.");
 
-        }
-        catch (Exception exception){
+        } catch (Exception exception) {
             exception.printStackTrace();
         }
 
@@ -95,7 +96,11 @@ public class CSVConsume {
             FileOutputStream fos = new FileOutputStream(file);
             // Create an OutputStreamWriter to write characters to the FileOutputStream
             OutputStreamWriter osw = new OutputStreamWriter(fos);
-            // Write the data to the file
+            // Write the header to the file
+            osw.write("Vin, AvgSpeed, FuelRate, IdleTime, EngineOnTime, MPG, Date, Time");
+            //New line
+            osw.write(10);
+            //Data goes here, inputted data should be a full string with all the values
             osw.write(data);
             // Close the streams
             osw.close();
@@ -107,7 +112,7 @@ public class CSVConsume {
             e.printStackTrace();
             // Optional: Display an error message or log the error
             //Toast.makeText(this, "Error saving data: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            Log.w("CSVConsume","ERROR SAVING DATA: " + e.getMessage());
+            Log.w("CSVConsume", "ERROR SAVING DATA: " + e.getMessage());
         }
     }
 }
