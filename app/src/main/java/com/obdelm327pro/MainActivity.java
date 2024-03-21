@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
     String saveLocation = "/storage/emulated/0/Download";
     String fileName = "pid_data.csv";
 
+    String VIN = "";
     //String random VIN
 
     public static final int MESSAGE_READ = 2;
@@ -229,6 +230,9 @@ public class MainActivity extends AppCompatActivity {
                 case MESSAGE_READ:
 
                     String tmpmsg = clearMsg(msg);
+                    //This is kinda important, should need an if statement to not report everything as vin
+                    //MAybe do a "if first two chars in the string are 09, send to new function meant to parse the vin/other vehicle info if we decide in future?
+                    mConversationArrayAdapter.add("VIN ???: " + msg.obj.toString());
 
                     Info.setText(tmpmsg);
 
@@ -1243,6 +1247,12 @@ public class MainActivity extends AppCompatActivity {
                 //print the pid msg to terminal
                 mConversationArrayAdapter.add(pidmsg);
             }
+        }
+        else if (tmpmsg.contains("49")) {
+            int index = tmpmsg.indexOf("49");
+
+            String pidmsg = tmpmsg.substring(index, tmpmsg.length());
+            mConversationArrayAdapter.add(pidmsg);
         }
     }
 
