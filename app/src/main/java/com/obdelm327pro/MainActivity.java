@@ -557,6 +557,13 @@ public class MainActivity extends AppCompatActivity {
                 // Save the data to CSV file (new code to save to CSV file)
                 //String csvData = PID + "," + A + "," + B + "\n";
                 String avg_speed = calculateAvgList(km_speed);
+                String Vin = "Vinhere";
+                String avg_fuelRate = "24";
+                String idleTime = "27";
+                String engineOnTime = "3";
+                String mileage = "24";
+                String date = "X/X/XXXX";
+                String time = "1500";
 
                 //For vin?
                 sendEcuMessage("0902");
@@ -580,7 +587,7 @@ public class MainActivity extends AppCompatActivity {
 
                 //append all the values in one large string to be sent to saveToCSV function
                 //Order of the values below ("Vin, AvgSpeed, FuelRate, IdleTime, EngineOnTime, MPG, Date, Time")
-                String csvData = "VINhere" + ", " + avg_speed + ", " + "24" + ", " + "27" + ", " + "3" + ", " + "24" + ", " + "X/X/XXXX" + ", " + "1500";
+                String csvData = Vin + ", " + avg_speed + ", " + avg_fuelRate + ", " + idleTime + ", " + engineOnTime + ", " + mileage + ", " + date + ", " + time;
 
                 //calling func to save data to csv file
                 CSVConsume.saveToCSV(fileName, csvData);
