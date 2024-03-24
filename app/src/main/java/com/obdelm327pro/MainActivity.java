@@ -58,6 +58,9 @@ import java.io.FileInputStream;
 //For date and time when saving csv
 import java.util.Calendar;
 import java.util.Date;
+//for vin decoding
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -591,7 +594,7 @@ public class MainActivity extends AppCompatActivity {
 
                 //append all the values in one large string to be sent to saveToCSV function
                 //Order of the values below ("Vin, AvgSpeed, FuelRate, IdleTime, EngineOnTime, MPG, Date, Time")
-                String csvData = Vin + ", " + avg_speed + ", " + avg_fuelRate + ", " + idleTime + ", " + engineOnTime + ", " + mileage + ", " + date + ", " + time;
+                String csvData = VIN + ", " + avg_speed + ", " + avg_fuelRate + ", " + idleTime + ", " + engineOnTime + ", " + mileage + ", " + date + ", " + time;
 
                 //calling func to save data to csv file
                 CSVConsume.saveToCSV(fileName, csvData);
@@ -1255,6 +1258,48 @@ public class MainActivity extends AppCompatActivity {
             mConversationArrayAdapter.add(pidmsg);
         }
     }
+    //new code for decoding Vin
+    private String checkVinDecode(String msg){
+        //check is message contains 49
+        if(msg.contains("49")){
+            int vinStartIndex = msg.indexOf("49");
+            //check if VIN pattern exists in the hex string
+            if (vinStartIndex != -1) {
+                //moving start position after 49
+                vinStartIndex += 2;
+                // extract the VIN portion of the hex string
+                String vinHex = msg.substring(vinStartIndex);
+
+                //convert VIN hex string to bytes
+                byte[] bytes = new byte[vinHex.length() / 2];
+                for (int i = 0; i < vinHex.length(); i += 2) {
+                    bytes[i / 2] = (byte) ((Character.digit(vinHex.charAt(i), 16) << 4)
+                            + Character.digit(vinHex.charAt(i + 1), 16));
+                }
+
+                //decode bytes to ASCII characters
+                StringBuilder rawVinMsg = new StringBuilder();
+                for (byte b : bytes) {
+                    rawVinMsg.append((char) b);
+                }
+
+                //using reg expression to get valid characters (capital letters and numbers)
+                Pattern pattern = Pattern.compile("[A-Z0-9]+");
+                Matcher matcher = pattern.matcher(rawVinMsg.toString());
+
+                StringBuilder vinMsg = new StringBuilder();
+                while (matcher.find()) {
+                    vinMsg.append(matcher.group());
+                }
+
+                return vinMsg.toString().trim();
+            }
+            else {
+                return "VIN not found in hex string.";
+            }
+        }
+        return "VIN not found.";
+    }
 
     //new code for calculating the averages of array lists and converting it to a string
     public static String calculateAvgList(ArrayList<Integer> list) {
@@ -1275,7 +1320,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void analyzeMsg(Message msg) {
-        //cleaning the message
+        //cleaning the message (for mode 1)
         String tmpmsg = clearMsg(msg);
         //printing the voltage to terminal
         generateVolt(tmpmsg);
@@ -1287,6 +1332,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             //check if 41 is present in the message, then set index to start from that number in the message and read to the length to check for the message
             checkPids(tmpmsg);
+            //add method to check for 49 (for decoding the VIN)
+            VIN = checkVinDecode(msg.obj.toString());
 
             if (!m_getPids && m_dedectPids == 1) {
                 String sPIDs = "0100";
