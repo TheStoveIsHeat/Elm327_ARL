@@ -1630,7 +1630,6 @@ public class MainActivity extends AppCompatActivity {
         switch (PID) {
 
             case 4://PID(04): Engine Load
-
                 // A*100/255
                 val = A * 100 / 255;
                 int calcLoad = (int) val;
@@ -1652,7 +1651,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case 5://PID(05): Coolant Temperature
-
                 // A-40
                 tempC = A - 40;
                 coolantTemp = tempC;
@@ -1663,19 +1661,16 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case 11://PID(0B)
-
                 // A
                 mConversationArrayAdapter.add("Intake Man Pressure: " + Integer.toString(A) + " kPa");
 
                 break;
 
             case 12: //PID(0C): RPM
-
                 //((A*256)+B)/4
                 val = ((A * 256) + B) / 4;
                 intval = (int) val;
                 rpmval = intval;
-//                rpm.setTargetValue(intval / 100);
                 //new code to add to array
                 mConversationArrayAdapter.add("Engine Speed: " + Integer.toString(rpmval) + " rpm");
 
@@ -1683,9 +1678,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             case 13://PID(0D): KM
-
                 // A
-//                speed.setTargetValue(A);
                 //new code to add to array
                 mConversationArrayAdapter.add("Vehicle Speed: " + Integer.toString(A) + " km/h");
                 //new code to add to an array list for the averages to be sent to DB
@@ -1693,71 +1686,76 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case 15://PID(0F): Intake Temperature
-
                 // A - 40
                 tempC = A - 40;
                 intakeairtemp = tempC;
                 String airMessage = Integer.toString(intakeairtemp) + " C°";
                 airTemperature.setText(airMessage);
                 mConversationArrayAdapter.add("Intakeairtemp: " + Integer.toString(intakeairtemp) + " C°");
-
                 break;
 
             case 16://PID(10): Maf
-
                 // ((256*A)+B) / 100  [g/s]
                 val = ((256 * A) + B) / 100;
                 mMaf = (int) val;
                 String mafMessage = Integer.toString(intval) + " g/s";
                 Maf.setText(mafMessage);
                 mConversationArrayAdapter.add("Maf Air Flow: " + Integer.toString(mMaf) + " g/s");
-
                 break;
 
             case 17://PID(11)
-
                 //A*100/255
                 val = A * 100 / 255;
                 intval = (int) val;
                 mConversationArrayAdapter.add(" Throttle position: " + Integer.toString(intval) + " %");
+                break;
 
+            case 31: //PID(1F)
+                //256*A+B
+                val = (256 * A) + B;
+                intval = (int) val;
+                mConversationArrayAdapter.add("Run time since engine start: " + Integer.toString(intval) + " seconds");
                 break;
 
             case 35://PID(23)
-
                 // ((A*256)+B)*0.079
                 val = ((A * 256) + B) * 0.079;
                 intval = (int) val;
                 mConversationArrayAdapter.add("Fuel Rail Pressure: " + Integer.toString(intval) + " kPa");
-
                 break;
 
             case 49://PID(31)
-
                 //(256*A)+B km
                 val = (A * 256) + B;
                 intval = (int) val;
                 mConversationArrayAdapter.add("Distance traveled: " + Integer.toString(intval) + " km");
-
                 break;
 
             case 70://PID(46)
-
                 // A-40 [DegC]
                 tempC = A - 40;
                 ambientairtemp = tempC;
                 mConversationArrayAdapter.add("Ambientairtemp: " + Integer.toString(ambientairtemp) + " C°");
-
                 break;
 
-            case 92://PID(5C)
+            case 82://PID(52)
+                //100/255 * A
+                val = (100/255) * A;
+                intval = (int) val;
+                mConversationArrayAdapter.add("Ethanol fuel %: " + Integer.toString(intval) + " %");
 
+            case 92://PID(5C)
                 //A-40
                 tempC = A - 40;
                 engineoiltemp = tempC;
-                mConversationArrayAdapter.add("Engineoiltemp: " + Integer.toString(engineoiltemp) + " C°");
-
+                mConversationArrayAdapter.add("Engine oil temperature: " + Integer.toString(engineoiltemp) + " C°");
                 break;
+
+            case 94://PID(5E)
+                //(256*A+B) / 20
+                val = ((256 * A) + B) / 20;
+                intval = (int) val;
+                mConversationArrayAdapter.add("Engine fuel rate: " + Integer.toString(intval) + " L/h");
 
             default:
         }
