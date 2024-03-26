@@ -22,7 +22,7 @@ public class CSVConsume {
     static String fileName = "pid_data.csv";
 
     public static void send(String filePath) {
-        String jdbcUrl = "jdbc:mysql://108.17.113.150:7790/arl_1442";
+        String jdbcUrl = "jdbc:mysql://108.17.113.150:7790/arl_1442?autoReconnect=true&useSSL=false";
         String username = "main";
         String password = "IW4nt2C0nnect";
 
@@ -40,7 +40,7 @@ public class CSVConsume {
             connection = DriverManager.getConnection(jdbcUrl, username, password);
             connection.setAutoCommit(false);
 
-            String sql = "insert into vehicle(VIN,IdleTime,FuelRate,EngineOn) values(?,?,?,?)";
+            String sql = "INSERT INTO vehicle(VIN,AvgSpeed,IdleTime,FuelRate,EngineOn,MPG) values(?,?,?,?,?,?)";
 
             PreparedStatement statement = connection.prepareStatement(sql);
 
@@ -50,30 +50,69 @@ public class CSVConsume {
             int count = 0;
 
             lineReader.readLine();
-            while ((lineText = lineReader.readLine()) != null) {
+            lineText = lineReader.readLine();
+            //while (lineText != null) {
                 String[] data = lineText.split(",");
 
                 String VIN = data[0];
                 Log.d("ToSQL", "Vin: " + VIN);
-                String IdleTime = data[1];
+                String AvgSpeed = data[1];
+                Log.d("ToSQL", "AvgSpeed: " + AvgSpeed);
+                String IdleTime = data[2];
                 Log.d("ToSQL", "IdleTime: " + IdleTime);
-                String FuelRate = data[2];
+                String FuelRate = data[3];
                 Log.d("ToSQL", "FuelRate: " + FuelRate);
-                String EngineOn = data[3];
+                String EngineOn = data[4];
                 Log.d("ToSQL", "EngineOn: " + EngineOn);
+                String MPG = data[5];
+                Log.d("ToSQL", "MPG: " + MPG);
+                String Date = data[6];
+                Log.d("ToSQL", "Date: " + Date);
+                String Time = data[7];
+                Log.d("ToSQL", "Time: " + Time);
+
+                if (AvgSpeed.contains(" ")){
+                    int index = AvgSpeed.indexOf(" ");
+                    AvgSpeed = AvgSpeed.substring(index+1);
+                }
+                if (IdleTime.contains(" ")){
+                    int index = IdleTime.indexOf(" ");
+                    IdleTime = IdleTime.substring(index+1);
+                }
+                if (FuelRate.contains(" ")){
+                    int index = FuelRate.indexOf(" ");
+                    FuelRate = FuelRate.substring(index+1);
+                }
+                if (EngineOn.contains(" ")){
+                    int index = EngineOn.indexOf(" ");
+                    EngineOn = EngineOn.substring(index+1);
+                }
+                if (MPG.contains(" ")){
+                    int index = MPG.indexOf(" ");
+                    MPG = MPG.substring(index+1);
+                }
+                Log.d("ToSQL", "ParseIntTest: " + parseInt(AvgSpeed));
 
                 statement.setString(1, VIN);
-                statement.setInt(2, parseInt(IdleTime));
-                statement.setInt(3, parseInt(FuelRate));
-                statement.setInt(4, parseInt(EngineOn));
+                statement.setInt(2, parseInt(AvgSpeed));
+                statement.setInt(3, parseInt(IdleTime));
+                statement.setInt(4, parseInt(FuelRate));
+                statement.setInt(5, parseInt(EngineOn));
+                statement.setInt(6, parseInt(MPG));
                 statement.addBatch();
+                //count += 1;
+                //lineText = lineReader.readLine();
                 if (count % batchSize == 0) {
                     statement.executeBatch();
+                    Log.d("ToSQL", "Batch Executed");
                 }
-            }
+            //}
             lineReader.close();
+            Log.d("ToSQL", "LineReader Closed");
             statement.executeBatch();
+            Log.d("ToSQL", "Batch Executed 2");
             connection.commit();
+            Log.d("ToSQL", "Committed ");
             connection.close();
             Log.i("ToSQL", "Data has been inserted successfully.");
 
