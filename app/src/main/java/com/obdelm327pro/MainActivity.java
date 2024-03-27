@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText mOutEditText;
     private Button mSendButton, mRetrieveDB, mTroublecodes, mSendtoDB, mSavetoCSV;
     private ListView mConversationView;
-    private TextView engineLoad, Fuel, voltage, coolantTemperature, Status, Loadtext, Volttext, Temptext, Centertext, Info, Airtemp_text, airTemperature, Maf_text, Maf, speed;
+    private TextView engineLoad, Fuel, voltage, coolantTemperature, Status, Loadtext, Volttext, Temptext, Centertext, Info, Airtemp_text, airTemperature, Maf_text, Maf, engineSpeedtext, engineSpeed;
     private String mConnectedDeviceName = "Ecu";
     private int rpmval = 0, intakeairtemp = 0, ambientairtemp = 0, coolantTemp = 0, mMaf = 0,
             engineoiltemp = 0, b1s1temp = 0, Enginetype = 0, FaceColor = 0,
@@ -459,7 +459,14 @@ public class MainActivity extends AppCompatActivity {
         airTemperature = (TextView) findViewById(R.id.Airtemp);
         Maf_text = (TextView) findViewById(R.id.Maf_text);
         Maf = (TextView) findViewById(R.id.Maf);
-        speed = (TextView) findViewById(R.id.Speeds);
+        //new code 
+        engineSpeedtext = (TextView) findViewById(R.id.Speed_text);
+        engineSpeed = (TextView) findViewById(R.id.Speed);
+
+
+
+
+
 
 
         mOutEditText = (EditText) findViewById(R.id.edit_text_out);
@@ -939,7 +946,8 @@ public class MainActivity extends AppCompatActivity {
         Maf_text.setTextSize(textSize);
         Maf.setTextSize(textSize);
         Info.setTextSize(newTextSize);
-        speed.setTextSize(newTextSize);
+        engineSpeedtext.setTextSize(newTextSize);
+        engineSpeed.setTextSize(newTextSize);
     }
 
     public void invisibleCMD() {
@@ -965,7 +973,8 @@ public class MainActivity extends AppCompatActivity {
         airTemperature.setVisibility(View.VISIBLE);
         Maf_text.setVisibility(View.VISIBLE);
         Maf.setVisibility(View.VISIBLE);
-        speed.setVisibility(View.VISIBLE);
+        engineSpeedtext.setVisibility(View.VISIBLE);
+        engineSpeed.setVisibility(View.VISIBLE);
     }
 
     public void visibleCMD() {
@@ -983,7 +992,8 @@ public class MainActivity extends AppCompatActivity {
         airTemperature.setVisibility(View.INVISIBLE);
         Maf_text.setVisibility(View.INVISIBLE);
         Maf.setVisibility(View.INVISIBLE);
-        speed.setVisibility(View.INVISIBLE);
+        engineSpeedtext.setVisibility(View.INVISIBLE);
+        engineSpeed.setVisibility(View.INVISIBLE);
 
         mConversationView.setVisibility(View.VISIBLE);
         mOutEditText.setVisibility(View.VISIBLE);
@@ -1106,6 +1116,7 @@ public class MainActivity extends AppCompatActivity {
         airTemperature.setText("0 C°");
         Maf.setText("0 g/s");
         Fuel.setText("0 - 0 l/h");
+        engineSpeed.setText("0 rpm");
         //cause the elm to reinitialize, and clear the array of text
         m_getPids = false;
         whichCommand = 0;
@@ -1619,9 +1630,8 @@ public class MainActivity extends AppCompatActivity {
             voltage.setText(VoltText);
         }
     }
-//calculating the pids
+    //calculating the pids
     private void calculateEcuValues(int PID, int A, int B) {
-        Log.d("EcuValues", "Processing PID: " + PID + ", A: " + A + ", B: " + B);
 
         double val = 0;
         int intval = 0;
@@ -1651,7 +1661,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case 5://PID(05): Coolant Temperature
-                // A-40
+                //A-40
                 tempC = A - 40;
                 coolantTemp = tempC;
                 String coolantMessage = Integer.toString(coolantTemp) + " C°";
@@ -1661,9 +1671,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case 11://PID(0B)
-                // A
+                //A
                 mConversationArrayAdapter.add("Intake Man Pressure: " + Integer.toString(A) + " kPa");
-
                 break;
 
             case 12: //PID(0C): RPM
@@ -1671,9 +1680,10 @@ public class MainActivity extends AppCompatActivity {
                 val = ((A * 256) + B) / 4;
                 intval = (int) val;
                 rpmval = intval;
+                String engineSpeedMessage = Integer.toString(intval) + " rpm";
+                engineSpeed.setText(engineSpeedMessage);
                 //new code to add to array
                 mConversationArrayAdapter.add("Engine Speed: " + Integer.toString(rpmval) + " rpm");
-
                 break;
 
 

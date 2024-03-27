@@ -274,7 +274,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/Speeds"
+            android:id="@+id/Speed_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -282,6 +282,20 @@
             android:gravity="start"
             android:text="Speed:"
             android:textColor="#aaa"
+            android:textSize="12sp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/Speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/Speed_text"
+            android:layout_alignParentStart="true"
+            android:gravity="end"
+            android:text="0 rpm"
+            android:textColor="#99FFFF"
             android:textSize="12sp"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
