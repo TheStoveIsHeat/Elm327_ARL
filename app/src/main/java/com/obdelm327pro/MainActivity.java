@@ -159,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
             OBD_STANDARDS = "011C", //OBD standards this vehicle
             FUEL_LEVEL = "012F", //Fuel level???
             PIDS_SUPPORTED = "0120"; //PIDs supported
+
     Toolbar toolbar;
     AppBarLayout appbar;
     String trysend = null;
@@ -167,7 +168,8 @@ public class MainActivity extends AppCompatActivity {
     private EditText mOutEditText;
     private Button mSendButton, mRetrieveDB, mTroublecodes, mSendtoDB, mSavetoCSV;
     private ListView mConversationView;
-    private TextView engineLoad, Fuel, voltage, coolantTemperature, Status, Loadtext, Volttext, Temptext, Centertext, Info, Airtemp_text, airTemperature, Maf_text, Maf, speed;
+    private TextView engineLoad, Fuel, voltage, coolantTemperature, Status, Loadtext, Volttext, Temptext, Centertext, Info, Airtemp_text, airTemperature, Maf_text, Maf, engineSpeedtext, engineSpeed, vehicleSpeedtext, vehicleSpeed;
+    private TextView intakeAirtemptext, intakeAirtemp, mafAirFlowtext, mafAirFlow, throttlePositiontext, throttlePosition, runTimeEngStarttext, runTimeEngStart, fuelRailPressuretext, fuelRailPressure, distTraveledtext, distTraveled, ambientAirTemptext, ambientAirTemp, ethFueltext, ethFuel, engOilTemptext, engOilTemp, engFuelRatetext, enfFuelRate;
     private String mConnectedDeviceName = "Ecu";
     private int rpmval = 0, intakeairtemp = 0, ambientairtemp = 0, coolantTemp = 0, mMaf = 0,
             engineoiltemp = 0, b1s1temp = 0, Enginetype = 0, FaceColor = 0,
@@ -333,35 +335,13 @@ public class MainActivity extends AppCompatActivity {
                 case MESSAGE_READ:
 
                     String tmpmsg = clearMsg(msg);
-
-                    //logging the read message to logcat to see the result (for demo)
-                    Log.i("BluetoothDebug", "Received message: " + tmpmsg);
-
                     Info.setText(tmpmsg);
-
-                    /*if (tmpmsg.contains(RSP_ID.NODATA.response) || tmpmsg.contains(RSP_ID.ERROR.response)) {
-
-                        try{
-                            String command = tmpmsg.substring(0,4);
-
-                            if(isHexadecimal(command))
-                            {
-                                removePID(command);
-                            }
-
-                        }catch(Exception e)
-                        {
-                            Toast.makeText(getApplicationContext(), e.getMessage(),
-                                Toast.LENGTH_LONG).show();
-                        }
-                    }*/
 
                     if (commandmode || !initialized) {
                         mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + tmpmsg);
                     }
 
                     analyzeMsg(msg);
-
                     break;
                 case MESSAGE_DEVICE_NAME:
                     // save the connected device's name
@@ -374,7 +354,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
-
+    //function to remove pids if they are not offered by the vehicle
     private void removePID(String pid) {
         int index = commandslist.indexOf(pid);
 
@@ -459,7 +439,24 @@ public class MainActivity extends AppCompatActivity {
         airTemperature = (TextView) findViewById(R.id.Airtemp);
         Maf_text = (TextView) findViewById(R.id.Maf_text);
         Maf = (TextView) findViewById(R.id.Maf);
-        speed = (TextView) findViewById(R.id.Speeds);
+        //new code (for dashboard)
+        engineSpeedtext = (TextView) findViewById(R.id.Speed_text);
+        engineSpeed = (TextView) findViewById(R.id.Speed);
+        vehicleSpeedtext = (TextView) findViewById(R.id.VehicleSpeed_text);
+        vehicleSpeed = (TextView) findViewById(R.id.VehicleSpeed);
+
+        intakeAirtemptext = (TextView) findViewById(R.id.IntakeAirtemp_text);
+        intakeAirtemp = (TextView) findViewById(R.id.IntakeAirtemp);
+        mafAirFlowtext = (TextView) findViewById(R.id.MafAirFlow_text);
+        mafAirFlow = (TextView) findViewById(R.id.MafAirFlow);
+        throttlePositiontext = (TextView) findViewById(R.id.ThrottlePosition_text);
+        throttlePosition = (TextView) findViewById(R.id.ThrottlePosition);
+        runTimeEngStarttext = (TextView) findViewById(R.id.RunTimeEngStart_text);
+        runTimeEngStart = (TextView) findViewById(R.id.RunTimeEngStart);
+        fuelRailPressuretext = (TextView) findViewById(R.id.FuelRailPressure_text);
+        fuelRailPressure = (TextView) findViewById(R.id.FuelRailPressure);
+        distTraveledtext = (TextView) findViewById(R.id.DistanceTraveled_text);
+        distTraveled = (TextView) findViewById(R.id.FuelRailPressure);
 
 
         mOutEditText = (EditText) findViewById(R.id.edit_text_out);
@@ -475,6 +472,7 @@ public class MainActivity extends AppCompatActivity {
 
         visibleCMD();
 
+        //key for commands
         //ATZ reset all
         //ATDP Describe the current Protocol
         //ATAT0-1-2 Adaptive Timing Off - daptive Timing Auto1 - daptive Timing Auto2
@@ -562,7 +560,6 @@ public class MainActivity extends AppCompatActivity {
                 mConversationArrayAdapter.add("User: Saving data to CSV file at \"" + saveLocation + "\"...");
 
                 // Save the data to CSV file (new code to save to CSV file)
-                //String csvData = PID + "," + A + "," + B + "\n";
                 String avg_speed = calculateAvgList(km_speed);
                 String Vin = "Vinhere";
                 String avg_fuelRate = "24";
@@ -939,7 +936,23 @@ public class MainActivity extends AppCompatActivity {
         Maf_text.setTextSize(textSize);
         Maf.setTextSize(textSize);
         Info.setTextSize(newTextSize);
-        speed.setTextSize(newTextSize);
+        engineSpeedtext.setTextSize(newTextSize);
+        engineSpeed.setTextSize(newTextSize);
+        vehicleSpeedtext.setTextSize(newTextSize);
+        vehicleSpeed.setTextSize(newTextSize);
+
+        intakeAirtemptext.setTextSize(newTextSize);
+        intakeAirtemp.setTextSize(newTextSize);
+        mafAirFlowtext.setTextSize(newTextSize);
+        mafAirFlow.setTextSize(newTextSize);
+        throttlePositiontext.setTextSize(newTextSize);
+        throttlePosition.setTextSize(newTextSize);
+        runTimeEngStarttext.setTextSize(newTextSize);
+        runTimeEngStart.setTextSize(newTextSize);
+        fuelRailPressuretext.setTextSize(newTextSize);
+        fuelRailPressure.setTextSize(newTextSize);
+        distTraveledtext.setTextSize(newTextSize);
+        distTraveled.setTextSize(newTextSize);
     }
 
     public void invisibleCMD() {
@@ -965,7 +978,25 @@ public class MainActivity extends AppCompatActivity {
         airTemperature.setVisibility(View.VISIBLE);
         Maf_text.setVisibility(View.VISIBLE);
         Maf.setVisibility(View.VISIBLE);
-        speed.setVisibility(View.VISIBLE);
+        engineSpeedtext.setVisibility(View.VISIBLE);
+        engineSpeed.setVisibility(View.VISIBLE);
+        vehicleSpeedtext.setVisibility(View.VISIBLE);
+        vehicleSpeed.setVisibility(View.VISIBLE);
+
+        intakeAirtemptext.setVisibility(View.VISIBLE);
+        intakeAirtemp.setVisibility(View.VISIBLE);
+        mafAirFlowtext.setVisibility(View.VISIBLE);
+        mafAirFlow.setVisibility(View.VISIBLE);
+        throttlePositiontext.setVisibility(View.VISIBLE);
+        throttlePosition.setVisibility(View.VISIBLE);
+        runTimeEngStarttext.setVisibility(View.VISIBLE);
+        runTimeEngStart.setVisibility(View.VISIBLE);
+        fuelRailPressuretext.setVisibility(View.VISIBLE);
+        fuelRailPressure.setVisibility(View.VISIBLE);
+        distTraveledtext.setVisibility(View.VISIBLE);
+        distTraveled.setVisibility(View.VISIBLE);
+
+
     }
 
     public void visibleCMD() {
@@ -983,7 +1014,23 @@ public class MainActivity extends AppCompatActivity {
         airTemperature.setVisibility(View.INVISIBLE);
         Maf_text.setVisibility(View.INVISIBLE);
         Maf.setVisibility(View.INVISIBLE);
-        speed.setVisibility(View.INVISIBLE);
+        engineSpeedtext.setVisibility(View.INVISIBLE);
+        engineSpeed.setVisibility(View.INVISIBLE);
+        vehicleSpeedtext.setVisibility(View.INVISIBLE);
+        vehicleSpeed.setVisibility(View.INVISIBLE);
+
+        intakeAirtemptext.setVisibility(View.INVISIBLE);
+        intakeAirtemp.setVisibility(View.INVISIBLE);
+        mafAirFlowtext.setVisibility(View.INVISIBLE);
+        mafAirFlow.setVisibility(View.INVISIBLE);
+        throttlePositiontext.setVisibility(View.INVISIBLE);
+        throttlePosition.setVisibility(View.INVISIBLE);
+        runTimeEngStarttext.setVisibility(View.INVISIBLE);
+        runTimeEngStart.setVisibility(View.INVISIBLE);
+        fuelRailPressuretext.setVisibility(View.INVISIBLE);
+        fuelRailPressure.setVisibility(View.INVISIBLE);
+        distTraveledtext.setVisibility(View.INVISIBLE);
+        distTraveled.setVisibility(View.INVISIBLE);
 
         mConversationView.setVisibility(View.VISIBLE);
         mOutEditText.setVisibility(View.VISIBLE);
@@ -1106,6 +1153,15 @@ public class MainActivity extends AppCompatActivity {
         airTemperature.setText("0 C°");
         Maf.setText("0 g/s");
         Fuel.setText("0 - 0 l/h");
+        engineSpeed.setText("0 rpm");
+        vehicleSpeed.setText("0 km/h");
+        intakeAirtemp.setText("0 C°");
+        mafAirFlow.setText("0 g/s");
+        throttlePosition.setText("0 %");
+        runTimeEngStart.setText("0 s");
+        fuelRailPressure.setText("0 kPa");
+        distTraveled.setText("0 km");
+
         //cause the elm to reinitialize, and clear the array of text
         m_getPids = false;
         whichCommand = 0;
@@ -1619,9 +1675,8 @@ public class MainActivity extends AppCompatActivity {
             voltage.setText(VoltText);
         }
     }
-//calculating the pids
+    //calculating the pids
     private void calculateEcuValues(int PID, int A, int B) {
-        Log.d("EcuValues", "Processing PID: " + PID + ", A: " + A + ", B: " + B);
 
         double val = 0;
         int intval = 0;
@@ -1651,7 +1706,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case 5://PID(05): Coolant Temperature
-                // A-40
+                //A-40
                 tempC = A - 40;
                 coolantTemp = tempC;
                 String coolantMessage = Integer.toString(coolantTemp) + " C°";
@@ -1661,9 +1716,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case 11://PID(0B)
-                // A
+                //A
                 mConversationArrayAdapter.add("Intake Man Pressure: " + Integer.toString(A) + " kPa");
-
                 break;
 
             case 12: //PID(0C): RPM
@@ -1671,15 +1725,18 @@ public class MainActivity extends AppCompatActivity {
                 val = ((A * 256) + B) / 4;
                 intval = (int) val;
                 rpmval = intval;
+                String engineSpeedMessage = Integer.toString(intval) + " rpm";
+                engineSpeed.setText(engineSpeedMessage);
                 //new code to add to array
                 mConversationArrayAdapter.add("Engine Speed: " + Integer.toString(rpmval) + " rpm");
-
                 break;
 
 
             case 13://PID(0D): KM
                 // A
                 //new code to add to array
+                String vehicleSpeedMessage = Integer.toString(A) + " km/h";
+                vehicleSpeed.setText(vehicleSpeedMessage);
                 mConversationArrayAdapter.add("Vehicle Speed: " + Integer.toString(A) + " km/h");
                 //new code to add to an array list for the averages to be sent to DB
                 km_speed.add(A);
@@ -1699,21 +1756,25 @@ public class MainActivity extends AppCompatActivity {
                 val = ((256 * A) + B) / 100;
                 mMaf = (int) val;
                 String mafMessage = Integer.toString(intval) + " g/s";
-                Maf.setText(mafMessage);
+                mafAirFlow.setText(mafMessage);
                 mConversationArrayAdapter.add("Maf Air Flow: " + Integer.toString(mMaf) + " g/s");
                 break;
 
-            case 17://PID(11)
+            case 17://PID(11): throttle position
                 //A*100/255
                 val = A * 100 / 255;
                 intval = (int) val;
+                String posMsg = Integer.toString(intval) + " %";
+                throttlePosition.setText(posMsg);
                 mConversationArrayAdapter.add(" Throttle position: " + Integer.toString(intval) + " %");
                 break;
 
-            case 31: //PID(1F)
+            case 31: //PID(1F): run time
                 //256*A+B
                 val = (256 * A) + B;
                 intval = (int) val;
+                String runTimeMsg = Integer.toString(intval) + " s";
+                runTimeEngStart.setText(runTimeMsg);
                 mConversationArrayAdapter.add("Run time since engine start: " + Integer.toString(intval) + " seconds");
                 break;
 
@@ -1721,6 +1782,8 @@ public class MainActivity extends AppCompatActivity {
                 // ((A*256)+B)*0.079
                 val = ((A * 256) + B) * 0.079;
                 intval = (int) val;
+                String fuelRailMsg = Integer.toString(intval) + " kPa";
+                runTimeEngStart.setText(fuelRailMsg);
                 mConversationArrayAdapter.add("Fuel Rail Pressure: " + Integer.toString(intval) + " kPa");
                 break;
 
@@ -1728,6 +1791,8 @@ public class MainActivity extends AppCompatActivity {
                 //(256*A)+B km
                 val = (A * 256) + B;
                 intval = (int) val;
+                String distTravelMsg = Integer.toString(intval) + " km";
+                runTimeEngStart.setText(distTravelMsg);
                 mConversationArrayAdapter.add("Distance traveled: " + Integer.toString(intval) + " km");
                 break;
 

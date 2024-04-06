@@ -229,7 +229,7 @@
             android:gravity="start"
             android:text="Air Temp:"
             android:textColor="#aaa"
-            android:textSize="12sp"
+            android:textSize="15sp"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:textStyle="bold" />
@@ -237,12 +237,12 @@
             android:id="@+id/Airtemp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/Airtemp_text"
-            android:layout_alignParentStart="true"
+            android:layout_toEndOf="@id/Airtemp_text"
+            android:layout_alignBaseline="@id/Airtemp_text"
             android:gravity="center"
             android:text="0 C°"
             android:textColor="#99FFFF"
-            android:textSize="12sp"
+            android:textSize="15sp"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:textStyle="bold" />
@@ -255,34 +255,253 @@
             android:gravity="start"
             android:text="Maf Flow:"
             android:textColor="#aaa"
-            android:textSize="12sp"
+            android:textSize="15sp"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_marginTop="10dp" />
         <TextView
             android:id="@+id/Maf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/Maf_text"
-            android:layout_alignParentStart="true"
+            android:layout_toEndOf="@id/Maf_text"
+            android:layout_alignBaseline="@id/Maf_text"
             android:gravity="end"
             android:text="0 g/s"
             android:textColor="#99FFFF"
-            android:textSize="12sp"
+            android:textSize="15sp"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/Speeds"
+            android:id="@+id/Speed_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/Maf"
             android:gravity="start"
-            android:text="Speed:"
+            android:text="Engine Speed:"
             android:textColor="#aaa"
-            android:textSize="12sp"
+            android:textSize="15sp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/Speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/Speed_text"
+            android:layout_alignBaseline="@id/Speed_text"
+            android:gravity="end"
+            android:text="0 rpm"
+            android:textColor="#99FFFF"
+            android:textSize="15sp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/VehicleSpeed_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/Speed"
+            android:gravity="start"
+            android:text="Vehicle Speed:"
+            android:textColor="#aaa"
+            android:textSize="15sp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/VehicleSpeed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/VehicleSpeed_text"
+            android:layout_alignBaseline="@id/VehicleSpeed_text"
+            android:gravity="end"
+            android:text="0 km/h"
+            android:textColor="#99FFFF"
+            android:textSize="15sp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/IntakeAirtemp_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/VehicleSpeed"
+            android:gravity="start"
+            android:text="Intake Air Temp:"
+            android:textColor="#aaa"
+            android:textSize="15sp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/IntakeAirtemp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/IntakeAirtemp_text"
+            android:layout_alignBaseline="@id/IntakeAirtemp_text"
+            android:gravity="end"
+            android:text="0 C°"
+            android:textColor="#99FFFF"
+            android:textSize="15sp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/MafAirFlow_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/IntakeAirtemp"
+            android:gravity="start"
+            android:text="Maf Air Flow:"
+            android:textColor="#aaa"
+            android:textSize="15sp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/MafAirFlow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/MafAirFlow_text"
+            android:layout_alignBaseline="@id/MafAirFlow_text"
+            android:gravity="end"
+            android:text="0 g/s"
+            android:textColor="#99FFFF"
+            android:textSize="15sp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/ThrottlePosition_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/MafAirFlow_text"
+            android:gravity="start"
+            android:text="Throttle Position:"
+            android:textColor="#aaa"
+            android:textSize="15sp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/ThrottlePosition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/ThrottlePosition_text"
+            android:layout_alignBaseline="@id/ThrottlePosition_text"
+            android:gravity="end"
+            android:text="0 %"
+            android:textColor="#99FFFF"
+            android:textSize="15sp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/RunTimeEngStart_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/ThrottlePosition"
+            android:gravity="start"
+            android:text="Run time since engine start:"
+            android:textColor="#aaa"
+            android:textSize="15sp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/RunTimeEngStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/RunTimeEngStart_text"
+            android:layout_alignBaseline="@id/RunTimeEngStart_text"
+            android:gravity="end"
+            android:text="0 s"
+            android:textColor="#99FFFF"
+            android:textSize="15sp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/FuelRailPressure_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/RunTimeEngStart"
+            android:gravity="start"
+            android:text="Fuel Rail Pressure:"
+            android:textColor="#aaa"
+            android:textSize="15sp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/FuelRailPressure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/FuelRailPressure_text"
+            android:layout_alignBaseline="@id/FuelRailPressure_text"
+            android:gravity="end"
+            android:text="0 kPa"
+            android:textColor="#99FFFF"
+            android:textSize="15sp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/DistanceTraveled_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/FuelRailPressure"
+            android:gravity="start"
+            android:text="Distance Traveled:"
+            android:textColor="#aaa"
+            android:textSize="15sp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/DistanceTraveled"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/DistanceTraveled_text"
+            android:layout_alignBaseline="@id/DistanceTraveled_text"
+            android:gravity="end"
+            android:text="0 km"
+            android:textColor="#99FFFF"
+            android:textSize="15sp"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:textStyle="bold" />
@@ -299,6 +518,8 @@
             android:textSize="14sp"
             android:layout_marginTop="5dp"
             android:textStyle="bold" />
+
+
         <TextView
             android:id="@+id/info"
             android:layout_width="wrap_content"
