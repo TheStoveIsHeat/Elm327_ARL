@@ -98,7 +98,9 @@ public class MainActivity extends AppCompatActivity {
     //for collecting vehicle speed
     ArrayList<Integer> km_speed = new ArrayList<Integer>();
     String saveLocation = "/storage/emulated/0/Download";
-    String fileName = "pid_data.csv";
+    int fileCount = 0;
+    String fileName = "pid_data" + fileCount + ".csv";
+
 
     String VIN = "";
     //String random VIN
@@ -542,13 +544,21 @@ public class MainActivity extends AppCompatActivity {
 
         mSendtoDB.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // Assume you have a File object named csvFile representing your CSV file
-                File csvFile = new File(saveLocation, fileName);
-                mConversationArrayAdapter.add("User: Grabbing csv file at \"" + csvFile + "\"...");
-                mConversationArrayAdapter.add("User: Sending csv file to database...");
-                // Execute the AsyncTask to send data to the server
-                //insertData(csvFile);
-                CSVConsume.send(saveLocation + "/" + fileName);
+                while (fileCount > 0){
+                    // Assume you have a File object named csvFile representing your CSV file
+                    File csvFile = new File(saveLocation, fileName);
+                    mConversationArrayAdapter.add("User: Grabbing csv file at \"" + csvFile + "\"...");
+                    mConversationArrayAdapter.add("User: Sending csv file to database...");
+
+                    // Execute the AsyncTask to send data to the server
+                    CSVConsume.send(saveLocation + "/" + fileName);
+                    //Decrement file name
+                    fileCount = fileCount - 1;
+                    fileName = "pid_data" + fileCount + ".csv";
+                }
+
+
+
                 //mConversationArrayAdapter.add("User: Success! Deleting local csv file");
             }
         });
@@ -584,14 +594,13 @@ public class MainActivity extends AppCompatActivity {
                 mConversationArrayAdapter.add(driverID);
                  */
 
-                /*CSV Format
-                1. Trip, pre-fuel, post-fuel, pre_mpg, post_mpg, pre_mileage, post_mileage, VIN, driver, date, time
-                2. VIN, IdleTime, FuelRate, EngineOnTime, MPG, date, time
-                */
-
                 //append all the values in one large string to be sent to saveToCSV function
                 //Order of the values below ("Vin, AvgSpeed, FuelRate, IdleTime, EngineOnTime, MPG, Date, Time")
                 String csvData = VIN + ", " + avg_speed + ", " + avg_fuelRate + ", " + idleTime + ", " + engineOnTime + ", " + mileage + ", " + date + ", " + time;
+
+                //incrememnet file name
+                fileCount = fileCount + 1;
+                fileName = "pid_data" + fileCount + ".csv";
 
                 //calling func to save data to csv file
                 CSVConsume.saveToCSV(fileName, csvData);

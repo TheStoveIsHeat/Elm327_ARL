@@ -19,14 +19,12 @@ public class CSVConsume {
 
 
     static String saveLocation = "/storage/emulated/0/Download";
-    static String fileName = "pid_data.csv";
+    //static String fileName = "pid_data.csv";
 
     public static void send(String filePath) {
         String jdbcUrl = "jdbc:mysql://108.17.113.150:7790/arl_1442?autoReconnect=true&useSSL=false";
         String username = "main";
         String password = "IW4nt2C0nnect";
-
-        //String filePath="C:\\Users\\laser\\Desktop\\data.csv";
 
         Log.i("ToSQL", "Grabbing CSV from " + filePath);
 
