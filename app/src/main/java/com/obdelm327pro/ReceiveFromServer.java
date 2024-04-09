@@ -34,31 +34,38 @@ public class ReceiveFromServer {
             Log.d("Database Connection", "SUCCESS");
 
             String sql = "SELECT * FROM vehicle";
-            String [] data = new String [8];
+            String [][] data = new String [3][8];
 
             PreparedStatement statement = connection.prepareStatement(sql);
 
             ResultSet result = statement.executeQuery(sql);
 
-            result.next();
+            int rowCount = 0;
+            while(result.next())
+            {
+                data[rowCount][0] = result.getString(1);
+                Log.d("FromSQL", "Vin: " + data[0]);
+                data[rowCount][1] = result.getString(2);
+                Log.d("FromSQL", "AvgSpeed: " + data[1]);
+                data[rowCount][2] = result.getString(3);
+                Log.d("FromSQL", "IdleTime: " + data[2]);
+                data[rowCount][3] = result.getString(4);
+                Log.d("FromSQL", "FuelRate: " + data[3]);
+                data[rowCount][4] = result.getString(5);
+                Log.d("FromSQL", "EngineOn: " + data[4]);
+                data[rowCount][5] = result.getString(6);
+                Log.d("FromSQL", "MPG: " + data[5]);
+                data[rowCount][6] = result.getString(7);
+                Log.d("FromSQL", "Date: " + data[6]);
+                data[rowCount][7] = result.getString(8);
+                Log.d("FromSQL", "Time: " + data[7]);
+
+                rowCount++;
+            }
 
 
-            data[0] = result.getString(1);
-            Log.d("FromSQL", "Vin: " + data[0]);
-            data[1] = result.getString(2);
-            Log.d("FromSQL", "AvgSpeed: " + data[1]);
-            data[2] = result.getString(3);
-            Log.d("FromSQL", "IdleTime: " + data[2]);
-            data[3] = result.getString(4);
-            Log.d("FromSQL", "FuelRate: " + data[3]);
-            data[4] = result.getString(5);
-            Log.d("FromSQL", "EngineOn: " + data[4]);
-            data[5] = result.getString(6);
-            Log.d("FromSQL", "MPG: " + data[5]);
-            data[6] = result.getString(7);
-            Log.d("FromSQL", "Date: " + data[6]);
-            data[7] = result.getString(8);
-            Log.d("FromSQL", "Time: " + data[7]);
+
+
 
         } catch (Exception exception) {
             exception.printStackTrace();
