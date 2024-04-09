@@ -31,6 +31,7 @@ public class ReceiveFromServer {
             Class.forName("com.mysql.jdbc.Driver");
             connection = DriverManager.getConnection(jdbcUrl, username, password);
             connection.setAutoCommit(false);
+            Log.d("Database Connection", "SUCCESS");
 
             String sql = "SELECT * FROM vehicle";
             String [] data = new String [8];
