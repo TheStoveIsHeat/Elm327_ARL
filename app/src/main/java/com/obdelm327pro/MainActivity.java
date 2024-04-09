@@ -1213,6 +1213,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendEcuMessage(String message) {
+        //check if sent data is matching read data (TEST)
+        Log.d("sendEcuMessage", message);
         if( mWifiService != null)
         {
             if(mWifiService.isConnected())
@@ -1654,7 +1656,8 @@ public class MainActivity extends AppCompatActivity {
 
                     calculateEcuValues(PID, A, B);
 
-                    //print the pid msg to terminal
+                    //print the pid msg to terminal (TEST)
+                    Log.d("pid message before decoding it", tmpmsg);
                     mConversationArrayAdapter.add(tmpmsg);
 
                 }
