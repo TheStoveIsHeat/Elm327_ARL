@@ -1809,7 +1809,7 @@ public class MainActivity extends AppCompatActivity {
                 intval = (int) val;
                 String fuelRailMsg = Integer.toString(intval) + " kPa";
                 //this line below should be different?
-                runTimeEngStart.setText(fuelRailMsg);
+                fuelRailPressure.setText(fuelRailMsg);
                 mConversationArrayAdapter.add("Fuel Rail Pressure: " + Integer.toString(intval) + " kPa");
                 break;
 
@@ -1819,7 +1819,7 @@ public class MainActivity extends AppCompatActivity {
                 intval = (int) val;
                 String distTravelMsg = Integer.toString(intval) + " km";
                 //this line below sohuld be different?
-                runTimeEngStart.setText(distTravelMsg);
+                distTraveled.setText(distTravelMsg);
                 mConversationArrayAdapter.add("Distance traveled: " + Integer.toString(intval) + " km");
                 break;
 
