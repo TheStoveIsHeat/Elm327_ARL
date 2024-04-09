@@ -103,6 +103,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     String VIN = "";
+    String idleTime = "";
+    String engineOnTime = "";
+    String mileage = "";
+    ArrayList<Integer> fuelRate = new ArrayList<Integer>();
     //String random VIN
 
     public static final int MESSAGE_READ = 2;
@@ -160,7 +164,8 @@ public class MainActivity extends AppCompatActivity {
             THROTTLE_POSITION = "0111", //Throttle position 0 -100 % A*100/255
             OBD_STANDARDS = "011C", //OBD standards this vehicle
             FUEL_LEVEL = "012F", //Fuel level???
-            PIDS_SUPPORTED = "0120"; //PIDs supported
+            PIDS_SUPPORTED = "0120", //PIDs supported
+            GET_VIN = "0902"; // PID for getting vin
 
     Toolbar toolbar;
     AppBarLayout appbar;
@@ -575,11 +580,8 @@ public class MainActivity extends AppCompatActivity {
 
                 // Save the data to CSV file (new code to save to CSV file)
                 String avg_speed = calculateAvgList(km_speed);
-                String Vin = "Vinhere";
-                String avg_fuelRate = "24";
-                String idleTime = "27";
-                String engineOnTime = "3";
-                String mileage = "24";
+                //String Vin = "Vinhere";
+                String avg_fuelRate = calculateAvgList(fuelRate);
                 String date = "X/X/XXXX";
                 String time = "1500";
 
@@ -885,6 +887,9 @@ public class MainActivity extends AppCompatActivity {
 
                 int i = 0;
 
+                //VIN message
+                commandslist.add(i, GET_VIN);
+                i++;
                 commandslist.add(i, VOLTAGE);
 
                 if (preferences.getBoolean("checkboxENGINE_RPM", true)) {
@@ -1361,12 +1366,17 @@ public class MainActivity extends AppCompatActivity {
                     vinMsg.append(matcher.group());
                 }
 
+                mConversationArrayAdapter.add("VIN: " + vinMsg.toString().trim());
+                Log.d("VinDecode", "VIN = " + vinMsg.toString().trim());
                 return vinMsg.toString().trim();
             }
             else {
+                Log.d("VinDecode", "VIN Not found in hex string");
                 return "VIN not found in hex string.";
             }
         }
+        mConversationArrayAdapter.add("VIN: Not Found!");
+        Log.d("VinDecode", "VIN Not found!");
         return "VIN not found.";
     }
 
@@ -1787,6 +1797,7 @@ public class MainActivity extends AppCompatActivity {
                 val = (256 * A) + B;
                 intval = (int) val;
                 String runTimeMsg = Integer.toString(intval) + " s";
+                engineOnTime = Integer.toString(intval);
                 runTimeEngStart.setText(runTimeMsg);
                 mConversationArrayAdapter.add("Run time since engine start: " + Integer.toString(intval) + " seconds");
                 break;
@@ -1796,6 +1807,7 @@ public class MainActivity extends AppCompatActivity {
                 val = ((A * 256) + B) * 0.079;
                 intval = (int) val;
                 String fuelRailMsg = Integer.toString(intval) + " kPa";
+                //this line below should be different?
                 runTimeEngStart.setText(fuelRailMsg);
                 mConversationArrayAdapter.add("Fuel Rail Pressure: " + Integer.toString(intval) + " kPa");
                 break;
@@ -1805,6 +1817,7 @@ public class MainActivity extends AppCompatActivity {
                 val = (A * 256) + B;
                 intval = (int) val;
                 String distTravelMsg = Integer.toString(intval) + " km";
+                //this line below sohuld be different?
                 runTimeEngStart.setText(distTravelMsg);
                 mConversationArrayAdapter.add("Distance traveled: " + Integer.toString(intval) + " km");
                 break;
@@ -1833,6 +1846,7 @@ public class MainActivity extends AppCompatActivity {
                 //(256*A+B) / 20
                 val = ((256 * A) + B) / 20;
                 intval = (int) val;
+                fuelRate.add(intval);
                 mConversationArrayAdapter.add("Engine fuel rate: " + Integer.toString(intval) + " L/h");
 
             default:
