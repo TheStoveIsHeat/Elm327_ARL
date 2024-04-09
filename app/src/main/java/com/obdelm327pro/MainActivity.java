@@ -602,7 +602,7 @@ public class MainActivity extends AppCompatActivity {
 
                 //append all the values in one large string to be sent to saveToCSV function
                 //Order of the values below ("Vin, AvgSpeed, FuelRate, IdleTime, EngineOnTime, MPG, Date, Time")
-                mileage = String.valueOf(Integer.parseInt(avg_speed)/(Integer.parseInt(engineOnTime)/3600));
+                //mileage = String.valueOf(Integer.parseInt(avg_speed)/(Integer.parseInt(engineOnTime)/3600));
                 String csvData = VIN + ", " + avg_speed + ", " + avg_fuelRate + ", " + idleTime + ", " + engineOnTime + ", " + mileage + ", " + date + ", " + time;
                 //VIN, avg_speed, avg_fuelrate?, idletime(NEEDS WORK), engineOnTime, mileage, date(NEEDS WORK), time(NEEDS WORK)
 
@@ -1797,8 +1797,8 @@ public class MainActivity extends AppCompatActivity {
                 //256*A+B
                 val = (256 * A) + B;
                 intval = (int) val;
-                String runTimeMsg = Integer.toString(intval) + " s";
                 engineOnTime = Integer.toString(intval);
+                String runTimeMsg = engineOnTime + " s";
                 runTimeEngStart.setText(runTimeMsg);
                 mConversationArrayAdapter.add("Run time since engine start: " + Integer.toString(intval) + " seconds");
                 break;
@@ -1808,7 +1808,6 @@ public class MainActivity extends AppCompatActivity {
                 val = ((A * 256) + B) * 0.079;
                 intval = (int) val;
                 String fuelRailMsg = Integer.toString(intval) + " kPa";
-                //this line below should be different?
                 fuelRailPressure.setText(fuelRailMsg);
                 mConversationArrayAdapter.add("Fuel Rail Pressure: " + Integer.toString(intval) + " kPa");
                 break;
@@ -1817,8 +1816,8 @@ public class MainActivity extends AppCompatActivity {
                 //(256*A)+B km
                 val = (A * 256) + B;
                 intval = (int) val;
-                String distTravelMsg = Integer.toString(intval) + " km";
-                //this line below sohuld be different?
+                mileage = Integer.toString(intval);
+                String distTravelMsg = mileage + " km";
                 distTraveled.setText(distTravelMsg);
                 mConversationArrayAdapter.add("Distance traveled: " + Integer.toString(intval) + " km");
                 break;
