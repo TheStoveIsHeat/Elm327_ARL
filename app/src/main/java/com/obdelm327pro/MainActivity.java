@@ -538,7 +538,7 @@ public class MainActivity extends AppCompatActivity {
                 //String sPIDs = "0100";
                 //m_getPids = false;
                 //sendEcuMessage(sPIDs);
-                mConversationArrayAdapter.add("User: !!Not Yet Implemented!!");
+                //mConversationArrayAdapter.add("User: !!Not Yet Implemented!!");
             }
         });
         // Initialize the send button with a listener that for click events
@@ -602,7 +602,9 @@ public class MainActivity extends AppCompatActivity {
 
                 //append all the values in one large string to be sent to saveToCSV function
                 //Order of the values below ("Vin, AvgSpeed, FuelRate, IdleTime, EngineOnTime, MPG, Date, Time")
+                mileage = String.valueOf(Integer.parseInt(avg_speed)/(Integer.parseInt(engineOnTime)/3600));
                 String csvData = VIN + ", " + avg_speed + ", " + avg_fuelRate + ", " + idleTime + ", " + engineOnTime + ", " + mileage + ", " + date + ", " + time;
+                //VIN, avg_speed, avg_fuelrate?, idletime(NEEDS WORK), engineOnTime, mileage, date(NEEDS WORK), time(NEEDS WORK)
 
                 //incrememnet file name
                 fileCount = fileCount + 1;

@@ -23,13 +23,11 @@ public class DataHandler {
     static String password = "IW4nt2C0nnect";
 
     public static void send(String filePath) {
-
         Log.i("ToSQL", "Grabbing CSV from " + filePath);
 
         int batchSize = 20;
 
         Connection connection = null;
-
 
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -120,13 +118,7 @@ public class DataHandler {
 
     public static void request()
     {
-        //String jdbcUrl = "jdbc:mysql://108.17.113.150:7790/arl_1442?autoReconnect=true&useSSL=false";
-        //String username = "main";
-        //String password = "IW4nt2C0nnect";
-
         Log.i("FromSQL", "Grabbing data from database");
-
-        int batchSize = 20;
 
         Connection connection = null;
 
@@ -187,9 +179,6 @@ public class DataHandler {
             }
 */
 
-
-
-
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -198,17 +187,13 @@ public class DataHandler {
     // Function to save data to CSV file (new code)
     public static void saveToCSV(String fileName, String data) {
         try {
-            // Get the app's internal storage directory
-            //File directory = getFilesDir();
+            /// Create a new File object with the desired file name and location
             File directory = new File(saveLocation);
-            //mConversationArrayAdapter.add(String.valueOf(directory));
-            // Create a new File object with the desired file name
             File file = new File(directory, fileName);
-            // Create a FileOutputStream to write to the file
+            // Create a FileOutputStream to write to the file and OutputStreamWriter to write chars
             FileOutputStream fos = new FileOutputStream(file);
-            // Create an OutputStreamWriter to write characters to the FileOutputStream
             OutputStreamWriter osw = new OutputStreamWriter(fos);
-            // Write the header to the file
+            // Write the headers to the file
             osw.write("Vin, AvgSpeed, FuelRate, IdleTime, EngineOnTime, MPG, Date, Time");
             //New line
             osw.write(10);
@@ -223,7 +208,6 @@ public class DataHandler {
             // Handle IO exception
             e.printStackTrace();
             // Optional: Display an error message or log the error
-            //Toast.makeText(this, "Error saving data: " + e.getMessage(), Toast.LENGTH_LONG).show();
             Log.w("CSVConsume", "ERROR SAVING DATA: " + e.getMessage());
         }
     }
