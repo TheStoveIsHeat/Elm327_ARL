@@ -42,21 +42,21 @@ public class ReceiveFromServer {
 
             result.next();
 
-            data[0] = result.getString("VIN");
+            data[0] = result.getString(1);
             Log.d("FromSQL", "Vin: " + data[0]);
-            data[1] = result.getString("AvgSpeed");
+            data[1] = result.getString(2);
             Log.d("FromSQL", "AvgSpeed: " + data[1]);
-            data[2] = result.getString("IdleTime");
+            data[2] = result.getString(3);
             Log.d("FromSQL", "IdleTime: " + data[2]);
-            data[3] = result.getString("FuelRate");
+            data[3] = result.getString(4);
             Log.d("FromSQL", "FuelRate: " + data[3]);
-            data[4] = result.getString("EngineOn");
+            data[4] = result.getString(5);
             Log.d("FromSQL", "EngineOn: " + data[4]);
-            data[5] = result.getString("MPG");
+            data[5] = result.getString(6);
             Log.d("FromSQL", "MPG: " + data[5]);
-            data[6] = result.getString("D");
+            data[6] = result.getString(7);
             Log.d("FromSQL", "Date: " + data[6]);
-            data[7] = result.getString("T");
+            data[7] = result.getString(8);
             Log.d("FromSQL", "Time: " + data[7]);
 
 /*
