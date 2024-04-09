@@ -1322,7 +1322,7 @@ public class MainActivity extends AppCompatActivity {
             } else
             {
                 //print the pid msg to terminal
-                mConversationArrayAdapter.add(pidmsg);
+                //mConversationArrayAdapter.add(pidmsg);
             }
         }
         else if (tmpmsg.contains("49")) {
@@ -1652,6 +1652,9 @@ public class MainActivity extends AppCompatActivity {
 
                     calculateEcuValues(PID, A, B);
 
+                    //print the pid msg to terminal
+                    mConversationArrayAdapter.add(tmpmsg);
+
                 }
             }
             else if (index09 != -1) {
@@ -1666,11 +1669,7 @@ public class MainActivity extends AppCompatActivity {
 
                     calculateEcuValues(PID, A, B);
 
-                    // Save the data to CSV file (new code to save to CSV file)
-                    //may need to change location of code, since values may only be copied from func call
-                    //String csvData = PID + "," + A + "," + B + "\n";
-                    //calling func to save data to csv file
-                    //saveDataToCSV("pid_data.csv", csvData);
+
                 }
             }
         }
