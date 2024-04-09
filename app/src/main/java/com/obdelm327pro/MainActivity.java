@@ -533,7 +533,7 @@ public class MainActivity extends AppCompatActivity {
                 mConversationArrayAdapter.add("User: Requesting current data from database...");
 
 
-                ReceiveFromServer.receive();
+                DataHandler.request();
 
                 //String sPIDs = "0100";
                 //m_getPids = false;
@@ -560,7 +560,7 @@ public class MainActivity extends AppCompatActivity {
                     mConversationArrayAdapter.add("User: Sending csv file to database...");
 
                     // Execute the AsyncTask to send data to the server
-                    CSVConsume.send(saveLocation + "/" + fileName);
+                    DataHandler.send(saveLocation + "/" + fileName);
                     //Decrement file name
                     fileCount = fileCount - 1;
                     fileName = "pid_data" + fileCount + ".csv";
@@ -609,7 +609,7 @@ public class MainActivity extends AppCompatActivity {
                 fileName = "pid_data" + fileCount + ".csv";
 
                 //calling func to save data to csv file
-                CSVConsume.saveToCSV(fileName, csvData);
+                DataHandler.saveToCSV(fileName, csvData);
 
                 km_speed.clear(); //clearing the array list 
 
