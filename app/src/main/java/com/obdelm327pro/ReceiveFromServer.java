@@ -40,10 +40,9 @@ public class ReceiveFromServer {
 
             ResultSet result = statement.executeQuery(sql);
 
-            //while(result.next())
-            //{
+            result.next();
 
-            //}
+
             data[0] = result.getString(1);
             Log.d("FromSQL", "Vin: " + data[0]);
             data[1] = result.getString(2);
