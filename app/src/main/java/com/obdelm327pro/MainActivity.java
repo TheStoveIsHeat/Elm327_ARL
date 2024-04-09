@@ -526,6 +526,10 @@ public class MainActivity extends AppCompatActivity {
         mRetrieveDB.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 mConversationArrayAdapter.add("User: Requesting current data from database...");
+
+
+                ReceiveFromServer.receive();
+
                 //String sPIDs = "0100";
                 //m_getPids = false;
                 //sendEcuMessage(sPIDs);
