@@ -44,21 +44,21 @@ public class ReceiveFromServer {
             while(result.next())
             {
                 data[rowCount][0] = result.getString(1);
-                Log.d("FromSQL", "Vin: " + data[0]);
+                Log.d("FromSQL", "Vin: " + data[rowCount][0]);
                 data[rowCount][1] = result.getString(2);
-                Log.d("FromSQL", "AvgSpeed: " + data[1]);
+                Log.d("FromSQL", "AvgSpeed: " + data[rowCount][1]);
                 data[rowCount][2] = result.getString(3);
-                Log.d("FromSQL", "IdleTime: " + data[2]);
+                Log.d("FromSQL", "IdleTime: " + data[rowCount][2]);
                 data[rowCount][3] = result.getString(4);
-                Log.d("FromSQL", "FuelRate: " + data[3]);
+                Log.d("FromSQL", "FuelRate: " + data[rowCount][3]);
                 data[rowCount][4] = result.getString(5);
-                Log.d("FromSQL", "EngineOn: " + data[4]);
+                Log.d("FromSQL", "EngineOn: " + data[rowCount][4]);
                 data[rowCount][5] = result.getString(6);
-                Log.d("FromSQL", "MPG: " + data[5]);
+                Log.d("FromSQL", "MPG: " + data[rowCount][5]);
                 data[rowCount][6] = result.getString(7);
-                Log.d("FromSQL", "Date: " + data[6]);
+                Log.d("FromSQL", "Date: " + data[rowCount][6]);
                 data[rowCount][7] = result.getString(8);
-                Log.d("FromSQL", "Time: " + data[7]);
+                Log.d("FromSQL", "Time: " + data[rowCount][7]);
 
                 rowCount++;
             }
