@@ -348,7 +348,16 @@ public class MainActivity extends AppCompatActivity {
                         mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + tmpmsg);
                     }
 
-                    analyzeMsg(msg);
+                    //NEW CODE using thread for handling the data to update UI
+                    // Start a new thread to handle message analysis
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Analyze the message (may be tmpmsg)
+                            analyzeMsg(msg);
+                        }
+                    }).start();
+
                     break;
                 case MESSAGE_DEVICE_NAME:
                     // save the connected device's name
@@ -1213,7 +1222,6 @@ public class MainActivity extends AppCompatActivity {
 
             pidmsg.append(tmpmsg.substring(index));
             VIN = checkVinDecode(pidmsg.toString());
-            //mConversationArrayAdapter.add(pidmsg);
         }
         //check if 41 is present in the message, then set index to start from that number in the message and read to the length to check for the message
         else if (tmpmsg.contains("41")) {
@@ -1269,23 +1277,9 @@ public class MainActivity extends AppCompatActivity {
                     //decode pids
                     calculateEcuValues(PID, A, B);
 
+
                 }
             }
-//            else if (index09 != -1) {
-//
-//                tmpmsg = dataRecieved.substring(index09, dataRecieved.length());
-//
-//                if (tmpmsg.substring(0, 2).equals("49")) {
-//
-//                    PID = Integer.parseInt(tmpmsg.substring(2, 4), 16);
-//                    A = Integer.parseInt(tmpmsg.substring(4, 6), 16);
-//                    B = Integer.parseInt(tmpmsg.substring(6, 8), 16);
-//
-//                    calculateEcuValues(PID, A, B);
-//
-//
-//                }
-//            }
         }
     }
 
