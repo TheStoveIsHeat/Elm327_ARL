@@ -244,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
                     String tmpmsg = clearMsg(msg);
                     //This is kinda important, should need an if statement to not report everything as vin
                     //MAybe do a "if first two chars in the string are 09, send to new function meant to parse the vin/other vehicle info if we decide in future?
-                    mConversationArrayAdapter.add("VIN ???: " + msg.obj.toString());
+                    //mConversationArrayAdapter.add("VIN ???: " + msg.obj.toString());
 
                     Info.setText(tmpmsg);
 
@@ -463,7 +463,7 @@ public class MainActivity extends AppCompatActivity {
         fuelRailPressuretext = (TextView) findViewById(R.id.FuelRailPressure_text);
         fuelRailPressure = (TextView) findViewById(R.id.FuelRailPressure);
         distTraveledtext = (TextView) findViewById(R.id.DistanceTraveled_text);
-        distTraveled = (TextView) findViewById(R.id.FuelRailPressure);
+        distTraveled = (TextView) findViewById(R.id.DistanceTraveled);
 
 
         mOutEditText = (EditText) findViewById(R.id.edit_text_out);
@@ -531,14 +531,11 @@ public class MainActivity extends AppCompatActivity {
         mRetrieveDB.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 mConversationArrayAdapter.add("User: Requesting current data from database...");
-
-
                 DataHandler.request();
 
                 //String sPIDs = "0100";
                 //m_getPids = false;
                 //sendEcuMessage(sPIDs);
-                //mConversationArrayAdapter.add("User: !!Not Yet Implemented!!");
             }
         });
         // Initialize the send button with a listener that for click events
@@ -588,7 +585,7 @@ public class MainActivity extends AppCompatActivity {
                 //For vin?
                 sendEcuMessage("0902");
                 //For fuel level
-                sendEcuMessage("012F");
+                //sendEcuMessage("012F");
 
                 Date currentTime = Calendar.getInstance().getTime();
                 //Date date = DAY_OF_MONTH;
@@ -1061,109 +1058,6 @@ public class MainActivity extends AppCompatActivity {
         mSavetoCSV.setVisibility(View.VISIBLE);
     }
 
-//class to send data to server (performs network operation in the background)
-//private static class SendDataToServerTask extends AsyncTask<File, Void, Void> {
-//    @Override
-//    protected Void doInBackground(File... params) {
-//        // params[0] contains the data you want to send
-//        File fileToSend = params[0];
-//
-//        try {
-//            // replace "your_server_url" with your actual server URL
-//            URL url = new URL("66.211.207.130:3306");
-//            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-//
-//            // set the connection properties
-//            urlConnection.setRequestMethod("POST");
-//            urlConnection.setDoOutput(true);
-//
-//            // create a FileInputStream for the file
-//            FileInputStream fileInputStream = new FileInputStream(fileToSend);
-//
-//            // write the data to the output stream
-//            OutputStream os = urlConnection.getOutputStream();
-//            byte[] buffer = new byte[4096];
-//            int bytesRead;
-//
-//            // read data from the file and write it to the output stream
-//            while ((bytesRead = fileInputStream.read(buffer)) != -1) {
-//                os.write(buffer, 0, bytesRead);
-//            }
-//
-//            // close streams
-//            fileInputStream.close();
-//            os.close();
-//
-//            // get the response from the server (optional)
-//            int responseCode = urlConnection.getResponseCode();
-//            // you can handle the response code or server response here (did nothing with it)
-//            urlConnection.disconnect();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
-//}
-
-    public void insertData(File csvFile) {
-
-        class SendDataToServerTask extends AsyncTask<File, Void, String> {
-            @Override
-            protected String doInBackground(File... params) {
-
-                File csvFile = params[0];
-
-                try {
-                    //PHP script to handle CSV file
-                    URL url = new URL("http://example.com/insert_data.php");
-                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                    // set the connection properties
-                    urlConnection.setDoOutput(true);
-                    urlConnection.setRequestMethod("POST");
-
-                    // Set Content-Type to multipart/form-data
-                    urlConnection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + "*****");
-
-                    // Get the output stream of the connection
-                    OutputStream outputStream = urlConnection.getOutputStream();
-                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-
-                    // Attach CSV file
-                    FileInputStream fileInputStream = new FileInputStream(csvFile);
-                    byte[] buffer = new byte[4096];
-                    int bytesRead;
-
-                    while ((bytesRead = fileInputStream.read(buffer)) != -1) {
-                        outputStream.write(buffer, 0, bytesRead);
-                    }
-
-                    //close streams
-                    fileInputStream.close();
-                    outputStream.flush();
-                    outputStream.close();
-
-                    // get the response from the server (optional)
-                    int responseCode = urlConnection.getResponseCode();
-                    // Handle the response code or server response here (did nothing with it)
-                    urlConnection.disconnect();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return "Data Inserted Successfully";
-            }
-
-            @Override
-            protected void onPostExecute(String result) {
-                super.onPostExecute(result);
-                Toast.makeText(MainActivity.this, "Data Submit Successfully", Toast.LENGTH_LONG).show();
-            }
-        }
-
-        SendDataToServerTask sendPostReqAsyncTask = new SendDataToServerTask();
-        sendPostReqAsyncTask.execute(csvFile);
-    }
-
 //resetting the text values of the pids
     public void resetValues() {
         engineLoad.setText("0 %");
@@ -1310,32 +1204,91 @@ public class MainActivity extends AppCompatActivity {
 
         return tmpmsg;
     }
-
+//checking if data is valid then parsing it
     private void checkPids(String tmpmsg) {
+        StringBuilder pidmsg = new StringBuilder();
+        //checking if payload has 49 to signify a VIN
+        if (tmpmsg.contains("49")) {
+            int index = tmpmsg.indexOf("49");
+
+            pidmsg.append(tmpmsg.substring(index));
+            VIN = checkVinDecode(pidmsg.toString());
+            //mConversationArrayAdapter.add(pidmsg);
+        }
         //check if 41 is present in the message, then set index to start from that number in the message and read to the length to check for the message
-        if (tmpmsg.contains("41")) {
+        else if (tmpmsg.contains("41")) {
             //Old condition -> tmpmsg.indexOf("41") != -1
             int index = tmpmsg.indexOf("41");
 
-            String pidmsg = tmpmsg.substring(index, tmpmsg.length());
+            pidmsg.append(tmpmsg.substring(index, tmpmsg.length()));
 
-            if (pidmsg.contains("4100")) {
+            if (pidmsg.toString().contains("4100")) {
                 //printing the supported pids to the terminal
-                setPidsSupported(pidmsg);
+                setPidsSupported(pidmsg.toString());
                 return;
-            } else
-            {
-                //print the pid msg to terminal
-                //mConversationArrayAdapter.add(pidmsg);
+            } else {
+                //print the pid msg to log cat
+                Log.d("checkPids data", pidmsg.toString());
             }
         }
-        else if (tmpmsg.contains("49")) {
-            int index = tmpmsg.indexOf("49");
 
-            String pidmsg = tmpmsg.substring(index, tmpmsg.length());
-            mConversationArrayAdapter.add(pidmsg);
+        //parsing the data before decoding it
+        int A = 0;
+        int B = 0;
+        int PID = 0;
+
+        if ((pidmsg != null) && (pidmsg.toString().matches("^[0-9A-F]+$"))) {
+            //removes spaces
+            String pidString = pidmsg.toString().trim();
+            int index = pidmsg.indexOf("41");
+
+            //int index09 = pidmsg.indexOf("49");
+
+            //calculating values for mode 01
+            if (index != -1) {
+
+                String submsg = pidmsg.substring(index);
+
+                if (submsg.startsWith("41")) {
+                    Log.d("reg expression:", submsg);
+                    if (submsg.length() >= 8) {
+                        PID = Integer.parseInt(submsg.substring(2, 4), 16);
+                        A = Integer.parseInt(submsg.substring(4, 6), 16);
+                        B = Integer.parseInt(submsg.substring(6, 8), 16);
+                    }
+                    //FIX THIS SHIT
+                    else if (submsg.length() < 8) {
+                        PID = Integer.parseInt(submsg.substring(2, 4), 16);
+                        A = Integer.parseInt(submsg.substring(4, 5), 16);
+                        B = Integer.parseInt(submsg.substring(6, 7), 16);
+                    }
+
+
+                    //print the pid msg to terminal (TEST)
+                    Log.d("pid message before decoding it", String.valueOf(PID));
+                    //decode pids
+                    calculateEcuValues(PID, A, B);
+
+                }
+            }
+//            else if (index09 != -1) {
+//
+//                tmpmsg = dataRecieved.substring(index09, dataRecieved.length());
+//
+//                if (tmpmsg.substring(0, 2).equals("49")) {
+//
+//                    PID = Integer.parseInt(tmpmsg.substring(2, 4), 16);
+//                    A = Integer.parseInt(tmpmsg.substring(4, 6), 16);
+//                    B = Integer.parseInt(tmpmsg.substring(6, 8), 16);
+//
+//                    calculateEcuValues(PID, A, B);
+//
+//
+//                }
+//            }
         }
     }
+
     //new code for decoding Vin
     private String checkVinDecode(String msg){
         //check is message contains 49
@@ -1370,7 +1323,6 @@ public class MainActivity extends AppCompatActivity {
                     vinMsg.append(matcher.group());
                 }
 
-                mConversationArrayAdapter.add("VIN: " + vinMsg.toString().trim());
                 Log.d("VinDecode", "VIN = " + vinMsg.toString().trim());
                 return vinMsg.toString().trim();
             }
@@ -1379,7 +1331,6 @@ public class MainActivity extends AppCompatActivity {
                 return "VIN not found in hex string.";
             }
         }
-        mConversationArrayAdapter.add("VIN: Not Found!");
         Log.d("VinDecode", "VIN Not found!");
         return "VIN not found.";
     }
@@ -1414,9 +1365,8 @@ public class MainActivity extends AppCompatActivity {
             sendInitCommands();
         } else {
             //check if 41 is present in the message, then set index to start from that number in the message and read to the length to check for the message
-            checkPids(tmpmsg);
-            //add method to check for 49 (for decoding the VIN)
-            VIN = checkVinDecode(msg.obj.toString());
+            //try adding calculateecumessage method into checkpids method rather than analyzepids method
+            checkPids(tmpmsg);  //NEW CODE (redid function to check for valid data and parse the string accordingly)
 
             if (!m_getPids && m_dedectPids == 1) {
                 String sPIDs = "0100";
@@ -1429,12 +1379,12 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            try {
-                analyzePIDS(tmpmsg);
-            } catch (Exception e) {
-                String errorMessage = "Error : " + e.getMessage();
-                Info.setText(errorMessage);
-            }
+//            try {
+//                analyzePIDS(tmpmsg);
+//            } catch (Exception e) {
+//                String errorMessage = "Error : " + e.getMessage();
+//                Info.setText(errorMessage);
+//            }
 
             sendDefaultCommands();
         }
@@ -1628,57 +1578,6 @@ public class MainActivity extends AppCompatActivity {
         return sum.doubleValue() / listAvg.size();
     }
 
-
-    private void analyzePIDS(String dataRecieved) {
-
-        int A = 0;
-        int B = 0;
-        int PID = 0;
-
-        if ((dataRecieved != null) && (dataRecieved.matches("^[0-9A-F]+$"))) {
-            //removes spaces
-            dataRecieved = dataRecieved.trim();
-
-            int index = dataRecieved.indexOf("41");
-            int index09 = dataRecieved.indexOf("49");
-
-            String tmpmsg = null;
-            //calculating values for mode 01
-            if (index != -1) {
-
-                tmpmsg = dataRecieved.substring(index, dataRecieved.length());
-
-                if (tmpmsg.substring(0, 2).equals("41")) {
-
-                    PID = Integer.parseInt(tmpmsg.substring(2, 4), 16);
-                    A = Integer.parseInt(tmpmsg.substring(4, 6), 16);
-                    B = Integer.parseInt(tmpmsg.substring(6, 8), 16);
-
-                    calculateEcuValues(PID, A, B);
-
-                    //print the pid msg to terminal (TEST)
-                    Log.d("pid message before decoding it", tmpmsg);
-                    mConversationArrayAdapter.add(tmpmsg);
-
-                }
-            }
-            else if (index09 != -1) {
-
-                tmpmsg = dataRecieved.substring(index09, dataRecieved.length());
-
-                if (tmpmsg.substring(0, 2).equals("49")) {
-
-                    PID = Integer.parseInt(tmpmsg.substring(2, 4), 16);
-                    A = Integer.parseInt(tmpmsg.substring(4, 6), 16);
-                    B = Integer.parseInt(tmpmsg.substring(6, 8), 16);
-
-                    calculateEcuValues(PID, A, B);
-
-
-                }
-            }
-        }
-    }
 
 //printing the voltage to terminal
     private void generateVolt(String msg) {
