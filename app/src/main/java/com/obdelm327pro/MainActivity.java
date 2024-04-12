@@ -482,7 +482,7 @@ public class MainActivity extends AppCompatActivity {
         //key for commands
         //ATZ reset all
         //ATDP Describe the current Protocol
-        //ATAT0-1-2 Adaptive Timing Off - daptive Timing Auto1 - daptive Timing Auto2
+        //ATAT0-1-2 Adaptive Timing Off - adaptive Timing Auto1 - adaptive Timing Auto2
         //ATE0-1 Echo Off - Echo On
         //ATSP0 Set Protocol to Auto and save it
         //ATMA Monitor All
