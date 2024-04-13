@@ -125,7 +125,15 @@ public class MainActivity extends AppCompatActivity {
             "01", "02", "03", "04", "05", "06", "07", "08",
             "09", "0A", "0B", "0C", "0D", "0E", "0F", "10",
             "11", "12", "13", "14", "15", "16", "17", "18",
-            "19", "1A", "1B", "1C", "1D", "1E", "1F", "20"};
+            "19", "1A", "1B", "1C", "1D", "1E", "1F", "20",
+            "21", "22", "23", "24", "25", "26", "27", "28",
+            "29", "2A", "2B", "2C", "2D", "2E", "2F", "30",
+            "31", "32", "33", "34", "35", "36", "37", "38",
+            "39", "3A", "3B", "3C", "3D", "3E", "3F", "40",
+            "41", "42", "43", "44", "45", "46", "47", "48",
+            "49", "4A", "4B", "4C", "4D", "4E", "4F", "50",
+            "51", "52", "53", "54", "55", "56", "57", "58",
+            "59", "5A", "5B", "5C", "5D", "5E", "5F", "60",};
 
     // Intent request codes
     private static final int REQUEST_CONNECT_DEVICE = 2;
@@ -181,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
     private String mConnectedDeviceName = "Ecu";
     private int rpmval = 0, intakeairtemp = 0, ambientairtemp = 0, coolantTemp = 0, mMaf = 0,
             engineoiltemp = 0, b1s1temp = 0, Enginetype = 0, FaceColor = 0,
-            whichCommand = 0, m_dedectPids = 0, connectcount = 0, trycount = 0;
+            whichCommand = 0, m_detectPids = 0, connectcount = 0, trycount = 0;
     private int mEnginedisplacement = 1500;
     // Local Bluetooth adapter
     private BluetoothAdapter mBluetoothAdapter = null;
@@ -630,7 +638,8 @@ public class MainActivity extends AppCompatActivity {
 
         mOutEditText.setOnEditorActionListener(mWriteListener);
 
-        ConstraintLayout rlayout = (ConstraintLayout) findViewById(R.id.mainscreen);
+        //ConstraintLayout clayout = (ConstraintLayout) findViewById(R.id.mainscreen);
+        RelativeLayout rlayout = (RelativeLayout) findViewById(R.id.mainscreen);
         rlayout.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -882,9 +891,9 @@ public class MainActivity extends AppCompatActivity {
 
             mEnginedisplacement = Integer.parseInt(preferences.getString("Enginedisplacement", "1500"));
 
-            m_dedectPids = Integer.parseInt(preferences.getString("DedectPids", "0"));
+            m_detectPids = Integer.parseInt(preferences.getString("DetectPids", "0"));
 
-            if (m_dedectPids == 0) {
+            if (m_detectPids == 0) {
 
                 commandslist.clear();
 
@@ -1113,7 +1122,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void sendEcuMessage(String message) {
         //check if sent data is matching read data (TEST)
-        Log.d("sendEcuMessage1", message);
+        Log.d("sendEcuMessage", message);
         if( mWifiService != null)
         {
             if(mWifiService.isConnected())
@@ -1366,7 +1375,7 @@ public class MainActivity extends AppCompatActivity {
             //try adding calculateecumessage method into checkpids method rather than analyzepids method
             checkPids(tmpmsg);  //NEW CODE (redid function to check for valid data and parse the string accordingly)
 
-            if (!m_getPids && m_dedectPids == 1) {
+            if (!m_getPids && m_detectPids == 1) {
                 String sPIDs = "0100";
                 sendEcuMessage(sPIDs);
                 return;
@@ -1554,6 +1563,7 @@ public class MainActivity extends AppCompatActivity {
                     supportedPID.append(" " + PIDS[j] + " ");
                     if (!PIDS[j].contains("11") && !PIDS[j].contains("01") && !PIDS[j].contains("20")) {
                         commandslist.add(pid, "01" + PIDS[j]);
+                        Log.i("RewriteCommandslist", PIDS[j] + " written to " + j);
                         pid++;
                     }
                 }
