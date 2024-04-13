@@ -38,6 +38,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 
 import java.time.DayOfWeek;
@@ -635,7 +636,7 @@ public class MainActivity extends AppCompatActivity {
 
         mOutEditText.setOnEditorActionListener(mWriteListener);
 
-        RelativeLayout rlayout = (RelativeLayout) findViewById(R.id.mainscreen);
+        ConstraintLayout rlayout = (ConstraintLayout) findViewById(R.id.mainscreen);
         rlayout.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -899,6 +900,7 @@ public class MainActivity extends AppCompatActivity {
                 commandslist.add(i, GET_VIN);
                 i++;
                 commandslist.add(i, VOLTAGE);
+                i++;
 
                 if (preferences.getBoolean("checkboxENGINE_RPM", true)) {
                     commandslist.add(i, ENGINE_RPM);
@@ -1117,7 +1119,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void sendEcuMessage(String message) {
         //check if sent data is matching read data (TEST)
-        Log.d("sendEcuMessage", message);
+        Log.d("sendEcuMessage1", message);
         if( mWifiService != null)
         {
             if(mWifiService.isConnected())
@@ -1162,6 +1164,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             String send = initializeCommands[whichCommand];
+
             sendEcuMessage(send);
 
             if (whichCommand == initializeCommands.length - 1) {
@@ -1184,6 +1187,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             String send = commandslist.get(whichCommand);
+            Log.d("whichCommand", whichCommand + " | " + commandslist.get(whichCommand));
             sendEcuMessage(send);
 
             if (whichCommand >= commandslist.size() - 1) {
@@ -1267,8 +1271,7 @@ public class MainActivity extends AppCompatActivity {
                     //FIX THIS SHIT
                     else if (submsg.length() < 8) {
                         PID = Integer.parseInt(submsg.substring(2, 4), 16);
-                        A = Integer.parseInt(submsg.substring(4, 5), 16);
-                        B = Integer.parseInt(submsg.substring(6, 7), 16);
+                        A = Integer.parseInt(submsg.substring(4, 6), 16);
                     }
 
 
@@ -1539,8 +1542,9 @@ public class MainActivity extends AppCompatActivity {
             }
 
             commandslist.clear();
-            commandslist.add(0, VOLTAGE);
-            int pid = 1;
+            commandslist.add(0, GET_VIN);
+            commandslist.add(1, VOLTAGE);
+            int pid = 2;
 
             StringBuilder supportedPID = new StringBuilder();
             supportedPID.append("Supported PIDS:\n");
@@ -1647,6 +1651,7 @@ public class MainActivity extends AppCompatActivity {
                 rpmval = intval;
                 String engineSpeedMessage = Integer.toString(intval) + " rpm";
                 engineSpeed.setText(engineSpeedMessage);
+                Log.d("enginespeed text:", engineSpeedMessage);
                 //new code to add to array
                 mConversationArrayAdapter.add("Engine Speed: " + Integer.toString(rpmval) + " rpm");
                 break;
