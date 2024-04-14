@@ -115,7 +115,15 @@ public class MainActivity extends AppCompatActivity {
             "01", "02", "03", "04", "05", "06", "07", "08",
             "09", "0A", "0B", "0C", "0D", "0E", "0F", "10",
             "11", "12", "13", "14", "15", "16", "17", "18",
-            "19", "1A", "1B", "1C", "1D", "1E", "1F", "20"};
+            "19", "1A", "1B", "1C", "1D", "1E", "1F", "20",
+            "21", "22", "23", "24", "25", "26", "27", "28",
+            "29", "2A", "2B", "2C", "2D", "2E", "2F", "30",
+            "31", "32", "33", "34", "35", "36", "37", "38",
+            "39", "3A", "3B", "3C", "3D", "3E", "3F", "40",
+            "41", "42", "43", "44", "45", "46", "47", "48",
+            "49", "4A", "4B", "4C", "4D", "4E", "4F", "50",
+            "51", "52", "53", "54", "55", "56", "57", "58",
+            "59", "5A", "5B", "5C", "5D", "5E", "5F", "60",};
 
     // Intent request codes
     private static final int REQUEST_CONNECT_DEVICE = 2;
@@ -139,23 +147,32 @@ public class MainActivity extends AppCompatActivity {
             PROTOCOL = "ATDP",
             RESET = "ATZ",
             PIDS_SUPPORTED20 = "0100",
-            ENGINE_COOLANT_TEMP = "0105",  //A-40
-            ENGINE_RPM = "010C",  //((A*256)+B)/4
+            STATUS_DTC = "0101", //Status since DTC Cleared
             ENGINE_LOAD = "0104",  // A*100/255
+            ENGINE_COOLANT_TEMP = "0105",  //A-40
+            INTAKE_MAN_PRESSURE = "010B", //Intake manifold absolute pressure 0 - 255 kPa
+            ENGINE_RPM = "010C",  //((A*256)+B)/4
             VEHICLE_SPEED = "010D",  //A
             INTAKE_AIR_TEMP = "010F",  //A-40
             MAF_AIR_FLOW = "0110", //MAF air flow rate 0 - 655.35	grams/sec ((256*A)+B) / 100  [g/s]
-            ENGINE_OIL_TEMP = "015C",  //A-40
-            FUEL_RAIL_PRESSURE = "0122", // ((A*256)+B)*0.079
-            INTAKE_MAN_PRESSURE = "010B", //Intake manifold absolute pressure 0 - 255 kPa
-            CONT_MODULE_VOLT = "0142",  //((A*256)+B)/1000
-            AMBIENT_AIR_TEMP = "0146",  //A-40
-            CATALYST_TEMP_B1S1 = "013C",  //(((A*256)+B)/10)-40
-            STATUS_DTC = "0101", //Status since DTC Cleared
             THROTTLE_POSITION = "0111", //Throttle position 0 -100 % A*100/255
             OBD_STANDARDS = "011C", //OBD standards this vehicle
-            FUEL_LEVEL = "012F", //Fuel level???
-            PIDS_SUPPORTED = "0120", //PIDs supported
+            ENGINE_RUN_TIME = "011F", //Run Time since engine start 256A+B (s)
+            PIDS_SUPPORTED40 = "0120", //PIDs supported from 20-40
+            DISTANCE_MIL = "0121", //Distance traveled with Malfunction indicator 256A+B (km)
+            FUEL_RAIL_PRESSURE = "0122", // ((A*256)+B)*0.079
+            FUEL_INPUT = "012F", //Fuel tank level input ??? 100/255 * A
+            DISTANCE_SCC = "0131", //Distance since codes cleared 256A + B (km)
+            CATALYST_TEMP_B1S1 = "013C",  //(((A*256)+B)/10)-40
+            PIDS_SUPPORTED60 = "0140", //Supported Pids from 40-60
+            CONT_MODULE_VOLT = "0142",  //voltage of control module ((A*256)+B)/1000
+            AMBIENT_AIR_TEMP = "0146",  //A-40
+            TIME_MIL = "014D", //Time run with MIL 256A + B
+            TIME_SCC = "014E", //Time since codes cleared 256A + B
+            ETHANOL_PERC = "0152", //Ethanol fuel % 100/255 * A
+            REL_ACCEL_POS = "015A", //Relative accelator position 100/255 * A
+            ENGINE_OIL_TEMP = "015C",  //A-40
+            FUEL_RATE = "015E", //Engine fuel rate (256A + B)/20 L/h
             GET_VIN = "0902"; // PID for getting vin
 
     Toolbar toolbar;
@@ -171,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
     private String mConnectedDeviceName = "Ecu";
     private int rpmval = 0, intakeairtemp = 0, ambientairtemp = 0, coolantTemp = 0, mMaf = 0,
             engineoiltemp = 0, b1s1temp = 0, Enginetype = 0, FaceColor = 0,
-            whichCommand = 0, m_dedectPids = 0, connectcount = 0, trycount = 0;
+            whichCommand = 0, m_detectPids = 0, connectcount = 0, trycount = 0;
     private int mEnginedisplacement = 1500;
     // Local Bluetooth adapter
     private BluetoothAdapter mBluetoothAdapter = null;
@@ -362,6 +379,7 @@ public class MainActivity extends AppCompatActivity {
         if (index != -1) {
             commandslist.remove(index);
             Info.setText("Removed pid: " + pid);
+            Log.i("SupportedPIDS", "Removed PID: " + pid);
         }
     }
 
@@ -620,7 +638,8 @@ public class MainActivity extends AppCompatActivity {
 
         mOutEditText.setOnEditorActionListener(mWriteListener);
 
-        ConstraintLayout rlayout = (ConstraintLayout) findViewById(R.id.mainscreen);
+        //ConstraintLayout clayout = (ConstraintLayout) findViewById(R.id.mainscreen);
+        RelativeLayout rlayout = (RelativeLayout) findViewById(R.id.mainscreen);
         rlayout.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -872,48 +891,95 @@ public class MainActivity extends AppCompatActivity {
 
             mEnginedisplacement = Integer.parseInt(preferences.getString("Enginedisplacement", "1500"));
 
-            m_dedectPids = Integer.parseInt(preferences.getString("DedectPids", "0"));
+            m_detectPids = Integer.parseInt(preferences.getString("DetectPids", "0"));
 
-            if (m_dedectPids == 0) {
+            if (m_detectPids == 0) {
 
                 commandslist.clear();
 
                 int i = 0;
 
-                //VIN message
-                commandslist.add(i, GET_VIN);
+                commandslist.add(i, GET_VIN); //VIN 0902
                 i++;
-                commandslist.add(i, VOLTAGE);
+                commandslist.add(i, VOLTAGE); //ATRV
                 i++;
-
-                if (preferences.getBoolean("checkboxENGINE_RPM", true)) {
-                    commandslist.add(i, ENGINE_RPM);
-                    i++;
-                }
-
-                if (preferences.getBoolean("checkboxVEHICLE_SPEED", true)) {
-                    commandslist.add(i, VEHICLE_SPEED);
-                    i++;
-                }
-
                 if (preferences.getBoolean("checkboxENGINE_LOAD", true)) {
-                    commandslist.add(i, ENGINE_LOAD);
+                    commandslist.add(i, ENGINE_LOAD); // 0104
                     i++;
                 }
-
                 if (preferences.getBoolean("checkboxENGINE_COOLANT_TEMP", true)) {
-                    commandslist.add(i, ENGINE_COOLANT_TEMP);
+                    commandslist.add(i, ENGINE_COOLANT_TEMP); // 0105
                     i++;
                 }
-
+                if (preferences.getBoolean("checkboxENGINE_OIL_TEMP", true)) {
+                    commandslist.add(i, ENGINE_OIL_TEMP); // 015C
+                    i++;
+                }
+                if (preferences.getBoolean("checkboxENGINE_RPM", true)) {
+                    commandslist.add(i, ENGINE_RPM); // 010C
+                    i++;
+                }
+                if (preferences.getBoolean("checkboxVEHICLE_SPEED", true)) {
+                    commandslist.add(i, VEHICLE_SPEED); // 010D
+                    i++;
+                }
+                if (preferences.getBoolean("checkboxAMBIENT_AIR_TEMP", true)) {
+                    commandslist.add(i, AMBIENT_AIR_TEMP); // 0146
+                    i++;
+                }
                 if (preferences.getBoolean("checkboxINTAKE_AIR_TEMP", true)) {
-                    commandslist.add(i, INTAKE_AIR_TEMP);
+                    commandslist.add(i, INTAKE_AIR_TEMP); // 010F
                     i++;
                 }
-
                 if (preferences.getBoolean("checkboxMAF_AIR_FLOW", true)) {
-                    commandslist.add(i, MAF_AIR_FLOW);
+                    commandslist.add(i, MAF_AIR_FLOW); // 0110
+                    i++;
                 }
+                if (preferences.getBoolean("checkboxTHROTTLE_POSITION", true)) {
+                    commandslist.add(i, THROTTLE_POSITION); // 0111
+                    i++;
+                }
+                if (preferences.getBoolean("checkboxENGINE_RUN_TIME", true)) {
+                    commandslist.add(i, ENGINE_RUN_TIME); // 011F Time since start
+                    i++;
+                }
+                if (preferences.getBoolean("checkboxDISTANCE_MIL", true)) {
+                    commandslist.add(i, DISTANCE_MIL); // 0121
+                    i++;
+                }
+                if (preferences.getBoolean("checkboxTIME_MIL", true)) {
+                    commandslist.add(i, TIME_MIL); // 014D
+                    i++;
+                }
+                if (preferences.getBoolean("checkboxFUEL_RAIL_PRESSURE", true)) {
+                    commandslist.add(i, FUEL_RAIL_PRESSURE); // 0122
+                    i++;
+                }
+                if (preferences.getBoolean("checkboxFUEL_INPUT", true)) {
+                    commandslist.add(i, FUEL_INPUT); // 012F
+                    i++;
+                }
+                if (preferences.getBoolean("checkboxFUEL_RATE", true)) {
+                    commandslist.add(i, FUEL_RATE); // 015E
+                    i++;
+                }
+                if (preferences.getBoolean("checkboxDISTANCE_SCC", true)) {
+                    commandslist.add(i, DISTANCE_SCC); // 0131
+                    i++;
+                }
+                if (preferences.getBoolean("checkboxTIME_SCC", true)) {
+                    commandslist.add(i, TIME_SCC); // 014E
+                    i++;
+                }
+                if (preferences.getBoolean("checkboxETHANOL_PERC", true)) {
+                    commandslist.add(i, ETHANOL_PERC); // 0152
+                    i++;
+                }
+                if (preferences.getBoolean("checkboxREL_ACCEL_POS", true)) {
+                    commandslist.add(i, REL_ACCEL_POS); // 015A
+                }
+
+
 
                 whichCommand = 0;
             }
@@ -1103,7 +1169,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void sendEcuMessage(String message) {
         //check if sent data is matching read data (TEST)
-        Log.d("sendEcuMessage1", message);
+        Log.d("sendEcuMessage", message);
         if( mWifiService != null)
         {
             if(mWifiService.isConnected())
@@ -1356,7 +1422,7 @@ public class MainActivity extends AppCompatActivity {
             //try adding calculateecumessage method into checkpids method rather than analyzepids method
             checkPids(tmpmsg);  //NEW CODE (redid function to check for valid data and parse the string accordingly)
 
-            if (!m_getPids && m_dedectPids == 1) {
+            if (!m_getPids && m_detectPids == 1) {
                 String sPIDs = "0100";
                 sendEcuMessage(sPIDs);
                 return;
@@ -1501,7 +1567,7 @@ public class MainActivity extends AppCompatActivity {
         buf = buf.replace(" ", "");
         buf = buf.replace(">", "");
 
-        if (buf.indexOf("4100") == 0 || buf.indexOf("4120") == 0) {
+        if (buf.indexOf("4100") == 0 || buf.indexOf("4120") == 0 || buf.indexOf("4140") == 0) {
 
             for (int i = 0; i < 8; i++) {
                 String tmp = buf.substring(i + 4, i + 5);
@@ -1544,12 +1610,14 @@ public class MainActivity extends AppCompatActivity {
                     supportedPID.append(" " + PIDS[j] + " ");
                     if (!PIDS[j].contains("11") && !PIDS[j].contains("01") && !PIDS[j].contains("20")) {
                         commandslist.add(pid, "01" + PIDS[j]);
+                        Log.i("SupportedPIDS", "Added PID" + PIDS[j] + " to index " + j);
                         pid++;
                     }
                 }
             }
             m_getPids = true;
             mConversationArrayAdapter.add(mConnectedDeviceName + ": " + supportedPID.toString());
+            Log.i("SupportedPIDS", "List: " + supportedPID);
             whichCommand = 0;
             sendEcuMessage("ATRV"); //may not need this
 
