@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.tbiliyor.obdelm327pro.MainActivity">
+    tools:context="ARL1442obd.MainActivity">
 
     <item android:id="@+id/menu_connect_bt" android:title="@string/connectbt"/>
     <item android:id="@+id/menu_connect_wifi" android:title="@string/connectwifi"/>

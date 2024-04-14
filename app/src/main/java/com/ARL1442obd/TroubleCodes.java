@@ -1,4 +1,4 @@
-package com.obdelm327pro;
+package com.ARL1442obd;
 
 public class TroubleCodes {
 

@@ -1,4 +1,4 @@
-package com.obdelm327pro;
+package com.ARL1442obd;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
@@ -29,7 +29,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,21 +40,12 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 
-import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 //for converting to CSV (new code)
 import java.io.File;
-import java.io.OutputStreamWriter;
-import java.io.IOException;
 //for sending the data via wifi (new code)
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 //more for the server
-import android.os.AsyncTask;
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
 //For date and time when saving csv
 import java.util.Calendar;
 import java.util.Date;
