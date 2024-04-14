@@ -1,0 +1,601 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainscreen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="35sp"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ListView
+        android:id="@+id/in"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stackFromBottom="false"
+        android:transcriptMode="alwaysScroll"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appbar" />
+
+
+    <Button
+        android:id="@+id/button_send"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_margin="7dp"
+        android:background="@drawable/custom_button"
+        android:text="Send Command"
+        android:textColor="#FFF"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <Button
+        android:id="@+id/button_retrievedb"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_margin="7dp"
+        android:background="@drawable/custom_button"
+        android:text="Update From Database"
+        android:textColor="#FFF"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/button_send"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/button_send" />
+
+
+    <Button
+        android:id="@+id/button_sendDB"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_margin="7dp"
+        android:background="@drawable/custom_button"
+        android:text="Send to Database"
+        android:textColor="#FFF"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/button_retrievedb"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/button_send" />
+
+
+    <Button
+        android:id="@+id/button_saveCSV"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_margin="5dp"
+        android:layout_marginEnd="3dp"
+        android:background="@drawable/custom_button"
+        android:text="Save to CSV"
+        android:textColor="#FFF"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/button_troublecodes"
+        app:layout_constraintEnd_toEndOf="@+id/button_troublecodes"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <Button
+        android:id="@+id/button_troublecodes"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/custom_button"
+        android:text="Fault Codes"
+        android:textColor="#FFF"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/edit_text_out"
+        app:layout_constraintEnd_toEndOf="@+id/edit_text_out"
+        app:layout_constraintEnd_toStartOf="@+id/button_send"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <EditText
+        android:id="@+id/edit_text_out"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_margin="3dp"
+        android:imeOptions="flagNoExtractUi"
+        android:inputType="textShortMessage|textMultiLine"
+        android:maxLines="4"
+        android:text="atrv"
+        android:textColor="#FFF"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/button_troublecodes"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <TextView
+        android:id="@+id/Status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="10sp"
+        android:text="Not Connected"
+        android:textColor="#FCFAFA"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appbar" />
+
+
+    <TextView
+        android:id="@+id/Load_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:text="Ld: "
+        android:textColor="#FCFAFA"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/Load"
+        app:layout_constraintTop_toBottomOf="@+id/Status" />
+
+
+    <TextView
+        android:id="@+id/Load"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="0 %"
+        android:textColor="#4FFA0C"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/Temp_text"
+        app:layout_constraintTop_toBottomOf="@+id/Status" />
+
+
+    <TextView
+        android:id="@+id/Temp_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:text="  Tmp:  "
+        android:textColor="#FCFAFA"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/Center_text"
+        app:layout_constraintTop_toBottomOf="@+id/Status" />
+
+
+    <TextView
+        android:id="@+id/Center_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:text=""
+        android:textColor="#aaa"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Status" />
+
+
+    <TextView
+        android:id="@+id/Temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="0 C°"
+        android:textColor="#4FFA0C"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/Center_text"
+        app:layout_constraintTop_toBottomOf="@+id/Status" />
+
+
+    <TextView
+        android:id="@+id/Volt_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:text="  Volt: "
+        android:textColor="#FCFAFA"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/Temp"
+        app:layout_constraintTop_toBottomOf="@+id/Status" />
+
+
+    <TextView
+        android:id="@+id/Volt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="0 V"
+        android:textColor="#4FFA0C"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/Volt_text"
+        app:layout_constraintTop_toBottomOf="@+id/Status" />
+
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/scrollview_border"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/Fuel">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/Fuel"
+            app:layout_constraintBottom_toBottomOf= "parent" >
+
+            <TextView
+                android:id="@+id/Airtemp_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="Air Temp:"
+                android:textColor="#FCFAFA"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Fuel" />
+
+
+            <TextView
+                android:id="@+id/Airtemp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="0 C°"
+                android:textColor="#4FFA0C"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@id/Airtemp_text"
+                app:layout_constraintStart_toEndOf="@id/Airtemp_text" />
+
+
+            <TextView
+                android:id="@+id/Maf_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="start"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="Maf Flow:"
+                android:textColor="#FCFAFA"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Airtemp" />
+
+
+            <TextView
+                android:id="@+id/Maf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="0 g/s"
+                android:textColor="#4FFA0C"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@id/Maf_text"
+                app:layout_constraintStart_toEndOf="@id/Maf_text" />
+
+
+            <TextView
+                android:id="@+id/Speed_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="start"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="Engine Speed:"
+                android:textColor="#FCFAFA"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Maf" />
+
+
+            <TextView
+                android:id="@+id/Speed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="0 rpm"
+                android:textColor="#4FFA0C"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@id/Speed_text"
+                app:layout_constraintStart_toEndOf="@id/Speed_text" />
+
+
+            <TextView
+                android:id="@+id/VehicleSpeed_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="start"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="Vehicle Speed:"
+                android:textColor="#FCFAFA"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Speed" />
+
+
+            <TextView
+                android:id="@+id/VehicleSpeed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="0 km/h"
+                android:textColor="#4FFA0C"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@id/VehicleSpeed_text"
+                app:layout_constraintStart_toEndOf="@id/VehicleSpeed_text" />
+
+
+            <TextView
+                android:id="@+id/IntakeAirtemp_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="start"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="Intake Air Temp:"
+                android:textColor="#FCFAFA"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/VehicleSpeed" />
+
+
+            <TextView
+                android:id="@+id/IntakeAirtemp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="0 C°"
+                android:textColor="#4FFA0C"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@id/IntakeAirtemp_text"
+                app:layout_constraintStart_toEndOf="@id/IntakeAirtemp_text" />
+
+
+            <TextView
+                android:id="@+id/MafAirFlow_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="start"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="Maf Air Flow:"
+                android:textColor="#FCFAFA"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/IntakeAirtemp" />
+
+
+            <TextView
+                android:id="@+id/MafAirFlow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="0 g/s"
+                android:textColor="#4FFA0C"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@id/MafAirFlow_text"
+                app:layout_constraintStart_toEndOf="@id/MafAirFlow_text" />
+
+
+            <TextView
+                android:id="@+id/ThrottlePosition_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="start"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="Throttle Position:"
+                android:textColor="#FCFAFA"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/MafAirFlow_text" />
+
+
+            <TextView
+                android:id="@+id/ThrottlePosition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="0 %"
+                android:textColor="#4FFA0C"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@id/ThrottlePosition_text"
+                app:layout_constraintStart_toEndOf="@id/ThrottlePosition_text" />
+
+
+            <TextView
+                android:id="@+id/RunTimeEngStart_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="start"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="Run time since engine start:"
+                android:textColor="#FCFAFA"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ThrottlePosition" />
+
+
+            <TextView
+                android:id="@+id/RunTimeEngStart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="0 s"
+                android:textColor="#4FFA0C"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@id/RunTimeEngStart_text"
+                app:layout_constraintStart_toEndOf="@id/RunTimeEngStart_text" />
+
+
+            <TextView
+                android:id="@+id/FuelRailPressure_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="start"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="Fuel Rail Pressure:"
+                android:textColor="#FCFAFA"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/RunTimeEngStart" />
+
+
+            <TextView
+                android:id="@+id/FuelRailPressure"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="0 kPa"
+                android:textColor="#4FFA0C"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@id/FuelRailPressure_text"
+                app:layout_constraintStart_toEndOf="@id/FuelRailPressure_text" />
+
+
+            <TextView
+                android:id="@+id/DistanceTraveled_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="start"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="Distance Traveled:"
+                android:textColor="#FCFAFA"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/FuelRailPressure" />
+
+
+            <TextView
+                android:id="@+id/DistanceTraveled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="0 km"
+                android:textColor="#4FFA0C"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@id/DistanceTraveled_text" />
+
+        </LinearLayout>
+    </ScrollView>
+
+
+    <TextView
+        android:id="@+id/Fuel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:text="0 - 0 l/h"
+        android:textColor="#FFFF00"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Temp_text" />
+
+
+    <TextView
+        android:id="@+id/info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:gravity="center"
+        android:text=""
+        android:textColor="#FFFF00"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="680dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

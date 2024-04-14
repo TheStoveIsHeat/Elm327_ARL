@@ -421,7 +421,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_gauges);
+        setContentView(R.layout.main_activity);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -594,8 +594,6 @@ public class MainActivity extends AppCompatActivity {
                 String date = "X/X/XXXX";
                 String time = "1500";
 
-                //For vin?
-                sendEcuMessage("0902");
                 //For fuel level
                 //sendEcuMessage("012F");
 
@@ -639,7 +637,7 @@ public class MainActivity extends AppCompatActivity {
         mOutEditText.setOnEditorActionListener(mWriteListener);
 
         //ConstraintLayout clayout = (ConstraintLayout) findViewById(R.id.mainscreen);
-        RelativeLayout rlayout = (RelativeLayout) findViewById(R.id.mainscreen);
+        ConstraintLayout rlayout = (ConstraintLayout) findViewById(R.id.mainscreen);
         rlayout.setOnClickListener(new View.OnClickListener() {
 
             @Override
