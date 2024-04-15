@@ -584,7 +584,7 @@ public class MainActivity extends AppCompatActivity {
         mSavetoCSV.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //IDK HOW TO DO FUNCTIONS/CLASSES IN JAVA BUT THE CSV CALL WOULD GO HERE
-                mConversationArrayAdapter.clear(); //OLD LINE OF CODE FOR CLEARING CMD LIST
+                //mConversationArrayAdapter.clear(); //OLD LINE OF CODE FOR CLEARING CMD LIST
                 mConversationArrayAdapter.add("User: Saving data to CSV file at \"" + saveLocation + "\"...");
 
                 // Save the data to CSV file (new code to save to CSV file)
