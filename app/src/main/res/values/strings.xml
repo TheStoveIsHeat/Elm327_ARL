@@ -2,12 +2,16 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">1442 ARL - OBDII Reader</string>
 
+    <!-- Stats Menu -->
+    <string name="unsupported">--</string>
+
+
     <!--  BluetoothChat -->
     <string name="send">Send</string>
     <string name="not_connected">You are not connected to a device</string>
     <string name="title_connecting">Connecting...</string>
     <string name="title_connected_to">Connected to <xliff:g id="device_name">%1$s</xliff:g></string>
-    <string name="title_not_connected">Not connected</string>
+    <string name="title_not_connected">Not Connected</string>
     <string name="title_connected">Connected</string>
 
     <!--  DeviceListActivity -->
