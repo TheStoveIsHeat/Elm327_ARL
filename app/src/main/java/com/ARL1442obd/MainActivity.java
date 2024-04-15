@@ -1761,13 +1761,20 @@ public class MainActivity extends AppCompatActivity {
             mConversationArrayAdapter.add("Run time since engine start: " + Integer.toString(intval) + " seconds");
             break;
 
-        case 35://PID(23)
+        case 34://PID(22)
             // ((A*256)+B)*0.079
             val = ((A * 256) + B) * 0.079;
             intval = (int) val;
             String fuelRailMsg = Integer.toString(intval) + " kPa";
             fuelRailPressure.setText(fuelRailMsg);
             mConversationArrayAdapter.add("Fuel Rail Pressure: " + Integer.toString(intval) + " kPa");
+            break;
+
+        case 47://PID(2F)
+            // 100/255 * A
+            val = (100/255) * A;
+            intval = (int) val;
+            mConversationArrayAdapter.add("Fuel Input: " + Integer.toString(intval));
             break;
 
         case 49://PID(31)
