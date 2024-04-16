@@ -4,18 +4,42 @@
 
     <!-- Stats Menu -->
     <string name="unsupported">--</string>
+    <string name="ld_text">Ld: </string>
+    <string name="temp_text">  Tmp:  </string>
+    <string name="volt_text">  Volt: </string>
+    <string name="air_temp_text">Air Temp:</string>
+    <string name="maf_text">Maf Flow:</string>
+    <string name="speed_text">Engine Speed:</string>
+    <string name="vehicle_speed_text">Vehicle Speed:</string>
+    <string name="intake_air_text">Intake Air Temp:</string>
+    <string name="maf_airflow_text">Maf Air Flow:</string>
+    <string name="throttle_pos_text">Throttle Position:</string>
+    <string name="time_since_start_text">Run time since engine start:</string>
+    <string name="fuel_rail_pressure_text">Fuel Rail Pressure:</string>
+    <string name="distance_traveled_text">Distance Traveled:</string>
+    <string name="fuel_info_text">0 – 0 l/h</string>
 
+
+
+
+    <!-- Terminal Menu -->
+    <string name="button1">Save to CSV</string>
+    <string name="button2">Fault Codes</string>
+    <string name="button3">Send to Database</string>
+    <string name="button4">Update From Database</string>
+    <string name="button5">Send Command</string>
+    <string name="default_command">atrv</string>
 
     <!--  BluetoothChat -->
     <string name="send">Send</string>
     <string name="not_connected">You are not connected to a device</string>
-    <string name="title_connecting">Connecting...</string>
+    <string name="title_connecting">Connecting…</string>
     <string name="title_connected_to">Connected to <xliff:g id="device_name">%1$s</xliff:g></string>
     <string name="title_not_connected">Not Connected</string>
     <string name="title_connected">Connected</string>
 
     <!--  DeviceListActivity -->
-    <string name="scanning">Scanning for devices...</string>
+    <string name="scanning">Scanning for devices…</string>
     <string name="select_device">Select a device to connect</string>
     <string name="none_paired">No devices have been paired</string>
     <string name="none_found">No devices found</string>
@@ -40,7 +64,7 @@
     <string name="cut_off_value">Cutoff Value = 0.01</string>
     <string name="weights_value">Weights = 4</string>
     <string name="odometer_reading">Odometer Reading</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
      <string name="exit">Exit</string>
     <string name="set_odometer">Set Odometer</string>
