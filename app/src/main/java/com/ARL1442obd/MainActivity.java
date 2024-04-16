@@ -1748,9 +1748,9 @@ public class MainActivity extends AppCompatActivity {
                 // A - 40
                 tempC = A - 40;
                 intakeairtemp = tempC;
-                String airMessage = Integer.toString(intakeairtemp) + " C°";
-                airTemperature.setText(airMessage);
-                mConversationArrayAdapter.add("Intakeairtemp: " + Integer.toString(intakeairtemp) + " C°");
+                String intakeMessage = Integer.toString(intakeairtemp) + " C°";
+                intakeAirtemp.setText(intakeMessage);
+                mConversationArrayAdapter.add("Intake AirTemp: " + Integer.toString(intakeairtemp) + " C°");
                 break;
             case 16://PID(10): Maf
                 // ((256*A)+B) / 100  [g/s]
@@ -1820,6 +1820,8 @@ public class MainActivity extends AppCompatActivity {
                 // A-40 [DegC]
                 tempC = A - 40;
                 ambientairtemp = tempC;
+                String airMessage = Integer.toString(ambientairtemp) + " C°";
+                airTemperature.setText(airMessage);
                 mConversationArrayAdapter.add("Ambient AirTemp: " + ambientairtemp + " C°");
                 break;
             case 77://PID(4D)
