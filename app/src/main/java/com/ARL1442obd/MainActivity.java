@@ -580,8 +580,6 @@ public class MainActivity extends AppCompatActivity {
                     //Decrement file name
                     fileCount = fileCount - 1;
                     fileName = "obd_data" + fileCount + ".csv";
-
-
                 }
             }
         });
@@ -759,7 +757,8 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_terminal:
 
                 if (item.getTitle().equals("View Stats")) {
-                    commandmode = true;
+                    //Setting commandmode to true disables sending ECU messages while in Stats menu
+                    commandmode = false;
                     invisibleCMD();
                     item.setTitle(R.string.terminal);
                 } else {
