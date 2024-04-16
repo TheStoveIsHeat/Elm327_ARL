@@ -28,6 +28,7 @@ public class DataHandler {
         int batchSize = 20;
 
         Connection connection = null;
+        boolean success = false;
 
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -109,9 +110,21 @@ public class DataHandler {
             Log.d("ToSQL", "Committed ");
             connection.close();
             Log.i("ToSQL", "Data has been inserted successfully.");
+            success = true;
 
         } catch (Exception exception) {
             exception.printStackTrace();
+        }
+
+        if (success) {
+            File fdelete = new File(filePath);
+            if (fdelete.exists()) {
+                if (fdelete.delete()) {
+                    Log.i("ToSQL","File Deleted :" + filePath);
+                } else {
+                    Log.i("ToSQL","File not Deleted :" + filePath);
+                }
+            }
         }
 
     }
