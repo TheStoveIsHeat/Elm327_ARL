@@ -17,17 +17,18 @@ import android.util.Log;
 
 public class DataHandler {
     static String saveLocation = "/storage/emulated/0/Download";
-    //static String fileName = "pid_data.csv";
+    //static String fileName = "obd_data.csv";
     static String jdbcUrl = "jdbc:mysql://108.17.113.150:7790/arl_1442?autoReconnect=true&useSSL=false";
     static String username = "main";
     static String password = "IW4nt2C0nnect";
 
-    public static void send(String filePath) {
+    public static boolean send(String filePath) {
         Log.i("ToSQL", "Grabbing CSV from " + filePath);
 
         int batchSize = 20;
 
         Connection connection = null;
+        DriverManager.setLoginTimeout(10);
         boolean success = false;
 
         try {
@@ -35,7 +36,13 @@ public class DataHandler {
             connection = DriverManager.getConnection(jdbcUrl, username, password);
             connection.setAutoCommit(false);
 
-            String sql = "INSERT INTO vehicle(VIN,AvgSpeed,IdleTime,FuelRate,EngineOn,MPG) values(?,?,?,?,?,?)";
+            String sql = "INSERT INTO vehicle(VIN,AvgSpeed,IdleTime,FuelRate,EngineOn,MPG) values(?,?,?,?,?,?) " +
+                    "ON DUPLICATE KEY UPDATE " +
+                    "AvgSpeed = VALUES(AvgSpeed)," +
+                    "IdleTime = VALUES(IdleTime)," +
+                    "FuelRate = VALUES(FuelRate)," +
+                    "EngineOn = VALUES(EngineOn)," +
+                    "MPG = VALUES(MPG)";
 
             PreparedStatement statement = connection.prepareStatement(sql);
 
@@ -114,6 +121,7 @@ public class DataHandler {
 
         } catch (Exception exception) {
             exception.printStackTrace();
+            Log.w("ToSQL", "Error!: " + exception.getMessage());
         }
 
         if (success) {
@@ -126,13 +134,14 @@ public class DataHandler {
                 }
             }
         }
-
+        return success;
     }
 
     public static void request()
     {
         Log.i("FromSQL", "Grabbing data from database");
 
+        DriverManager.setLoginTimeout(10);
         Connection connection = null;
 
         try {
@@ -198,7 +207,8 @@ public class DataHandler {
     }
 
     // Function to save data to CSV file (new code)
-    public static void saveToCSV(String fileName, String data) {
+    public static boolean saveToCSV(String fileName, String data) {
+        boolean success = false;
         try {
             /// Create a new File object with the desired file name and location
             File directory = new File(saveLocation);
@@ -216,6 +226,7 @@ public class DataHandler {
             osw.close();
             fos.close();
             // Optional: Display a message or log success
+            success = true;
             // Toast.makeText(this, "Data saved to " + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             // Handle IO exception
@@ -223,5 +234,6 @@ public class DataHandler {
             // Optional: Display an error message or log the error
             Log.w("CSVConsume", "ERROR SAVING DATA: " + e.getMessage());
         }
+        return success;
     }
 }

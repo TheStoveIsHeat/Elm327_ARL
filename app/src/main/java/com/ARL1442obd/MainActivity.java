@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Integer> km_speed = new ArrayList<Integer>();
     String saveLocation = "/storage/emulated/0/Download";
     int fileCount = 0;
-    String fileName = "pid_data" + fileCount + ".csv";
+    String fileName = "obd_data" + fileCount + ".csv";
 
 
     String VIN = "";
@@ -562,18 +562,26 @@ public class MainActivity extends AppCompatActivity {
 
         mSendtoDB.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                if (fileCount == 0){
+                    mConversationArrayAdapter.add("User: No file to send!");
+                }
                 while (fileCount > 0){
                     // Assume you have a File object named csvFile representing your CSV file
                     File csvFile = new File(saveLocation, fileName);
-                    mConversationArrayAdapter.add("User: Grabbing csv file at \"" + csvFile + "\"...");
-                    mConversationArrayAdapter.add("User: Sending csv file to database...");
+                    mConversationArrayAdapter.add("User: Sending CSV from \"" + csvFile + "\"...");
 
                     // Execute the AsyncTask to send data to the server
-                    DataHandler.send(saveLocation + "/" + fileName);
-                    mConversationArrayAdapter.add("User: Success! Deleting local csv file");
+                    boolean sentSuccessfully = DataHandler.send(saveLocation + "/" + fileName);
+                    if (sentSuccessfully){
+                        mConversationArrayAdapter.add("User: Success! Deleting local CSV");
+                    }else {
+                        mConversationArrayAdapter.add("User: Failed to upload " + fileName + " check LogCat.");
+                    }
                     //Decrement file name
                     fileCount = fileCount - 1;
-                    fileName = "pid_data" + fileCount + ".csv";
+                    fileName = "obd_data" + fileCount + ".csv";
+
+
                 }
             }
         });
@@ -625,15 +633,24 @@ public class MainActivity extends AppCompatActivity {
                 //VIN, avg_speed, avg_fuelrate?, idletime(NEEDS WORK), engineOnTime, mileage, date(NEEDS WORK), time(NEEDS WORK)
 
                 //incrememnet file name
-                fileCount = fileCount + 1;
-                fileName = "pid_data" + fileCount + ".csv";
+                int tempCount = fileCount + 1;
+                fileName = "obd_data" + tempCount + ".csv";
 
                 //calling func to save data to csv file
-                DataHandler.saveToCSV(fileName, csvData);
+                boolean savedSuccessfully = DataHandler.saveToCSV(fileName, csvData);
 
-                km_speed.clear(); //clearing the array list 
+                if (savedSuccessfully){
+                    fileCount = tempCount;
+                    km_speed.clear(); //clearing the array list
+                    mConversationArrayAdapter.add("User: Success! File named \""+ fileName +"\"");
+                }
+                else {
+                    mConversationArrayAdapter.add("User: File failed to save as " + fileName + "! Check LogCat.");
 
-                mConversationArrayAdapter.add("User: Success! File named \""+ fileName +"\"");
+                }
+
+
+
             }
         });
 
