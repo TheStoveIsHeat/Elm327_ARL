@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
    */
     //for collecting vehicle speed
-    ArrayList<Integer> km_speed = new ArrayList<Integer>();
+    ArrayList<Integer> km_speed = new ArrayList<>();
     String saveLocation = "/storage/emulated/0/Download";
     int fileCount = 0;
     String fileName = "obd_data" + fileCount + ".csv";
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
     String idleTime = "";
     String engineOnTime = "";
     String mileage = "";
-    ArrayList<Integer> fuelRate = new ArrayList<Integer>();
+    ArrayList<Integer> fuelRate = new ArrayList<>();
     //String random VIN
 
     public static final int MESSAGE_READ = 2;
@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
 
     Toolbar toolbar;
     AppBarLayout appbar;
-    String trysend = null;
+    //String trysend = null;
     private PowerManager.WakeLock wl;
     private Menu menu;
     private EditText mOutEditText;
@@ -196,12 +196,13 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothService mBtService = null;
     private ObdWifiManager mWifiService = null;
 
-    StringBuilder inStream = new StringBuilder();
+    //StringBuilder inStream = new StringBuilder();
 
     // The Handler that gets information back from the BluetoothChatService
     // Array adapter for the conversation thread
     private ArrayAdapter<String> mConversationArrayAdapter;
 
+    @SuppressLint("HandlerLeak")
     private final Handler mWifiHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -217,6 +218,7 @@ public class MainActivity extends AppCompatActivity {
                                 itemtemp = menu.findItem(R.id.menu_connect_wifi);
                                 itemtemp.setTitle(R.string.disconnectwifi);
                             } catch (Exception e) {
+                                Log.w("WifiManager", "Error!: " + e.getMessage());
                             }
                             tryconnect = false;
                             //resetValues();
@@ -290,6 +292,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    @SuppressLint("HandlerLeak")
     private final Handler mBtHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -307,6 +310,7 @@ public class MainActivity extends AppCompatActivity {
                                 itemtemp.setTitle(R.string.disconnectbt);
                                 Info.setText(R.string.title_connected);
                             } catch (Exception e) {
+                                Log.w("BluetoothManager", "Error!: " + e.getMessage());
                             }
 
                             tryconnect = false;
@@ -378,7 +382,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (index != -1) {
             commandslist.remove(index);
-            Info.setText("Removed pid: " + pid);
+            String removeMsg = "Removed pid: " + pid;
+            Info.setText(removeMsg);
             Log.i("SupportedPIDS", "Removed PID: " + pid);
         }
     }
@@ -700,6 +705,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -725,6 +731,7 @@ public class MainActivity extends AppCompatActivity {
                         //                                          int[] grantResults)
                         // to handle the case where the user grants the permission. See the documentation
                         // for ActivityCompat#requestPermissions for more details.
+                        Log.i("BluetoothManager", "Consider using SelfPermission Check");
                     }
                     startActivityForResult(enableIntent, REQUEST_ENABLE_BT, null);
 
@@ -1031,6 +1038,7 @@ public class MainActivity extends AppCompatActivity {
             setTextSize();
 
         } catch (Exception e) {
+            Log.w("setDefaultOrientation", "Error!: " + e.getMessage());
         }
     }
 
@@ -1253,6 +1261,7 @@ public class MainActivity extends AppCompatActivity {
             currentdevice = device;
 
         } catch (Exception e) {
+            Log.w("connectBluetooth", "Error!: " + e.getMessage());
         }
     }
 
