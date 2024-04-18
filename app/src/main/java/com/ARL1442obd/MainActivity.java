@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mSendButton, mRetrieveDB, mTroublecodes, mSendtoDB, mSavetoCSV;
     private ListView mConversationView;
     private TextView engineLoad, Fuel, voltage, coolantTemperature, Status, Loadtext, Volttext, Temptext, Centertext, Info, Airtemp_text, airTemperature, Maf_text, Maf, engineSpeedtext, engineSpeed, vehicleSpeedtext, vehicleSpeed;
-    private TextView intakeAirtemptext, intakeAirtemp, mafAirFlowtext, mafAirFlow, throttlePositiontext, throttlePosition, runTimeEngStarttext, runTimeEngStart, fuelRailPressuretext, fuelRailPressure, distTraveledtext, distTraveled, ambientAirTemptext, ambientAirTemp, ethFueltext, ethFuel, engOilTemptext, engOilTemp, engFuelRatetext, enfFuelRate;
+    private TextView intakeAirtemptext, intakeAirtemp, mafAirFlowtext, mafAirFlow, throttlePositiontext, throttlePosition, runTimeEngStarttext, runTimeEngStart, fuelRailPressuretext, fuelRailPressure, distTraveledtext, distTraveled, catalystTemptext, catalystTemp, controlModuletext, controlModule, timeMILtext, timeMIL, timeCodeCleartext, timeCodeClear, ethFuelLeveltext, ethFuelLevel, relAccelPosttext, relAccelPost, engineOilTemptext,engineOilTemp, engFuelRatetext, engFuelRate;
     private String mConnectedDeviceName = "Ecu";
     private int rpmval = 0, intakeairtemp = 0, ambientairtemp = 0, coolantTemp = 0, mMaf = 0,
             engineoiltemp = 0, b1s1temp = 0, Enginetype = 0, FaceColor = 0,
@@ -463,7 +463,6 @@ public class MainActivity extends AppCompatActivity {
         engineSpeed = (TextView) findViewById(R.id.Speed);
         vehicleSpeedtext = (TextView) findViewById(R.id.VehicleSpeed_text);
         vehicleSpeed = (TextView) findViewById(R.id.VehicleSpeed);
-
         intakeAirtemptext = (TextView) findViewById(R.id.IntakeAirtemp_text);
         intakeAirtemp = (TextView) findViewById(R.id.IntakeAirtemp);
         mafAirFlowtext = (TextView) findViewById(R.id.MafAirFlow_text);
@@ -476,6 +475,22 @@ public class MainActivity extends AppCompatActivity {
         fuelRailPressure = (TextView) findViewById(R.id.FuelRailPressure);
         distTraveledtext = (TextView) findViewById(R.id.DistanceTraveled_text);
         distTraveled = (TextView) findViewById(R.id.DistanceTraveled);
+        catalystTemptext = (TextView) findViewById(R.id.CatalystTemp_text);
+        catalystTemp = (TextView) findViewById(R.id.CatalystTemp);
+        controlModuletext = (TextView) findViewById(R.id.Cont_Mod_text);
+        controlModule = (TextView) findViewById(R.id.Cont_Mod);
+        timeMILtext = (TextView) findViewById(R.id.Time_MIL_text);
+        timeMIL = (TextView) findViewById(R.id.Time_MIL);
+        timeCodeCleartext = (TextView) findViewById(R.id.Time_Code_Text);
+        timeCodeClear = (TextView) findViewById(R.id.Time_Code);
+        ethFuelLeveltext = (TextView) findViewById(R.id.Eth_Fuel_text);
+        ethFuelLevel = (TextView) findViewById(R.id.Eth_Fuel);
+        relAccelPosttext = (TextView) findViewById(R.id.Rel_Accel_text);
+        relAccelPost = (TextView) findViewById(R.id.Rel_Accel);
+        engineOilTemptext = (TextView) findViewById(R.id.Eng_Oil_Temp_text);
+        engineOilTemp = (TextView) findViewById(R.id.Eng_Oil_Temp);
+        engFuelRatetext= (TextView) findViewById(R.id.Eng_Fuel_Rate_text);
+        engFuelRate = (TextView) findViewById(R.id.Eng_Fuel_Rate);
 
 
         mOutEditText = (EditText) findViewById(R.id.edit_text_out);
@@ -1056,6 +1071,22 @@ public class MainActivity extends AppCompatActivity {
         fuelRailPressure.setTextSize(newTextSize);
         distTraveledtext.setTextSize(newTextSize);
         distTraveled.setTextSize(newTextSize);
+        catalystTemptext.setTextSize(newTextSize);
+        catalystTemp.setTextSize(newTextSize);
+        controlModuletext.setTextSize(newTextSize);
+        controlModule.setTextSize(newTextSize);
+        timeMILtext.setTextSize(newTextSize);
+        timeMIL.setTextSize(newTextSize);
+        timeCodeCleartext.setTextSize(newTextSize);
+        timeCodeClear.setTextSize(newTextSize);
+        ethFuelLeveltext.setTextSize(newTextSize);
+        ethFuelLevel.setTextSize(newTextSize);
+        relAccelPosttext.setTextSize(newTextSize);
+        relAccelPost.setTextSize(newTextSize);
+        engineOilTemptext.setTextSize(newTextSize);
+        engineOilTemp.setTextSize(newTextSize);
+        engFuelRatetext.setTextSize(newTextSize);
+        engFuelRate.setTextSize(newTextSize);
     }
 
     public void invisibleCMD() {
@@ -1085,7 +1116,6 @@ public class MainActivity extends AppCompatActivity {
         engineSpeed.setVisibility(View.VISIBLE);
         vehicleSpeedtext.setVisibility(View.VISIBLE);
         vehicleSpeed.setVisibility(View.VISIBLE);
-
         intakeAirtemptext.setVisibility(View.VISIBLE);
         intakeAirtemp.setVisibility(View.VISIBLE);
         mafAirFlowtext.setVisibility(View.VISIBLE);
@@ -1098,6 +1128,22 @@ public class MainActivity extends AppCompatActivity {
         fuelRailPressure.setVisibility(View.VISIBLE);
         distTraveledtext.setVisibility(View.VISIBLE);
         distTraveled.setVisibility(View.VISIBLE);
+        catalystTemptext.setVisibility(View.VISIBLE);
+        catalystTemp.setVisibility(View.VISIBLE);
+        controlModuletext.setVisibility(View.VISIBLE);
+        controlModule.setVisibility(View.VISIBLE);
+        timeMILtext.setVisibility(View.VISIBLE);
+        timeMIL.setVisibility(View.VISIBLE);
+        timeCodeCleartext.setVisibility(View.VISIBLE);
+        timeCodeClear.setVisibility(View.VISIBLE);
+        ethFuelLeveltext.setVisibility(View.VISIBLE);
+        ethFuelLevel.setVisibility(View.VISIBLE);
+        relAccelPosttext.setVisibility(View.VISIBLE);
+        relAccelPost.setVisibility(View.VISIBLE);
+        engineOilTemptext.setVisibility(View.VISIBLE);
+        engineOilTemp.setVisibility(View.VISIBLE);
+        engFuelRatetext.setVisibility(View.VISIBLE);
+        engFuelRate.setVisibility(View.VISIBLE);
 
 
     }
@@ -1121,7 +1167,6 @@ public class MainActivity extends AppCompatActivity {
         engineSpeed.setVisibility(View.INVISIBLE);
         vehicleSpeedtext.setVisibility(View.INVISIBLE);
         vehicleSpeed.setVisibility(View.INVISIBLE);
-
         intakeAirtemptext.setVisibility(View.INVISIBLE);
         intakeAirtemp.setVisibility(View.INVISIBLE);
         mafAirFlowtext.setVisibility(View.INVISIBLE);
@@ -1134,6 +1179,22 @@ public class MainActivity extends AppCompatActivity {
         fuelRailPressure.setVisibility(View.INVISIBLE);
         distTraveledtext.setVisibility(View.INVISIBLE);
         distTraveled.setVisibility(View.INVISIBLE);
+        catalystTemptext.setVisibility(View.INVISIBLE);
+        catalystTemp.setVisibility(View.INVISIBLE);
+        controlModuletext.setVisibility(View.INVISIBLE);
+        controlModule.setVisibility(View.INVISIBLE);
+        timeMILtext.setVisibility(View.INVISIBLE);
+        timeMIL.setVisibility(View.INVISIBLE);
+        timeCodeCleartext.setVisibility(View.INVISIBLE);
+        timeCodeClear.setVisibility(View.INVISIBLE);
+        ethFuelLeveltext.setVisibility(View.INVISIBLE);
+        ethFuelLevel.setVisibility(View.INVISIBLE);
+        relAccelPosttext.setVisibility(View.INVISIBLE);
+        relAccelPost.setVisibility(View.INVISIBLE);
+        engineOilTemptext.setVisibility(View.INVISIBLE);
+        engineOilTemp.setVisibility(View.INVISIBLE);
+        engFuelRatetext.setVisibility(View.INVISIBLE);
+        engFuelRate.setVisibility(View.INVISIBLE);
 
         mConversationView.setVisibility(View.VISIBLE);
         mOutEditText.setVisibility(View.VISIBLE);
@@ -1161,6 +1222,14 @@ public class MainActivity extends AppCompatActivity {
         runTimeEngStart.setText("0 s");
         fuelRailPressure.setText("0 kPa");
         distTraveled.setText("0 km");
+        catalystTemp.setText("0 C°");
+        controlModule.setText("0 V");
+        timeMIL.setText("0 s");
+        timeCodeClear.setText("0 s");
+        ethFuelLevel.setText("0 %");
+        relAccelPost.setText("0 %");
+        engineOilTemp.setText("0 C°");
+        engFuelRate.setText("0 L/h");
 
         //cause the elm to reinitialize, and clear the array of text
         m_getPids = false;
@@ -1353,16 +1422,8 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("pid message before decoding it", String.valueOf(PID));
 
                     //decode pids and update UI on main thread
-                    final int finalPID = PID;
-                    final int finalA = A;
-                    final int finalB = B;
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            calculateEcuValues(finalPID, finalA, finalB);
-                        }
-                    });
-
+                    calculateEcuValues(PID, A, B);
+                    
                 }
             }
         }
@@ -1809,11 +1870,15 @@ public class MainActivity extends AppCompatActivity {
                 //(((A*256)+B)/10)-40
                 val = ((double) ((A * 256) + B) /10)-40;
                 intval = (int) val;
+                String catalystTempMsg = intval + " C°";
+                catalystTemp.setText(catalystTempMsg);
                 mConversationArrayAdapter.add("Catalyst Temp: " + intval + " C°");
                 break;
             case 66://PID(42)
                 val = (double) ((A * 256) + B)/1000;
                 intval = (int) val;
+                String controlModMsg = intval + " V";
+                controlModule.setText(controlModMsg);
                 mConversationArrayAdapter.add("ControlModule Voltage: " + intval + "V");
                 break;
             case 70://PID(46)
@@ -1827,27 +1892,38 @@ public class MainActivity extends AppCompatActivity {
             case 77://PID(4D)
                 val = (256*A) + B;
                 intval = (int) val;
+                String MILMessage = Integer.toString(intval) + " seconds";
+                timeMIL.setText(MILMessage);
                 mConversationArrayAdapter.add("Time with MIL: " + intval + " seconds");
                 break;
             case 78://PID(4E)
                 val = (256*A) + B;
                 intval = (int) val;
+                String codeClearMessage = Integer.toString(intval) + " seconds";
+                timeCodeClear.setText(codeClearMessage);
                 mConversationArrayAdapter.add("Time since code clear: " + intval + "seconds");
                 break;
             case 82://PID(52)
                 //100/255 * A
                 val = ((double) 100 /255) * A;
                 intval = (int) val;
+                String ethFuelMessage = Integer.toString(intval) + " %";
+                ethFuelLevel.setText(ethFuelMessage);
                 mConversationArrayAdapter.add("Ethanol fuel %: " + intval + " %");
                 break;
+
             case 90://PID(5A)
                 val = ((double) 100/255) * A;
                 intval = (int) val;
+                String relAccelMessage = Integer.toString(intval) + " %";
+                relAccelPost.setText(relAccelMessage);
                 mConversationArrayAdapter.add("Relative Accel Position: " + intval + "%");
             case 92://PID(5C)
                 //A-40
                 tempC = A - 40;
                 engineoiltemp = tempC;
+                String engOilMessage = Integer.toString(engineoiltemp) + " C°";
+                engineOilTemp.setText(engOilMessage);
                 mConversationArrayAdapter.add("Engine oil temperature: " + Integer.toString(engineoiltemp) + " C°");
                 break;
 
@@ -1856,8 +1932,9 @@ public class MainActivity extends AppCompatActivity {
                 val = (double) ((256 * A) + B) / 20;
                 intval = (int) val;
                 fuelRate.add(intval);
+                String engFuelMessage = Integer.toString(engineoiltemp) + " L/H";
+                engFuelRate.setText(engFuelMessage);
                 mConversationArrayAdapter.add("Engine fuel rate: " + Integer.toString(intval) + " L/h");
-
             default:
     }
 }

@@ -561,6 +561,238 @@
                 android:textStyle="bold"
                 app:layout_constraintBaseline_toBaselineOf="@id/DistanceTraveled_text" />
 
+            <TextView
+                android:id="@+id/CatalystTemp_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="start"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="@string/catalyst_temp_text"
+                android:textColor="#FCFAFA"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/DistanceTraveled" />
+
+
+            <TextView
+                android:id="@+id/CatalystTemp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="@string/unsupported"
+                android:textColor="#4FFA0C"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@id/CatalystTemp_text" />
+
+            <TextView
+                android:id="@+id/Cont_Mod_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="start"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="@string/control_module_text"
+                android:textColor="#FCFAFA"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/CatalystTemp" />
+
+
+            <TextView
+                android:id="@+id/Cont_Mod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="@string/unsupported"
+                android:textColor="#4FFA0C"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@id/Cont_Mod_text" />
+
+
+            <TextView
+                android:id="@+id/Time_MIL_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="start"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="@string/time_MIL_text"
+                android:textColor="#FCFAFA"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Cont_Mod" />
+
+
+            <TextView
+                android:id="@+id/Time_MIL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="@string/unsupported"
+                android:textColor="#4FFA0C"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@id/Time_MIL_text" />
+
+            <TextView
+                android:id="@+id/Time_Code_Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="start"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="@string/time_code_clear_text"
+                android:textColor="#FCFAFA"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Time_MIL" />
+
+
+            <TextView
+                android:id="@+id/Time_Code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="@string/unsupported"
+                android:textColor="#4FFA0C"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@id/Time_Code_Text" />
+
+            <TextView
+                android:id="@+id/Eth_Fuel_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="start"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="@string/eth_fuel_text"
+                android:textColor="#FCFAFA"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Time_Code" />
+
+
+            <TextView
+                android:id="@+id/Eth_Fuel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="@string/unsupported"
+                android:textColor="#4FFA0C"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@id/Eth_Fuel_text" />
+
+            <TextView
+                android:id="@+id/Rel_Accel_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="start"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="@string/relative_pos_text"
+                android:textColor="#FCFAFA"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Eth_Fuel" />
+
+
+            <TextView
+                android:id="@+id/Rel_Accel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="@string/unsupported"
+                android:textColor="#4FFA0C"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@id/Rel_Accel_text" />
+
+            <TextView
+                android:id="@+id/Eng_Oil_Temp_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="start"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="@string/eng_oil_text"
+                android:textColor="#FCFAFA"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Rel_Accel" />
+
+
+            <TextView
+                android:id="@+id/Eng_Oil_Temp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="@string/unsupported"
+                android:textColor="#4FFA0C"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@id/Eng_Oil_Temp_text" />
+
+            <TextView
+                android:id="@+id/Eng_Fuel_Rate_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="start"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="@string/eng_fuel_text"
+                android:textColor="#FCFAFA"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Eng_Oil_Temp" />
+
+
+            <TextView
+                android:id="@+id/Eng_Fuel_Rate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="@string/unsupported"
+                android:textColor="#4FFA0C"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@id/Eng_Fuel_Rate_text" />
         </LinearLayout>
     </ScrollView>
 

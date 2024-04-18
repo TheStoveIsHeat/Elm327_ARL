@@ -17,6 +17,15 @@
     <string name="time_since_start_text">Run time since engine start:</string>
     <string name="fuel_rail_pressure_text">Fuel Rail Pressure:</string>
     <string name="distance_traveled_text">Distance Traveled:</string>
+    <string name="catalyst_temp_text">Catalyst Temperature:</string>
+    <string name="control_module_text">Control Module Voltage:</string>
+    <string name="ambient_air_text">Ambient Air Temperature:</string>
+    <string name="time_MIL_text">Time with MIL:</string>
+    <string name="time_code_clear_text">Time since code was cleared:</string>
+    <string name="eth_fuel_text">Ethanol Fuel Percentage:</string>
+    <string name="relative_pos_text">Relative Acceleration Position:</string>
+    <string name="eng_oil_text">Engine Oil Temperature:</string>
+    <string name="eng_fuel_text">Engine Fuel Rate:</string>
     <string name="fuel_info_text">0 – 0 l/h</string>
 
 
