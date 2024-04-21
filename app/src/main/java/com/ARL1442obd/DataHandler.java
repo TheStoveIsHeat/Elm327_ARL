@@ -125,9 +125,9 @@ public class DataHandler {
         }
 
         if (success) {
-            File fdelete = new File(filePath);
-            if (fdelete.exists()) {
-                if (fdelete.delete()) {
+            File fDelete = new File(filePath);
+            if (fDelete.exists()) {
+                if (fDelete.delete()) {
                     Log.i("ToSQL","File Deleted :" + filePath);
                 } else {
                     Log.i("ToSQL","File not Deleted :" + filePath);

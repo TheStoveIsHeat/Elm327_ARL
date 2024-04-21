@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CONNECT_DEVICE = 2;
     private static final int REQUEST_ENABLE_BT = 3;
     private static final float APPBAR_ELEVATION = 14f;
-    private static boolean actionbar = true;
+    //private static boolean actionbar = true;
     final List<String> commandslist = new ArrayList<String>();
 
     final List<Double> avgconsumption = new ArrayList<Double>();
@@ -253,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
 
                     String tmpmsg = clearMsg(msg);
                     //This is kinda important, should need an if statement to not report everything as vin
-                    //MAybe do a "if first two chars in the string are 09, send to new function meant to parse the vin/other vehicle info if we decide in future?
+                    //Maybe do a "if first two chars in the string are 09, send to new function meant to parse the vin/other vehicle info if we decide in future?
                     //mConversationArrayAdapter.add("VIN ???: " + msg.obj.toString());
 
                     Info.setText(tmpmsg);
@@ -276,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
                     if (commandmode || !initialized){
                         mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + tmpmsg);
                     }
-                    //after intializations stop being read, we analyze the messages in OBD
+                    //after initializations stop being read, we analyze the messages in OBD
                     analyzeMsg(msg);
                     break;
 
@@ -418,7 +418,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        return true ? hexDigitsCount == text.length() : false;
+        return hexDigitsCount == text.length();
     }
 
     @SuppressLint("InvalidWakeLockTag")
@@ -1333,12 +1333,14 @@ public class MainActivity extends AppCompatActivity {
     private void sendDefaultCommands() {
 
         if (!commandslist.isEmpty()) {
+            //New: !commandslist.isEmpty()
             //Old condition -> commandslist.size() != 0
 
             if (whichCommand < 0) {
                 whichCommand = 0;
             }
 
+            Log.d("SendDefault", "WC: " + whichCommand + " | CL:" + commandslist);
             String send = commandslist.get(whichCommand);
             Log.d("whichCommand", whichCommand + " | " + commandslist.get(whichCommand));
             sendEcuMessage(send);
