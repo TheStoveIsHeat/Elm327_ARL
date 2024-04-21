@@ -264,7 +264,8 @@ public class MainActivity extends AppCompatActivity {
                             String command = tmpmsg.substring(0, 4);
 
                             if (isHexadecimal(command)) {
-                                removePID(command);
+                                Log.d("removePID", "Wants to remove: " + command);
+                                //removePID(command);
                             }
 
                         } catch (Exception e) {
@@ -384,7 +385,7 @@ public class MainActivity extends AppCompatActivity {
             commandslist.remove(index);
             String removeMsg = "Removed pid: " + pid;
             Info.setText(removeMsg);
-            Log.i("SupportedPIDS", "Removed PID: " + pid);
+            Log.i("removePID", removeMsg);
         }
     }
 
@@ -1340,12 +1341,19 @@ public class MainActivity extends AppCompatActivity {
                 whichCommand = 0;
             }
 
-            Log.d("SendDefault", "WC: " + whichCommand + " | CL:" + commandslist);
-            String send = commandslist.get(whichCommand);
-            Log.d("whichCommand", whichCommand + " | " + commandslist.get(whichCommand));
-            sendEcuMessage(send);
+            int endPoint = commandslist.size() - 1;
+            if (whichCommand <= endPoint) {
+                Log.d("SendDefault", "WC:" + whichCommand + " | CL:" + commandslist + " | EP :" + endPoint);
+                String send = commandslist.get(whichCommand);
+                sendEcuMessage(send);
+                //Log.d("whichCommand", whichCommand + " | " + commandslist.get(whichCommand));
+            } else {
+                String send = commandslist.get(0);
+                sendEcuMessage(send);
+            }
 
-            if (whichCommand >= commandslist.size() - 1) {
+
+            if (whichCommand >= endPoint) {
                 whichCommand = 0;
             } else {
                 whichCommand++;
@@ -1376,12 +1384,16 @@ public class MainActivity extends AppCompatActivity {
     //checking if data is valid then parsing it
     private void checkPids(String tmpmsg) {
         StringBuilder pidmsg = new StringBuilder();
-        //checking if payload has 49 to signify a VIN
-        if (tmpmsg.contains("49")) {
+        //checking if payload has 4902 to signify a VIN
+        if (tmpmsg.contains("4902")) {
             int index = tmpmsg.indexOf("49");
 
             pidmsg.append(tmpmsg.substring(index));
             VIN = checkVinDecode(pidmsg.toString());
+            if (!VIN.isEmpty() && !VIN.equals("VIN not found.") && !VIN.equals("VIN not found in hex string.")){
+                Log.d("checkPids", "Vin found!");
+                removePID("0902");
+            }
         }
         //check if 41 is present in the message, then set index to start from that number in the message and read to the length to check for the message
         else if (tmpmsg.contains("41")) {
