@@ -252,9 +252,6 @@ public class MainActivity extends AppCompatActivity {
                 case MESSAGE_READ:
 
                     String tmpmsg = clearMsg(msg);
-                    //This is kinda important, should need an if statement to not report everything as vin
-                    //Maybe do a "if first two chars in the string are 09, send to new function meant to parse the vin/other vehicle info if we decide in future?
-                    //mConversationArrayAdapter.add("VIN ???: " + msg.obj.toString());
 
                     Info.setText(tmpmsg);
 
@@ -264,7 +261,8 @@ public class MainActivity extends AppCompatActivity {
                             String command = tmpmsg.substring(0, 4);
 
                             if (isHexadecimal(command)) {
-                                removePID(command);
+                                Log.d("removePID", "Wants to remove: " + command);
+                                //removePID(command);
                             }
 
                         } catch (Exception e) {
@@ -384,7 +382,7 @@ public class MainActivity extends AppCompatActivity {
             commandslist.remove(index);
             String removeMsg = "Removed pid: " + pid;
             Info.setText(removeMsg);
-            Log.i("SupportedPIDS", "Removed PID: " + pid);
+            Log.i("removePID", removeMsg);
         }
     }
 
@@ -1272,7 +1270,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void sendEcuMessage(String message) {
         //check if sent data is matching read data (TEST)
-        Log.d("sendEcuMessage", message);
+        Log.i("sendEcuMessage", "Sending: " + message);
         if( mWifiService != null)
         {
             if(mWifiService.isConnected())
@@ -1340,12 +1338,19 @@ public class MainActivity extends AppCompatActivity {
                 whichCommand = 0;
             }
 
-            Log.d("SendDefault", "WC: " + whichCommand + " | CL:" + commandslist);
-            String send = commandslist.get(whichCommand);
-            Log.d("whichCommand", whichCommand + " | " + commandslist.get(whichCommand));
-            sendEcuMessage(send);
+            int endPoint = commandslist.size() - 1;
+            if (whichCommand <= endPoint) {
+                Log.d("SendDefault", "WC:" + whichCommand + " | CL:" + commandslist + " | EP :" + endPoint);
+                String send = commandslist.get(whichCommand);
+                sendEcuMessage(send);
+                //Log.d("whichCommand", whichCommand + " | " + commandslist.get(whichCommand));
+            } else {
+                String send = commandslist.get(0);
+                sendEcuMessage(send);
+            }
 
-            if (whichCommand >= commandslist.size() - 1) {
+
+            if (whichCommand >= endPoint) {
                 whichCommand = 0;
             } else {
                 whichCommand++;
@@ -1376,12 +1381,16 @@ public class MainActivity extends AppCompatActivity {
     //checking if data is valid then parsing it
     private void checkPids(String tmpmsg) {
         StringBuilder pidmsg = new StringBuilder();
-        //checking if payload has 49 to signify a VIN
-        if (tmpmsg.contains("49")) {
+        //checking if payload has 4902 to signify a VIN
+        if (tmpmsg.contains("4902")) {
             int index = tmpmsg.indexOf("49");
 
             pidmsg.append(tmpmsg.substring(index));
             VIN = checkVinDecode(pidmsg.toString());
+            if (!VIN.isEmpty() && !VIN.equals("VIN not found.") && !VIN.equals("VIN not found in hex string.")){
+                Log.d("checkPids", "Vin found!");
+                removePID("0902");
+            }
         }
         //check if 41 is present in the message, then set index to start from that number in the message and read to the length to check for the message
         else if (tmpmsg.contains("41")) {
@@ -1396,7 +1405,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             } else {
                 //print the pid msg to log cat
-                Log.d("checkPids data", pidmsg.toString());
+                Log.d("checkPids", "DataOnly: " + pidmsg.toString());
             }
         }
 
@@ -1416,25 +1425,22 @@ public class MainActivity extends AppCompatActivity {
                 String submsg = pidmsg.substring(index);
 
                 if (submsg.startsWith("41")) {
-                    Log.d("reg expression:", submsg);
+                    //Log.d("reg expression:", submsg); was a dupe of the above log.d
                     if (submsg.length() >= 8) {
                         PID = Integer.parseInt(submsg.substring(2, 4), 16);
                         A = Integer.parseInt(submsg.substring(4, 6), 16);
                         B = Integer.parseInt(submsg.substring(6, 8), 16);
                     }
-                    //FIX THIS SHIT (might be fine now)
-                    else if (submsg.length() < 8) {
+                    else if (submsg.length() < 8) { //I think this fine now
                         PID = Integer.parseInt(submsg.substring(2, 4), 16);
                         A = Integer.parseInt(submsg.substring(4, 6), 16);
                     }
 
-
-                    //print the pid msg to terminal (TEST)
-                    Log.d("pid message before decoding it", String.valueOf(PID));
+                    //print the pid msg to terminal (TEST). Previously: pid message before decoding it
+                    //Log.d("checkPids", "PID to calc: " + String.valueOf(PID));
 
                     //decode pids and update UI on main thread
                     calculateEcuValues(PID, A, B);
-                    
                 }
             }
         }
@@ -1474,7 +1480,7 @@ public class MainActivity extends AppCompatActivity {
                     vinMsg.append(matcher.group());
                 }
 
-                Log.d("VinDecode", "VIN = " + vinMsg.toString().trim());
+                Log.i("VinDecode", "VIN = " + vinMsg.toString().trim());
                 return vinMsg.toString().trim();
             }
             else {
@@ -1758,7 +1764,7 @@ public class MainActivity extends AppCompatActivity {
     }
     //calculating the pids
     private void calculateEcuValues(int PID, int A, int B) {
-
+        Log.i("calculateEcuValues", "PID:" + PID + " | A:" + A + " | B:" + B);
         double val = 0;
         int intval = 0;
         int tempC = 0;
@@ -1803,7 +1809,7 @@ public class MainActivity extends AppCompatActivity {
                 rpmval = intval;
                 String engineSpeedMessage = Integer.toString(intval) + " rpm";
                 engineSpeed.setText(engineSpeedMessage);
-                Log.d("enginespeed text:", engineSpeedMessage);
+                //Log.d("enginespeed text:", engineSpeedMessage); //not needed anymore?
                 //new code to add to array
                 mConversationArrayAdapter.add("Engine Speed: " + Integer.toString(rpmval) + " rpm");
                 break;

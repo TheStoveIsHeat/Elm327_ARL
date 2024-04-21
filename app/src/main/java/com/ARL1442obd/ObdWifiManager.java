@@ -289,7 +289,7 @@ public class ObdWifiManager {
                             res.append((char) b);
                         }
                         rawData = res.toString().trim();
-                        Log.d("WIFI Manager","Data:" + rawData);
+                        Log.i("WIFI Manager","Read: " + rawData);
                         mWIFIHandler.obtainMessage(MainActivity.MESSAGE_READ, rawData.length(), -1, rawData).sendToTarget();
                     }
 
