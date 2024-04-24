@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.Integer.parseInt;
 
@@ -36,13 +38,18 @@ public class DataHandler {
             connection = DriverManager.getConnection(jdbcUrl, username, password);
             connection.setAutoCommit(false);
 
-            String sql = "INSERT INTO vehicle(VIN,AvgSpeed,IdleTime,FuelRate,EngineOn,MPG) values(?,?,?,?,?,?) " +
-                    "ON DUPLICATE KEY UPDATE " +
-                    "AvgSpeed = VALUES(AvgSpeed)," +
-                    "IdleTime = VALUES(IdleTime)," +
-                    "FuelRate = VALUES(FuelRate)," +
-                    "EngineOn = VALUES(EngineOn)," +
-                    "MPG = VALUES(MPG)";
+            String sql = "INSERT INTO trip(VIN, AvgSpeed, AvgRPM, EngineOnTime, BatteryVoltage, IntakeAirTemp, IntakeManPressure, ThrottlePosition, FuelRate, D, T) values(?,?,?,?,?,?,?,?,?,?,?)";
+                    //"ON DUPLICATE KEY UPDATE " +
+                    //"AvgSpeed = VALUES(AvgSpeed)," +
+                    //"AvgRPM = VALUES(AvgRPM)," +
+                    //"EngineOnTime = VALUES(EngineOnTime)," +
+                    //"BatteryVoltage = VALUES(BatteryVoltage)" +
+                    //"IntakeAirTemp = VALUES(IntakeAirTemp)" +
+                    //"IntakeManPressure = VALUES(IntakeManPressure)" +
+                    //"ThrottlePosition = VALUES(ThrottlePosition)" +
+                    //"FuelRate = VALUES(FuelRate)" +
+                    //"D = VALUES(D)" +
+                    //"T = VALUES(T)";
 
             PreparedStatement statement = connection.prepareStatement(sql);
 
@@ -60,48 +67,90 @@ public class DataHandler {
                 Log.d("ToSQL", "Vin: " + VIN);
                 String AvgSpeed = data[1];
                 Log.d("ToSQL", "AvgSpeed: " + AvgSpeed);
-                String IdleTime = data[2];
-                Log.d("ToSQL", "IdleTime: " + IdleTime);
-                String FuelRate = data[3];
+                String AvgRPM = data[2];
+                Log.d("ToSQL", "AvgRPM: " + AvgRPM);
+                String EngineOnTime = data[3];
+                Log.d("ToSQL", "EngineOnTime: " + EngineOnTime);
+                String BatteryVoltage = data[4];
+                Log.d("ToSQL", "BatteryVoltage: " + BatteryVoltage);
+                String IntakeAirTemp = data[5];
+                Log.d("ToSQL", "IntakeAirPressure: " + IntakeAirTemp);
+                String IntakeManPressure = data[6];
+                Log.d("ToSQL", "IntakeManPressure: " + IntakeManPressure);
+                String ThrottlePosition = data[7];
+                Log.d("ToSQL", "ThrottlePosition: " + ThrottlePosition);
+                String FuelRate = data[8];
                 Log.d("ToSQL", "FuelRate: " + FuelRate);
-                String EngineOn = data[4];
-                Log.d("ToSQL", "EngineOn: " + EngineOn);
-                String MPG = data[5];
-                Log.d("ToSQL", "MPG: " + MPG);
-                String Date = data[6];
-                Log.d("ToSQL", "Date: " + Date);
-                String Time = data[7];
-                Log.d("ToSQL", "Time: " + Time);
+                String D = data[9];
+                Log.d("ToSQL", "Date: " + D);
+                String T = data[10];
+                Log.d("ToSQL", "Time: " + T);
 
                 if (AvgSpeed.contains(" ")){
                     int index = AvgSpeed.indexOf(" ");
                     AvgSpeed = AvgSpeed.substring(index+1);
                 }
-                if (IdleTime.contains(" ")){
-                    int index = IdleTime.indexOf(" ");
-                    IdleTime = IdleTime.substring(index+1);
+                if (AvgRPM.contains(" ")){
+                    int index = AvgRPM.indexOf(" ");
+                    AvgRPM = AvgRPM.substring(index+1);
+                }
+                if (EngineOnTime.contains(" ")){
+                    int index = EngineOnTime.indexOf(" ");
+                    EngineOnTime = EngineOnTime.substring(index+1);
+                }
+                if (BatteryVoltage.contains(" ")){
+                    int index = BatteryVoltage.indexOf(" ");
+                    BatteryVoltage = BatteryVoltage.substring(index+1);
+                }
+                if (IntakeAirTemp.contains(" ")){
+                    int index = IntakeAirTemp.indexOf(" ");
+                    IntakeAirTemp = IntakeAirTemp.substring(index+1);
+                }
+                if (IntakeManPressure.contains(" ")){
+                    int index = IntakeManPressure.indexOf(" ");
+                    IntakeManPressure = IntakeManPressure.substring(index+1);
+                }
+                if (ThrottlePosition.contains(" ")){
+                    int index = ThrottlePosition.indexOf(" ");
+                    ThrottlePosition = ThrottlePosition.substring(index+1);
                 }
                 if (FuelRate.contains(" ")){
                     int index = FuelRate.indexOf(" ");
                     FuelRate = FuelRate.substring(index+1);
                 }
-                if (EngineOn.contains(" ")){
-                    int index = EngineOn.indexOf(" ");
-                    EngineOn = EngineOn.substring(index+1);
+                if (D.contains(" ")){
+                    int index = D.indexOf(" ");
+                    D = D.substring(index+1);
                 }
-                if (MPG.contains(" ")){
-                    int index = MPG.indexOf(" ");
-                    MPG = MPG.substring(index+1);
+                if (T.contains(" ")){
+                    int index = T.indexOf(" ");
+                    T = T.substring(index+1);
                 }
-                Log.d("ToSQL", "ParseIntTest: " + parseInt(AvgSpeed));
 
                 statement.setString(1, VIN);
-                statement.setInt(2, parseInt(AvgSpeed));
-                statement.setInt(3, parseInt(IdleTime));
-                statement.setInt(4, parseInt(FuelRate));
-                statement.setInt(5, parseInt(EngineOn));
-                statement.setInt(6, parseInt(MPG));
+            Log.d("ToSQL", "YES");
+                statement.setString(2, AvgSpeed);
+            Log.d("ToSQL", "YES");
+                statement.setString(3, AvgRPM);
+            Log.d("ToSQL", "YES");
+                statement.setString(4, EngineOnTime);
+            Log.d("ToSQL", "YES");
+                statement.setString(5, BatteryVoltage);
+            Log.d("ToSQL", "YES");
+                statement.setString(6, IntakeAirTemp);
+            Log.d("ToSQL", "YES");
+                statement.setString(7, IntakeManPressure);
+            Log.d("ToSQL", "YES");
+                statement.setString(8, ThrottlePosition);
+            Log.d("ToSQL", "YES");
+                statement.setString(9, FuelRate);
+            Log.d("ToSQL", "YES");
+                statement.setString(10, D);
+            Log.d("ToSQL", "YES");
+                statement.setString(11, T);
+            Log.d("ToSQL", "YES");
                 statement.addBatch();
+            Log.d("ToSQL", "YES");
                 //count += 1;
                 //lineText = lineReader.readLine();
                 if (count % batchSize == 0) {
@@ -137,73 +186,57 @@ public class DataHandler {
         return success;
     }
 
-    public static void request()
+    public static List<String[]> request()
     {
         Log.i("FromSQL", "Grabbing data from database");
 
         DriverManager.setLoginTimeout(10);
         Connection connection = null;
-
+        List<String[]> dataList = new ArrayList<>();
         try {
             Class.forName("com.mysql.jdbc.Driver");
             connection = DriverManager.getConnection(jdbcUrl, username, password);
             connection.setAutoCommit(false);
             Log.d("Database Connection", "SUCCESS");
 
-            String sql = "SELECT * FROM vehicle";
-            String [] data = new String [8];
+            String sql = "SELECT * FROM trip";
 
             PreparedStatement statement = connection.prepareStatement(sql);
 
             ResultSet result = statement.executeQuery(sql);
 
-            result.next();
+            while(result.next()){
+                String[] data = new String[11];
+                data[0] = result.getString(2);
+                Log.d("FromSQL", "Vin: " + data[0]);
+                data[1] = result.getString(3);
+                Log.d("FromSQL", "AvgSpeed: " + data[1]);
+                data[2] = result.getString(4);
+                Log.d("FromSQL", "AvgRPM: " + data[2]);
+                data[3] = result.getString(5);
+                Log.d("FromSQL", "EngineOnTime: " + data[3]);
+                data[4] = result.getString(6);
+                Log.d("FromSQL", "BatteryVoltage: " + data[4]);
+                data[5] = result.getString(7);
+                Log.d("FromSQL", "IntakeAirTemp: " + data[5]);
+                data[6] = result.getString(8);
+                Log.d("FromSQL", "IntakeManPressure: " + data[6]);
+                data[7] = result.getString(9);
+                Log.d("FromSQL", "ThrottlePosition: " + data[7]);
+                data[8] = result.getString(10);
+                Log.d("FromSQL", "FuelRate: " + data[8]);
+                data[9] = result.getString(11);
+                Log.d("FromSQL", "D: " + data[9]);
+                data[10] = result.getString(12);
+                Log.d("FromSQL", "T: " + data[10]);
 
-            data[0] = result.getString(1);
-            Log.d("FromSQL", "Vin: " + data[0]);
-            data[1] = result.getString(2);
-            Log.d("FromSQL", "AvgSpeed: " + data[1]);
-            data[2] = result.getString(3);
-            Log.d("FromSQL", "IdleTime: " + data[2]);
-            data[3] = result.getString(4);
-            Log.d("FromSQL", "FuelRate: " + data[3]);
-            data[4] = result.getString(5);
-            Log.d("FromSQL", "EngineOn: " + data[4]);
-            data[5] = result.getString(6);
-            Log.d("FromSQL", "MPG: " + data[5]);
-            data[6] = result.getString(7);
-            Log.d("FromSQL", "Date: " + data[6]);
-            data[7] = result.getString(8);
-            Log.d("FromSQL", "Time: " + data[7]);
-
-/*
-            int rowCount = 0;
-            while(result.next())
-            {
-                data[rowCount][0] = result.getString(1);
-                Log.d("FromSQL", "Vin: " + data[rowCount][0]);
-                data[rowCount][1] = result.getString(2);
-                Log.d("FromSQL", "AvgSpeed: " + data[rowCount][1]);
-                data[rowCount][2] = result.getString(3);
-                Log.d("FromSQL", "IdleTime: " + data[rowCount][2]);
-                data[rowCount][3] = result.getString(4);
-                Log.d("FromSQL", "FuelRate: " + data[rowCount][3]);
-                data[rowCount][4] = result.getString(5);
-                Log.d("FromSQL", "EngineOn: " + data[rowCount][4]);
-                data[rowCount][5] = result.getString(6);
-                Log.d("FromSQL", "MPG: " + data[rowCount][5]);
-                data[rowCount][6] = result.getString(7);
-                Log.d("FromSQL", "Date: " + data[rowCount][6]);
-                data[rowCount][7] = result.getString(8);
-                Log.d("FromSQL", "Time: " + data[rowCount][7]);
-
-                rowCount++;
+                dataList.add(data);
             }
-*/
 
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+        return dataList;
     }
 
     // Function to save data to CSV file (new code)
@@ -217,7 +250,7 @@ public class DataHandler {
             FileOutputStream fos = new FileOutputStream(file);
             OutputStreamWriter osw = new OutputStreamWriter(fos);
             // Write the headers to the file
-            osw.write("Vin, AvgSpeed, FuelRate, IdleTime, EngineOnTime, MPG, Date, Time");
+            osw.write("Vin, AvgSpeed, AvgRPM, EngineOnTime, BatteryVoltage, IntakeAirTemp, IntakeManPressure, ThrottlePos, FuelRate, Date, Time");
             //New line
             osw.write(10);
             //Data goes here, inputted data should be a full string with all the values

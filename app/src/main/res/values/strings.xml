@@ -31,6 +31,7 @@
 
 
 
+
     <!-- Terminal Menu -->
     <string name="button1">Save to CSV</string>
     <string name="button2">Fault Codes</string>
@@ -78,4 +79,15 @@
      <string name="exit">Exit</string>
     <string name="set_odometer">Set Odometer</string>
     <string name="reset_trip">Reset Trip</string>
+    <string name="time">Time</string>
+    <string name="date">Date</string>
+    <string name="fuelrate">FuelRate km/L</string>
+    <string name="ThrottlePosition">ThrottlePosition %</string>
+    <string name="IntakeManPressure">IntakeManPressure kPa</string>
+    <string name="intakeairtemp">IntakeAirTemp C</string>
+    <string name="batteryvoltage">BatteryVoltage V</string>
+    <string name="engineontime">EngineOnTime s</string>
+    <string name="avgrpm">AvgRPM</string>
+    <string name="avgspeed">AvgSpeed km/h</string>
+    <string name="VIN">VIN</string>
 </resources>

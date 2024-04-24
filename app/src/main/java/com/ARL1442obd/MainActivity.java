@@ -31,6 +31,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 
 import com.google.android.material.appbar.AppBarLayout;
 
@@ -47,8 +49,8 @@ import java.io.File;
 //for sending the data via wifi (new code)
 //more for the server
 //For date and time when saving csv
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 //for vin decoding
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -88,6 +90,11 @@ public class MainActivity extends AppCompatActivity {
    */
     //for collecting vehicle speed
     ArrayList<Integer> km_speed = new ArrayList<>();
+    ArrayList<Integer> rpm = new ArrayList<>();
+    ArrayList<Integer> throttlePos = new ArrayList<>();
+    ArrayList<Integer> intakeAirTemp = new ArrayList<>();
+    ArrayList<Integer> intakeManPres = new ArrayList<>();
+    String volts;
     String saveLocation = "/storage/emulated/0/Download";
     int fileCount = 0;
     String fileName = "obd_data" + fileCount + ".csv";
@@ -198,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
 
     //StringBuilder inStream = new StringBuilder();
 
-    // The Handler that gets information back from the BluetoothChatService
+    // The Handler that gets information back from the WifiChatService
     // Array adapter for the conversation thread
     private ArrayAdapter<String> mConversationArrayAdapter;
 
@@ -558,15 +565,27 @@ public class MainActivity extends AppCompatActivity {
 
         mConversationView.setAdapter(mConversationArrayAdapter);
 
+
         mRetrieveDB.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 mConversationArrayAdapter.add("User: Requesting current data from database...");
-                DataHandler.request();
 
-                //String sPIDs = "0100";
-                //m_getPids = false;
-                //sendEcuMessage(sPIDs);
-            }
+                List<String[]> dataList = DataHandler.request();
+                for(int i = 0; i < dataList.size(); i++){
+                    String[] array = dataList.get(i);
+                        mConversationArrayAdapter.add("VIN: " + array[0]);
+                        mConversationArrayAdapter.add("AvgSpeed: " + array[1]);
+                        mConversationArrayAdapter.add("AvgRPM: " + array[2]);
+                        mConversationArrayAdapter.add("EngineOnTime: " + array[3]);
+                        mConversationArrayAdapter.add("BatteryVoltage: " + array[4]);
+                        mConversationArrayAdapter.add("IntakeAirTemp: " + array[5]);
+                        mConversationArrayAdapter.add("IntakeManPressure: " + array[6]);
+                        mConversationArrayAdapter.add("ThrottlePosition: " + array[7]);
+                        mConversationArrayAdapter.add("FuelRate: " + array[8]);
+                        mConversationArrayAdapter.add("Date: " + array[9]);
+                        mConversationArrayAdapter.add("Time: " + array[10]);
+                }
+                }
         });
         // Initialize the send button with a listener that for click events
 
@@ -610,16 +629,25 @@ public class MainActivity extends AppCompatActivity {
 
                 // Save the data to CSV file (new code to save to CSV file)
                 String avg_speed = calculateAvgList(km_speed);
+                String avg_RPM = calculateAvgList(rpm);
+                String avg_ThrottlePos = calculateAvgList(throttlePos);
+                String avg_IntakeAirTemp = calculateAvgList(intakeAirTemp);
+                String avg_IntakeManPressure = calculateAvgList(intakeManPres);
                 //String Vin = "Vinhere";
-                String avg_fuelRate = calculateAvgList(fuelRate);
-                String date = "X/X/XXXX";
-                String time = "1500";
+                String avg_fuelRate;// = calculateAvgList(fuelRate);
+                avg_fuelRate = "test";
+                //String KPL = calculateKPL(km_speed,fuelRate);
+
+
+                //time and date
+                LocalDateTime currentDateTime = LocalDateTime.now();
+                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+                String date = currentDateTime.format(dateFormatter);
+                String time = currentDateTime.format(timeFormatter);
 
                 //For fuel level
                 //sendEcuMessage("012F");
-
-                Date currentTime = Calendar.getInstance().getTime();
-                //Date date = DAY_OF_MONTH;
 
                 //Generate random Trip# each time button is pressed, to be stored into CSV
 
@@ -645,8 +673,8 @@ public class MainActivity extends AppCompatActivity {
                     mileage = "0";
                 }
 
-                String csvData = VIN + ", " + avg_speed + ", " + avg_fuelRate + ", " + idleTime + ", " + engineOnTime + ", " + mileage + ", " + date + ", " + time;
-                //VIN, avg_speed, avg_fuelrate?, idletime(NEEDS WORK), engineOnTime, mileage, date(NEEDS WORK), time(NEEDS WORK)
+                String csvData = VIN + ", " + avg_speed + ", " + avg_RPM + ", " + engineOnTime + ", " + volts
+                        + ", " + avg_IntakeAirTemp + ", " + avg_IntakeManPressure + ", " + avg_ThrottlePos + ", " + avg_fuelRate + ", " + date + ", " + time;
 
                 //incrememnet file name
                 int tempCount = fileCount + 1;
@@ -657,7 +685,8 @@ public class MainActivity extends AppCompatActivity {
 
                 if (savedSuccessfully){
                     fileCount = tempCount;
-                    km_speed.clear(); //clearing the array list
+                    km_speed.clear(); //clearing the array lists
+                    rpm.clear();
                     mConversationArrayAdapter.add("User: Success! File named \""+ fileName +"\"");
                 }
                 else {
@@ -1342,6 +1371,12 @@ public class MainActivity extends AppCompatActivity {
             if (whichCommand <= endPoint) {
                 Log.d("SendDefault", "WC:" + whichCommand + " | CL:" + commandslist + " | EP :" + endPoint);
                 String send = commandslist.get(whichCommand);
+
+                if (send.equals("015E")) {
+                    Log.d("FuelRateDebug", "Sending PID 5E command for fuel rate: " + send);
+                } else {
+                    Log.d("Debug", "Sending command: " + send);
+                }
                 sendEcuMessage(send);
                 //Log.d("whichCommand", whichCommand + " | " + commandslist.get(whichCommand));
             } else {
@@ -1399,11 +1434,11 @@ public class MainActivity extends AppCompatActivity {
 
             pidmsg.append(tmpmsg.substring(index, tmpmsg.length()));
 
-            if (pidmsg.toString().contains("4100")) {
+            if (pidmsg.toString().contains("4100") || pidmsg.toString().contains("4120") || pidmsg.toString().contains("4140")) {
                 //printing the supported pids to the terminal
                 setPidsSupported(pidmsg.toString());
                 return;
-            } else {
+            }else {
                 //print the pid msg to log cat
                 Log.d("checkPids", "DataOnly: " + pidmsg.toString());
             }
@@ -1511,9 +1546,37 @@ public class MainActivity extends AppCompatActivity {
         //return s;
     }
 
+    public static String calculateKPL(ArrayList<Integer> list1, ArrayList<Integer> list2){
+        if (list1 == null || list1.isEmpty()) {
+            //return "N/A";
+            return "0";
+        }
+
+        if (list2 == null || list2.isEmpty()) {
+            //return "N/A";
+            return "0";
+        }
+
+        int sum1 = 0;
+        for (int num1 : list1) {
+            sum1 += num1;
+        }
+        int sum2 = 0;
+        for (int num2 : list2) {
+            sum2 += num2;
+        }
+
+        double answer1 = (double) sum1 / list1.size();
+        double answer2 = (double) sum2 / list2.size();
+        double kpl = answer1 / answer2;
+
+        return Integer.toString((int) Math.round(kpl));
+    }
+
     private void analyzeMsg(Message msg) {
         //cleaning the message (for mode 1)
         String tmpmsg = clearMsg(msg);
+
         //printing the voltage to terminal
         generateVolt(tmpmsg);
         //getting the device name and the protocol (SAE or ISO)
@@ -1702,7 +1765,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            commandslist.clear();
+
             commandslist.add(0, GET_VIN);
             commandslist.add(1, VOLTAGE);
             int pid = 2;
@@ -1759,6 +1822,7 @@ public class MainActivity extends AppCompatActivity {
         }
         //updating text
         if (VoltText != null) {
+            volts = VoltText;
             voltage.setText(VoltText);
         }
     }
@@ -1800,6 +1864,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case 11://PID(0B)
                 //A
+                intakeManPres.add(A);
                 mConversationArrayAdapter.add("Intake Man Pressure: " + Integer.toString(A) + " kPa");
                 break;
             case 12: //PID(0C): RPM
@@ -1807,6 +1872,7 @@ public class MainActivity extends AppCompatActivity {
                 val = (double) ((A * 256) + B) / 4;
                 intval = (int) val;
                 rpmval = intval;
+                rpm.add(rpmval);
                 String engineSpeedMessage = Integer.toString(intval) + " rpm";
                 engineSpeed.setText(engineSpeedMessage);
                 //Log.d("enginespeed text:", engineSpeedMessage); //not needed anymore?
@@ -1826,6 +1892,7 @@ public class MainActivity extends AppCompatActivity {
                 // A - 40
                 tempC = A - 40;
                 intakeairtemp = tempC;
+                intakeAirTemp.add(intakeairtemp);
                 String intakeMessage = Integer.toString(intakeairtemp) + " C°";
                 intakeAirtemp.setText(intakeMessage);
                 mConversationArrayAdapter.add("Intake AirTemp: " + Integer.toString(intakeairtemp) + " C°");
@@ -1842,6 +1909,7 @@ public class MainActivity extends AppCompatActivity {
                 //A*100/255
                 val = (double) (A * 100) / 255;
                 intval = (int) val;
+                throttlePos.add(intval);
                 String posMsg = Integer.toString(intval) + " %";
                 throttlePosition.setText(posMsg);
                 mConversationArrayAdapter.add(" Throttle position: " + Integer.toString(intval) + " %");
@@ -1949,7 +2017,7 @@ public class MainActivity extends AppCompatActivity {
                 val = (double) ((256 * A) + B) / 20;
                 intval = (int) val;
                 fuelRate.add(intval);
-                String engFuelMessage = Integer.toString(engineoiltemp) + " L/H";
+                String engFuelMessage = Integer.toString(intval) + " L/H";
                 engFuelRate.setText(engFuelMessage);
                 mConversationArrayAdapter.add("Engine fuel rate: " + Integer.toString(intval) + " L/h");
             default:
