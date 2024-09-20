@@ -1,6 +1,3 @@
-/*
-T�RKAY B�L�YOR turkaybiliyor@hotmail.com
- */
 package com.ARL1442obd;
 
 import android.os.Bundle;
